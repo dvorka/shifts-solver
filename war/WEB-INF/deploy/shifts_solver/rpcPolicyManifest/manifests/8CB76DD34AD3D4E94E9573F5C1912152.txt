@@ -1,0 +1,2 @@
+serviceClass: com.mindforger.shiftsolver.client.GreetingService
+path: 09BFD2AB91CA3BF96F509DABE2655612.gwt.rpc
