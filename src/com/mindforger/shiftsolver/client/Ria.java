@@ -59,12 +59,16 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		RootPanel employeeEditPanel = RootPanel.get(CONTAINER_EMPLOYEE_EDITOR);
 		RootPanel dlouhanTable = RootPanel.get(CONTAINER_DLOUHAN_TABLE);
 		RootPanel dlouhanEditPanel = RootPanel.get(CONTAINER_DLOUHAN_EDITOR);
+		RootPanel solutionTable = RootPanel.get(CONTAINER_SOLUTION_TABLE);
+		RootPanel solutionViewPanel = RootPanel.get(CONTAINER_SOLUTION_VIEW);
 				
 		statusPanel.add(ctx.getStatusLine());
 		employeesTablePanel.add(ctx.getEmployeesTable());
 		employeeEditPanel.add(ctx.getEmployeesEditPanel());
 		dlouhanTable.add(ctx.getDlouhanTable());
 		dlouhanEditPanel.add(ctx.getDlouhanEditPanel());
+		solutionTable.add(ctx.getSolutionTable());
+		solutionViewPanel.add(ctx.getSolutionViewPanel());
 
 //      }		
 	}

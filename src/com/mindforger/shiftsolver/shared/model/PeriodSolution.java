@@ -7,9 +7,14 @@ import java.util.List;
 public class PeriodSolution implements Serializable {
 	private static final long serialVersionUID = 7586400671035292788L;
 
+	private String key;
+	private String dlouhanKey;
 	private int year;
 	private int month; 
 	private List<DaySolution> days;
+	
+	public PeriodSolution() {
+	}
 	
 	public PeriodSolution(int year, int month) {
 		this.year=year;
@@ -48,5 +53,21 @@ public class PeriodSolution implements Serializable {
 			result.add(day.getNight());
 		}
 		return result;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public String getDlouhanKey() {
+		return dlouhanKey;
+	}
+
+	public void setDlouhanKey(String dlouhanKey) {
+		this.dlouhanKey = dlouhanKey;
 	}
 }

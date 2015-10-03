@@ -4,10 +4,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Widget;
 import com.mindforger.shiftsolver.client.ui.DlouhanEditPanel;
 import com.mindforger.shiftsolver.client.ui.DlouhanTable;
 import com.mindforger.shiftsolver.client.ui.EmployeeEditPanel;
 import com.mindforger.shiftsolver.client.ui.EmployeesTable;
+import com.mindforger.shiftsolver.client.ui.PeriodSolutionTable;
+import com.mindforger.shiftsolver.client.ui.PeriodSolutionViewPanel;
 import com.mindforger.shiftsolver.client.ui.StatusLine;
 import com.mindforger.shiftsolver.shared.FieldVerifier;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
@@ -43,6 +46,8 @@ public class RiaContext implements ShiftSolverConstants {
 	private EmployeeEditPanel employeeEditPanel;
 	private DlouhanTable dlouhanTable;
 	private DlouhanEditPanel dlouhanPanel;
+	private PeriodSolutionTable periodSolutionTable;
+	private PeriodSolutionViewPanel periodSolutionViewPanel;
 	
 	// data
 	private RiaState state;
@@ -62,7 +67,9 @@ public class RiaContext implements ShiftSolverConstants {
 		employeesTable=new EmployeesTable(this);
 		employeeEditPanel=new EmployeeEditPanel(this);
 		dlouhanTable=new DlouhanTable(this);		
-		dlouhanPanel=new DlouhanEditPanel(this);		
+		dlouhanPanel=new DlouhanEditPanel(this);
+		periodSolutionTable=new PeriodSolutionTable(this);
+		periodSolutionViewPanel=new PeriodSolutionViewPanel(this);
 	}
 
 	public RiaMessages getI18n() {
@@ -115,5 +122,17 @@ public class RiaContext implements ShiftSolverConstants {
 
 	public Ria getRia() {
 		return ria;
+	}
+
+	public PeriodSolutionTable getSolutionTable() {
+		if(!initialized.contains(periodSolutionTable)) {
+			initialized.add(periodSolutionTable);
+			periodSolutionTable.init();
+		}
+		return periodSolutionTable;
+	}
+
+	public PeriodSolutionViewPanel getSolutionViewPanel() {
+		return periodSolutionViewPanel;
 	}
 }
