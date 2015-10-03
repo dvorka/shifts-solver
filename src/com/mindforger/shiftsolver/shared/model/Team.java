@@ -12,11 +12,11 @@ public class Team {
 	private Map<String, Employee> women;
 	
 	public Team() {
-		employees=new HashMap<>();
-		editors=new HashMap<>();
-		sportaci=new HashMap<>();		
-		men=new HashMap<>();		
-		women=new HashMap<>();		
+		employees=new HashMap<String, Employee>();
+		editors=new HashMap<String, Employee>();
+		sportaci=new HashMap<String, Employee>();		
+		men=new HashMap<String, Employee>();		
+		women=new HashMap<String, Employee>();		
 	}
 	
 	public void addEmployee(Employee employee) {

@@ -2,6 +2,7 @@ package com.mindforger.shiftsolver.shared.model;
 
 public class Employee {
 
+	private String key;
 	private String firstname;
 	private String familyname;
 	private boolean woman;
@@ -12,6 +13,14 @@ public class Employee {
 	public Employee() {		
 	}
 	
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
 	public String getFirstname() {
 		return firstname;
 	}
@@ -62,7 +71,12 @@ public class Employee {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (editor ? 1231 : 1237);
+		result = prime * result
+				+ ((familyname == null) ? 0 : familyname.hashCode());
+		result = prime * result
+				+ ((firstname == null) ? 0 : firstname.hashCode());
 		result = prime * result + (fulltime ? 1231 : 1237);
+		result = prime * result + ((key == null) ? 0 : key.hashCode());
 		result = prime * result + (sportak ? 1231 : 1237);
 		result = prime * result + (woman ? 1231 : 1237);
 		return result;
@@ -79,7 +93,22 @@ public class Employee {
 		Employee other = (Employee) obj;
 		if (editor != other.editor)
 			return false;
+		if (familyname == null) {
+			if (other.familyname != null)
+				return false;
+		} else if (!familyname.equals(other.familyname))
+			return false;
+		if (firstname == null) {
+			if (other.firstname != null)
+				return false;
+		} else if (!firstname.equals(other.firstname))
+			return false;
 		if (fulltime != other.fulltime)
+			return false;
+		if (key == null) {
+			if (other.key != null)
+				return false;
+		} else if (!key.equals(other.key))
 			return false;
 		if (sportak != other.sportak)
 			return false;

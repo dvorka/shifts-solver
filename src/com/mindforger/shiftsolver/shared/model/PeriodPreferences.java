@@ -10,7 +10,7 @@ public class PeriodPreferences {
 	private Map<Employee,EmployeePreferences> employeeToPreferences;
 
 	public PeriodPreferences(int year, int month) {
-		employeeToPreferences=new HashMap<>();
+		employeeToPreferences=new HashMap<Employee,EmployeePreferences>();
 		this.year=year;
 		this.month=month;
 	}

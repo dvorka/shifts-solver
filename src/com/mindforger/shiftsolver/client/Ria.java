@@ -1,6 +1,5 @@
 package com.mindforger.shiftsolver.client;
 
-import com.mindforger.shiftsolver.shared.FieldVerifier;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -16,15 +15,22 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.mindforger.shiftsolver.client.ui.EmployeesTable;
+import com.mindforger.shiftsolver.shared.FieldVerifier;
+import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class Shifts_solver implements EntryPoint {
+public class Ria implements EntryPoint, ShiftSolverConstants {
+	
+	private RiaContext ctx;
+	
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
 	 */
+	@Deprecated
 	private static final String SERVER_ERROR = "An error occurred while "
 			+ "attempting to contact the server. Please check your network "
 			+ "connection and try again.";
@@ -32,13 +38,27 @@ public class Shifts_solver implements EntryPoint {
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting service.
 	 */
-	private final GreetingServiceAsync greetingService = GWT
-			.create(GreetingService.class);
-
-	/**
-	 * This is the entry point method.
-	 */
-	public void onModuleLoad() {
+	@Deprecated
+	private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
+	
+	public Ria() {
+		ctx=new RiaContext(this);
+	}
+	
+	public void onModuleLoad() {		
+		RootPanel menuPanel = RootPanel.get(CONTAINER_MENU);		
+		RootPanel bodyPanel = RootPanel.get(CONTAINER_BODY);
+		RootPanel statusPanel = RootPanel.get(CONTAINER_STATUS_LINE);
+				
+		bodyPanel.add(ctx.getEmployeesTable());
+		statusPanel.add(ctx.getStatusLine());
+		
+		// to have there something
+		onModuleLoadExample();
+	}
+	
+	@Deprecated
+	public void onModuleLoadExample() {
 		final Button sendButton = new Button("Send");
 		final TextBox nameField = new TextBox();
 		nameField.setText("GWT User");

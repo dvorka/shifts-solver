@@ -126,7 +126,7 @@ public class ShiftSolverTest {
 		 * preferences
 		 */
 		
-		PeriodPreferences periodPreferences = new PeriodPreferences();		
+		PeriodPreferences periodPreferences = new PeriodPreferences(2015,9);		
 		EmployeePreferences employeePreferences;
 
 		employeePreferences=createBlankEmployeePreferences();		
@@ -142,7 +142,7 @@ public class ShiftSolverTest {
 		 */
 		
 		ShiftsSolver shiftsSolver=new ShiftsSolver();
-		PeriodSolution periodSolution=shiftsSolver.solve(periodPreferences);		
+		PeriodSolution periodSolution=shiftsSolver.solve(team, periodPreferences);		
 		System.out.println(periodSolution.toString());
 	}
 
