@@ -1,9 +1,11 @@
 package com.mindforger.shiftsolver.shared.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Team {
+public class Team implements Serializable {
+	private static final long serialVersionUID = -1013823027310866432L;
 
 	private Map<String, Employee> employees;
 	private Map<String, Employee> editors;

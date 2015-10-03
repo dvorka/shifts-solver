@@ -19,4 +19,8 @@ public interface RiaMessages extends Messages {
 	String fulltime();
 	String loadingEmployeesAndPreferences();
 	String loadingPeriodPreferences();
+	String create();
+	String createNewPeriodPreferences();
+	String creatingNewPeriodPreferences();
+	String yearAndMonth();
 }

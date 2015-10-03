@@ -1,9 +1,11 @@
 package com.mindforger.shiftsolver.shared.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeriodSolution {
+public class PeriodSolution implements Serializable {
+	private static final long serialVersionUID = 7586400671035292788L;
 
 	private int year;
 	private int month; 

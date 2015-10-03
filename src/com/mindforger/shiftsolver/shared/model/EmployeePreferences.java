@@ -1,9 +1,11 @@
 package com.mindforger.shiftsolver.shared.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmployeePreferences {
+public class EmployeePreferences implements Serializable  {
+	private static final long serialVersionUID = 7779646494294778098L;
 
 	private List<DayPreference> preferences;
 	

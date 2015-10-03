@@ -1,16 +1,15 @@
 package com.mindforger.shiftsolver.client.ui;
 
-import java.util.Arrays;
-import java.util.Comparator;
 
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
-import com.mindforger.shiftsolver.client.ui.buttons.TableSetSortingButton;
-import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeByName;
 import com.mindforger.shiftsolver.shared.model.Employee;
+import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
 public class DlouhanEditPanel extends FlexTable {
@@ -35,72 +34,56 @@ public class DlouhanEditPanel extends FlexTable {
 		}
 
 		// TODO clear and re-generate widget
+		addRows(result);
 	}
 	
-	private void addRows(Employee[] result) {
-		addTableTitle();
+	private void addRows(PeriodPreferences result) {
+		addTableTitle(result);
+		
 		if(result!=null) {
-			for (int i = 0; i < result.length; i++) {
-				addRow(
-						result[i].getKey(), 
-						result[i].getFullName(),
-						result[i].isFemale(),
-						result[i].isEditor(),
-						result[i].isSportak(),
-						result[i].isFulltime());
+			for(Employee employee:result.getEmployeeToPreferences().keySet()) {
+				addRow(employee, result.getEmployeeToPreferences().get(employee),result.getMonthDays());
 			}			
 		}
 	}
 
-	private void addTableTitle() {
-		setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
-		
-		
-		
-		setWidget(0, 1, new TableSetSortingButton(i18n.gender(),TableSortCriteria.BY_GENDER, this, ctx));
-		setWidget(0, 2, new TableSetSortingButton(i18n.editor(),TableSortCriteria.BY_EDITOR, this, ctx));
-		setWidget(0, 3, new TableSetSortingButton(i18n.sportak(),TableSortCriteria.BY_SPORTAK, this, ctx));
-		setWidget(0, 4, new TableSetSortingButton(i18n.fulltime(),TableSortCriteria.BY_FULLTIME, this, ctx));
+	private void addTableTitle(PeriodPreferences result) {
+		// TODO i18n
+		HTML html = new HTML("Employee");
+		html.setStyleName("mf-progressHtml");
+		setWidget(0, 0, html);
+		// TODO allow sorting the table by employee name
+		// setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
+
+		for (int i = 1; i <= result.getMonthDays(); i++) {
+			// TODO append Mon...Sun to the number; weekend to have different color
+			html = new HTML(""+i);
+			html.setStyleName("mf-progressHtml");
+			setWidget(0, i, html);
+		}				
 	}
 		
-	public void addRow(
-			String id, 
-			String fullname,
-			boolean woman, 
-			boolean editor, 
-			boolean sportak, 
-			boolean fulltime) 
-	{
+	public void addRow(Employee employee, EmployeePreferences employeePreferences, int monthDays) {
 		int numRows = getRowCount();
 				
 		EmployeesTableToEmployeeButton button = new EmployeesTableToEmployeeButton(
-				id,
-				fullname,
-				woman,
-				editor,
-				sportak,
-				fulltime,
+				employee.getKey(),
+				employee.getFullName(),
 				// TODO css
 				"mf-growsTableGoalButton", 
 				ctx);
-		
-		final HTML womanHtml = new HTML((woman?i18n.female():i18n.male())+"&nbsp;&nbsp;");
-		womanHtml.setStyleName("mf-progressHtml");
-		final HTML editorHtml = new HTML((editor?i18n.yes():i18n.no())+"&nbsp;&nbsp;");
-		// TODO color yes/no green/red
-		editorHtml.setStyleName("mf-progressHtml");
-		final HTML sportakHtml = new HTML((sportak?i18n.yes():i18n.no())+"&nbsp;&nbsp;");
-		// TODO color yes/no green/red
-		sportakHtml.setStyleName("mf-progressHtml");
-		final HTML fulltimeHtml = new HTML((fulltime?i18n.yes():i18n.no())+"&nbsp;&nbsp;");
-		// TODO color yes/no green/red
-		fulltimeHtml.setStyleName("mf-progressHtml");
-		
 		setWidget(numRows, 0, button);
-		setWidget(numRows, 1, womanHtml);
-		setWidget(numRows, 2, editorHtml);
-		setWidget(numRows, 3, sportakHtml);
-		setWidget(numRows, 4, fulltimeHtml);
+		
+		VerticalPanel verticalPanel;
+		for(int i=1; i<=monthDays; i++) {
+			verticalPanel=new VerticalPanel();
+			verticalPanel.add(new CheckBox("N/A")); // TODO i18n
+			verticalPanel.add(new CheckBox("Vacations")); // TODO i18n
+			verticalPanel.add(new CheckBox("Morning")); // TODO i18n
+			verticalPanel.add(new CheckBox("Afternoon")); // TODO i18n
+			verticalPanel.add(new CheckBox("Night")); // TODO i18n
+			setWidget(numRows, i, verticalPanel);			
+		}
 	}
 
 	public void removeRow() {

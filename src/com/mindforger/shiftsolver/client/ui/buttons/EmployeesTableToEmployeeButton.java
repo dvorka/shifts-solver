@@ -10,10 +10,6 @@ public class EmployeesTableToEmployeeButton extends Button {
 	public EmployeesTableToEmployeeButton(
 			final String employeeId,
 			final String fullname,
-			final boolean woman,
-			final boolean editor,
-			final boolean sportak,
-			final boolean fulltime,
 			final String cssClass,
 			final RiaContext ctx) {
 		setText(fullname);

@@ -1,26 +1,16 @@
 package com.mindforger.shiftsolver.client;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.mindforger.shiftsolver.shared.FieldVerifier;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
+import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.Employee;
+import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
 /**
@@ -59,7 +49,27 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 //			public void onSuccess(RiaBootImageBean bean) {
 //				ctx.getStatusLine().showProgress(i18n.initializingMf());
 		
-		// TODO temp data
+		createFooRiaState();
+		
+		ctx.getStatusLine().hideStatus();
+		
+		RootPanel statusPanel = RootPanel.get(CONTAINER_STATUS_LINE);
+		RootPanel menuPanel = RootPanel.get(CONTAINER_MENU);		
+		RootPanel employeesTablePanel = RootPanel.get(CONTAINER_EMPLOYEES_TABLE);
+		RootPanel employeeEditPanel = RootPanel.get(CONTAINER_EMPLOYEE_EDITOR);
+		RootPanel dlouhanTable = RootPanel.get(CONTAINER_DLOUHAN_TABLE);
+		RootPanel dlouhanEditPanel = RootPanel.get(CONTAINER_DLOUHAN_EDITOR);
+				
+		statusPanel.add(ctx.getStatusLine());
+		employeesTablePanel.add(ctx.getEmployeesTable());
+		employeeEditPanel.add(ctx.getEmployeesEditPanel());
+		dlouhanTable.add(ctx.getDlouhanTable());
+		dlouhanEditPanel.add(ctx.getDlouhanEditPanel());
+
+//      }		
+	}
+
+	private void createFooRiaState() {
 		RiaState state = new RiaState();
 		List<Employee> employeesList=new ArrayList<Employee>();
 		Employee lenka=new Employee();
@@ -87,25 +97,20 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		mirek.setFemale(false);
 		employeesList.add(mirek);
 		state.setEmployees(employeesList.toArray(new Employee[employeesList.size()]));
+		
+		PeriodPreferences periodPreferences = new PeriodPreferences(2015, 9);
+		periodPreferences.setKey("1");
+		periodPreferences.setMonthDays(31);
+		EmployeePreferences employeePreferences = new EmployeePreferences();
+		employeePreferences.setPreferences(new ArrayList<DayPreference>());
+		periodPreferences.addEmployeePreferences(lenka, employeePreferences);
+		periodPreferences.addEmployeePreferences(misa, employeePreferences);
+		periodPreferences.addEmployeePreferences(mirek, employeePreferences);
+		PeriodPreferences[] periodPreferencesArray=new PeriodPreferences[1];
+		periodPreferencesArray[0]=periodPreferences;
+		state.setPeriodPreferencesList(periodPreferencesArray);
+		
 		ctx.setState(state);
-		// TODO end temp data		
-		
-		ctx.getStatusLine().hideStatus();
-		
-		RootPanel statusPanel = RootPanel.get(CONTAINER_STATUS_LINE);
-		RootPanel menuPanel = RootPanel.get(CONTAINER_MENU);		
-		RootPanel employeesTablePanel = RootPanel.get(CONTAINER_EMPLOYEES_TABLE);
-		RootPanel employeeEditPanel = RootPanel.get(CONTAINER_EMPLOYEE_EDITOR);
-		RootPanel dlouhanTable = RootPanel.get(CONTAINER_DLOUHAN_TABLE);
-		RootPanel dlouhanEditPanel = RootPanel.get(CONTAINER_DLOUHAN_EDITOR);
-				
-		statusPanel.add(ctx.getStatusLine());
-		employeesTablePanel.add(ctx.getEmployeesTable());
-		employeeEditPanel.add(ctx.getEmployeesEditPanel());
-		dlouhanTable.add(ctx.getDlouhanTable());
-		dlouhanEditPanel.add(ctx.getDlouhanEditPanel());
-
-//      }		
 	}
 
 	public void loadEmployee(String employeeId) {

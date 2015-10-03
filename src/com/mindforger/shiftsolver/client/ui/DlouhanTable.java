@@ -3,11 +3,14 @@ package com.mindforger.shiftsolver.client.ui;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ListBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
+import com.mindforger.shiftsolver.client.ui.buttons.PeriodPreferencesTableToEditorButton;
 import com.mindforger.shiftsolver.client.ui.buttons.TableSetSortingButton;
 import com.mindforger.shiftsolver.client.ui.comparators.ComparatorPeriodPreferencesByYearAndMonth;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
@@ -60,6 +63,7 @@ public class DlouhanTable extends FlexTable implements SortableTable {
 	}
 	
 	private void addRows(PeriodPreferences[] result) {
+		addNewPeriodPreferencesRow();
 		addTableTitle();
 		if(result!=null) {
 			for (int i = 0; i < result.length; i++) {
@@ -72,12 +76,35 @@ public class DlouhanTable extends FlexTable implements SortableTable {
 	}
 
 	private void addNewPeriodPreferencesRow() {
-		ctx.getService().createPeriodPreferences(year, month, AsyncCallback<PeriodPreferences> callback);
+		Button newPeriodPreferencesButton=new Button();
+		newPeriodPreferencesButton.setText(i18n.create());
+		newPeriodPreferencesButton.setTitle(i18n.createNewPeriodPreferences());
+		// TODO newPeriodPreferencesButton.setStyleName();
+		newPeriodPreferencesButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+	    		ctx.getStatusLine().showProgress(ctx.getI18n().creatingNewPeriodPreferences());
+	    		// TODO
+	      		ctx.getStatusLine().hideStatus();
+			}
+		});
+
+		ListBox yearListBox=new ListBox(false);
+		for(int i=0; i<10; i++) {
+			yearListBox.addItem(""+(2015+i));			
+		}
 		
+		ListBox monthListBox=new ListBox(false);
+		for(int i=1; i<=12; i++) {
+			monthListBox.addItem(""+i);			
+		}
+		
+		setWidget(0, 0, yearListBox);
+		setWidget(0, 1, monthListBox);		
+		setWidget(0, 2, newPeriodPreferencesButton);
 	}
 	
 	private void addTableTitle() {
-		setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_YEAR_AND_MONTH, this, ctx));
+		setWidget(1, 0, new TableSetSortingButton(i18n.yearAndMonth(),TableSortCriteria.BY_YEAR_AND_MONTH, this, ctx));
 	}
 		
 	public void addRow(
@@ -87,31 +114,15 @@ public class DlouhanTable extends FlexTable implements SortableTable {
 	{
 		int numRows = getRowCount();
 				
-		PeriodPreferencesTableToButton button = new PeriodPreferencesTableToEmployeeButton(
+		PeriodPreferencesTableToEditorButton button = new PeriodPreferencesTableToEditorButton(
 				id,
 				year,
 				month,
 				// TODO css
 				"mf-growsTableGoalButton", 
 				ctx);
-		
-		final HTML womanHtml = new HTML((woman?i18n.female():i18n.male())+"&nbsp;&nbsp;");
-		womanHtml.setStyleName("mf-progressHtml");
-		final HTML editorHtml = new HTML((editor?i18n.yes():i18n.no())+"&nbsp;&nbsp;");
-		// TODO color yes/no green/red
-		editorHtml.setStyleName("mf-progressHtml");
-		final HTML sportakHtml = new HTML((sportak?i18n.yes():i18n.no())+"&nbsp;&nbsp;");
-		// TODO color yes/no green/red
-		sportakHtml.setStyleName("mf-progressHtml");
-		final HTML fulltimeHtml = new HTML((fulltime?i18n.yes():i18n.no())+"&nbsp;&nbsp;");
-		// TODO color yes/no green/red
-		fulltimeHtml.setStyleName("mf-progressHtml");
-		
+				
 		setWidget(numRows, 0, button);
-		setWidget(numRows, 1, womanHtml);
-		setWidget(numRows, 2, editorHtml);
-		setWidget(numRows, 3, sportakHtml);
-		setWidget(numRows, 4, fulltimeHtml);
 	}
 
 	public void removeRow() {

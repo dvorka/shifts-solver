@@ -1,8 +1,10 @@
 package com.mindforger.shiftsolver.shared.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ShiftSolution {
+public class ShiftSolution implements Serializable {
+	private static final long serialVersionUID = -3636128024295557033L;
 
 	private int year;
 	private int month;

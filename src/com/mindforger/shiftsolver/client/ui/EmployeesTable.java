@@ -101,10 +101,6 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 		EmployeesTableToEmployeeButton button = new EmployeesTableToEmployeeButton(
 				id,
 				fullname,
-				woman,
-				editor,
-				sportak,
-				fulltime,
 				// TODO css
 				"mf-growsTableGoalButton", 
 				ctx);

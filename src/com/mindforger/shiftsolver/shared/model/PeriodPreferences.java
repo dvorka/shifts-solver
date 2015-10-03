@@ -1,14 +1,14 @@
 package com.mindforger.shiftsolver.shared.model;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Period preferences aka <i>dlouhan</i>.
  */
-public class PeriodPreferences {
+public class PeriodPreferences implements Serializable  {
+	private static final long serialVersionUID = 8785936718601939671L;
 
 	String key;
 	int startWeekDay;
@@ -17,6 +17,9 @@ public class PeriodPreferences {
 	int month;
 	private Map<Employee,EmployeePreferences> employeeToPreferences;
 
+	public PeriodPreferences() {		
+	}
+	
 	public PeriodPreferences(int year, int month) {
 		employeeToPreferences=new HashMap<Employee,EmployeePreferences>();
 		this.year=year;

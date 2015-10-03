@@ -1,6 +1,9 @@
 package com.mindforger.shiftsolver.shared.model;
 
-public class DayPreference {
+import java.io.Serializable;
+
+public class DayPreference implements Serializable {
+	private static final long serialVersionUID = 1302160963964962116L;
 
 	private int year;
 	private int month;

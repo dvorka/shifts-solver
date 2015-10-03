@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Widget;
 import com.mindforger.shiftsolver.client.ui.DlouhanEditPanel;
 import com.mindforger.shiftsolver.client.ui.DlouhanTable;
 import com.mindforger.shiftsolver.client.ui.EmployeeEditPanel;
@@ -95,6 +94,10 @@ public class RiaContext implements ShiftSolverConstants {
 	}
 	
 	public DlouhanTable getDlouhanTable() {
+		if(!initialized.contains(dlouhanTable)) {
+			initialized.add(dlouhanTable);
+			dlouhanTable.init();
+		}
 		return dlouhanTable;
 	}
 	

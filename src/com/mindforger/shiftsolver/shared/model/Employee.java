@@ -1,6 +1,9 @@
 package com.mindforger.shiftsolver.shared.model;
 
-public class Employee {
+import java.io.Serializable;
+
+public class Employee implements Serializable  {
+	private static final long serialVersionUID = 3788399085593900403L;
 
 	private String key;
 	private String firstname;

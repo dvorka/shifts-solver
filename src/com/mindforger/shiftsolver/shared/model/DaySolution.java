@@ -1,6 +1,9 @@
 package com.mindforger.shiftsolver.shared.model;
 
-public class DaySolution {
+import java.io.Serializable;
+
+public class DaySolution implements Serializable  {
+	private static final long serialVersionUID = -2908720137028791233L;
 
 	private ShiftSolution morning;
 	private ShiftSolution afternoon;

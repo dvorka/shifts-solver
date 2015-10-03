@@ -1,9 +1,11 @@
 package com.mindforger.shiftsolver.shared.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmployeeSolution {
+public class EmployeeSolution implements Serializable  {
+	private static final long serialVersionUID = -530359598396424484L;
 
 	private Employee employee;
 	private List<ShiftSolution> shifts;

@@ -5,9 +5,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.mindforger.shiftsolver.client.RiaContext;
 
-public class PeriodPreferencesTableToButton extends Button {
+public class PeriodPreferencesTableToEditorButton extends Button {
 	
-	public PeriodPreferencesTableToButton(
+	public PeriodPreferencesTableToEditorButton(
 			final String periodPreferencesId,
 			int year,
 			int month,
