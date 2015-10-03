@@ -21,37 +21,37 @@ public class ShiftSolverTest {
 		Employee lenka=new Employee();
 		lenka.setEditor(true);
 		lenka.setFulltime(true);
-		lenka.setWoman(false);
+		lenka.setFemale(false);
 		team.addEmployee(lenka);
 
 		Employee misa=new Employee();
 		misa.setEditor(true);
 		misa.setFulltime(true);
-		misa.setWoman(false);
+		misa.setFemale(false);
 		team.addEmployee(misa);
 		
 		Employee mirek=new Employee();
 		mirek.setEditor(true);
 		mirek.setFulltime(true);
-		mirek.setWoman(false);
+		mirek.setFemale(false);
 		team.addEmployee(mirek);
 		
 		Employee martin=new Employee();
 		martin.setEditor(true);
 		martin.setFulltime(true);
-		martin.setWoman(false);
+		martin.setFemale(false);
 		team.addEmployee(martin);
 
 		Employee igor=new Employee();
 		igor.setEditor(true);
 		igor.setFulltime(true);
-		igor.setWoman(false);
+		igor.setFemale(false);
 		team.addEmployee(igor);
 		
 		Employee alice=new Employee();
 		alice.setEditor(true);
 		alice.setFulltime(true);
-		alice.setWoman(true);
+		alice.setFemale(true);
 		team.addEmployee(alice);
 		
 		/*
@@ -61,25 +61,25 @@ public class ShiftSolverTest {
 		Employee simona=new Employee();
 		simona.setSportak(true);
 		simona.setFulltime(true);
-		simona.setWoman(false);
+		simona.setFemale(false);
 		team.addEmployee(simona);
 		
 		Employee david=new Employee();
 		david.setSportak(true);
 		david.setFulltime(true);
-		david.setWoman(false);
+		david.setFemale(false);
 		team.addEmployee(david);
 
 		Employee vojta=new Employee();
 		vojta.setSportak(true);
 		vojta.setFulltime(true);
-		vojta.setWoman(false);
+		vojta.setFemale(false);
 		team.addEmployee(vojta);
 		
 		Employee katka=new Employee();
 		katka.setSportak(true);
 		katka.setFulltime(true);
-		katka.setWoman(true);
+		katka.setFemale(true);
 		team.addEmployee(katka);
 		
 		/*
@@ -89,31 +89,31 @@ public class ShiftSolverTest {
 		Employee honza=new Employee();
 		honza.setSportak(true);
 		honza.setFulltime(true);
-		honza.setWoman(true);
+		honza.setFemale(true);
 		team.addEmployee(honza);
 
 		Employee kristina=new Employee();
 		kristina.setSportak(true);
 		kristina.setFulltime(true);
-		kristina.setWoman(true);
+		kristina.setFemale(true);
 		team.addEmployee(kristina);
 
 		Employee dominika=new Employee();
 		dominika.setSportak(true);
 		dominika.setFulltime(true);
-		dominika.setWoman(true);
+		dominika.setFemale(true);
 		team.addEmployee(dominika);
 		
 		Employee anna=new Employee();
 		anna.setSportak(true);
 		anna.setFulltime(true);
-		anna.setWoman(true);
+		anna.setFemale(true);
 		team.addEmployee(anna);
 		
 		Employee milan=new Employee();
 		milan.setSportak(true);
 		milan.setFulltime(true);
-		milan.setWoman(true);
+		milan.setFemale(true);
 		team.addEmployee(milan);
 		
 		/*

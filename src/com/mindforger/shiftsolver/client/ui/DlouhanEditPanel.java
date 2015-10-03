@@ -11,8 +11,9 @@ import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButt
 import com.mindforger.shiftsolver.client.ui.buttons.TableSetSortingButton;
 import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeByName;
 import com.mindforger.shiftsolver.shared.model.Employee;
+import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
-public class EmployeesTable extends FlexTable implements SortableTable {
+public class DlouhanEditPanel extends FlexTable {
 	
 	private RiaMessages i18n;
 	private RiaContext ctx;
@@ -20,49 +21,20 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 	private TableSortCriteria sortCriteria;
 	private boolean sortIsAscending;
 
-	public EmployeesTable(RiaContext ctx) {
+	public DlouhanEditPanel(RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
 	}
 	
-	public void init() {
-		// TODO style rename
-		addStyleName("mf-growsTable");
-		sortCriteria=TableSortCriteria.BY_TIMESTAMP;
-		sortIsAscending=true;
-		refresh(ctx.getState().getEmployees());
-	}
-
-	public void refreshWithNewSortingCriteria() {
-		refresh(ctx.getState().getEmployees());
-	}
-	
-	public void refresh(Employee[] result) {
-		if(result==null || result.length==0) {
+	public void refresh(PeriodPreferences result) {
+		if(result==null) {
 			setVisible(false);
 			return;
 		} else {
 			setVisible(true);
 		}
-				
-		Comparator<Employee> comparator;
-		switch(sortCriteria) {
-		case BY_NAME:
-			comparator=new ComparatorEmployeeByName(sortIsAscending);
-			break;
-		case BY_EDITOR:
-		case BY_SPORTAK:
-		case BY_GENDER:
-		case BY_TIMESTAMP:
-		default:
-			comparator=new ComparatorEmployeeByName(sortIsAscending);
-			break;
-		}
-		
-		Arrays.sort(result, comparator);
-		
-		removeAllRows();
-		addRows(result);
+
+		// TODO clear and re-generate widget
 	}
 	
 	private void addRows(Employee[] result) {
@@ -82,6 +54,9 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 
 	private void addTableTitle() {
 		setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
+		
+		
+		
 		setWidget(0, 1, new TableSetSortingButton(i18n.gender(),TableSortCriteria.BY_GENDER, this, ctx));
 		setWidget(0, 2, new TableSetSortingButton(i18n.editor(),TableSortCriteria.BY_EDITOR, this, ctx));
 		setWidget(0, 3, new TableSetSortingButton(i18n.sportak(),TableSortCriteria.BY_SPORTAK, this, ctx));

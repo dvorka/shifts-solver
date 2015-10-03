@@ -3,16 +3,16 @@ package com.mindforger.shiftsolver.client.ui;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
-import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.client.ui.buttons.TableSetSortingButton;
-import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeByName;
-import com.mindforger.shiftsolver.shared.model.Employee;
+import com.mindforger.shiftsolver.client.ui.comparators.ComparatorPeriodPreferencesByYearAndMonth;
+import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
-public class EmployeesTable extends FlexTable implements SortableTable {
+public class DlouhanTable extends FlexTable implements SortableTable {
 	
 	private RiaMessages i18n;
 	private RiaContext ctx;
@@ -20,7 +20,7 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 	private TableSortCriteria sortCriteria;
 	private boolean sortIsAscending;
 
-	public EmployeesTable(RiaContext ctx) {
+	public DlouhanTable(RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
 	}
@@ -28,16 +28,16 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 	public void init() {
 		// TODO style rename
 		addStyleName("mf-growsTable");
-		sortCriteria=TableSortCriteria.BY_TIMESTAMP;
+		sortCriteria=TableSortCriteria.BY_YEAR_AND_MONTH;
 		sortIsAscending=true;
-		refresh(ctx.getState().getEmployees());
+		refresh(ctx.getState().getPeriodPreferencesList());
 	}
 
 	public void refreshWithNewSortingCriteria() {
-		refresh(ctx.getState().getEmployees());
+		refresh(ctx.getState().getPeriodPreferencesList());
 	}
 	
-	public void refresh(Employee[] result) {
+	public void refresh(PeriodPreferences[] result) {
 		if(result==null || result.length==0) {
 			setVisible(false);
 			return;
@@ -45,17 +45,11 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 			setVisible(true);
 		}
 				
-		Comparator<Employee> comparator;
+		Comparator<PeriodPreferences> comparator;
 		switch(sortCriteria) {
-		case BY_NAME:
-			comparator=new ComparatorEmployeeByName(sortIsAscending);
-			break;
-		case BY_EDITOR:
-		case BY_SPORTAK:
-		case BY_GENDER:
-		case BY_TIMESTAMP:
+		case BY_YEAR_AND_MONTH:
 		default:
-			comparator=new ComparatorEmployeeByName(sortIsAscending);
+			comparator=new ComparatorPeriodPreferencesByYearAndMonth(sortIsAscending);
 			break;
 		}
 		
@@ -65,46 +59,38 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 		addRows(result);
 	}
 	
-	private void addRows(Employee[] result) {
+	private void addRows(PeriodPreferences[] result) {
 		addTableTitle();
 		if(result!=null) {
 			for (int i = 0; i < result.length; i++) {
 				addRow(
 						result[i].getKey(), 
-						result[i].getFullName(),
-						result[i].isFemale(),
-						result[i].isEditor(),
-						result[i].isSportak(),
-						result[i].isFulltime());
+						result[i].getYear(),
+						result[i].getMonth());
 			}			
 		}
 	}
 
+	private void addNewPeriodPreferencesRow() {
+		ctx.getService().createPeriodPreferences(year, month, AsyncCallback<PeriodPreferences> callback);
+		
+	}
+	
 	private void addTableTitle() {
-		setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
-		setWidget(0, 1, new TableSetSortingButton(i18n.gender(),TableSortCriteria.BY_GENDER, this, ctx));
-		setWidget(0, 2, new TableSetSortingButton(i18n.editor(),TableSortCriteria.BY_EDITOR, this, ctx));
-		setWidget(0, 3, new TableSetSortingButton(i18n.sportak(),TableSortCriteria.BY_SPORTAK, this, ctx));
-		setWidget(0, 4, new TableSetSortingButton(i18n.fulltime(),TableSortCriteria.BY_FULLTIME, this, ctx));
+		setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_YEAR_AND_MONTH, this, ctx));
 	}
 		
 	public void addRow(
 			String id, 
-			String fullname,
-			boolean woman, 
-			boolean editor, 
-			boolean sportak, 
-			boolean fulltime) 
+			int year,
+			int month)
 	{
 		int numRows = getRowCount();
 				
-		EmployeesTableToEmployeeButton button = new EmployeesTableToEmployeeButton(
+		PeriodPreferencesTableToButton button = new PeriodPreferencesTableToEmployeeButton(
 				id,
-				fullname,
-				woman,
-				editor,
-				sportak,
-				fulltime,
+				year,
+				month,
 				// TODO css
 				"mf-growsTableGoalButton", 
 				ctx);

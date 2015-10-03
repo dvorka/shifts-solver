@@ -5,7 +5,7 @@ public class Employee {
 	private String key;
 	private String firstname;
 	private String familyname;
-	private boolean woman;
+	private boolean female;
 	private boolean editor;
 	private boolean sportak;
 	private boolean fulltime;
@@ -41,11 +41,11 @@ public class Employee {
 		return getFirstname()+" "+getFamilyname();
 	}
 	
-	public boolean isWoman() {
-		return woman;
+	public boolean isFemale() {
+		return female;
 	}
-	public void setWoman(boolean woman) {
-		this.woman = woman;
+	public void setFemale(boolean female) {
+		this.female = female;
 	}
 	public boolean isEditor() {
 		return editor;
@@ -78,7 +78,7 @@ public class Employee {
 		result = prime * result + (fulltime ? 1231 : 1237);
 		result = prime * result + ((key == null) ? 0 : key.hashCode());
 		result = prime * result + (sportak ? 1231 : 1237);
-		result = prime * result + (woman ? 1231 : 1237);
+		result = prime * result + (female ? 1231 : 1237);
 		return result;
 	}
 
@@ -112,7 +112,7 @@ public class Employee {
 			return false;
 		if (sportak != other.sportak)
 			return false;
-		if (woman != other.woman)
+		if (female != other.female)
 			return false;
 		return true;
 	}

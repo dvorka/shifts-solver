@@ -1,15 +1,39 @@
 package com.mindforger.shiftsolver.server;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.mindforger.shiftsolver.client.GreetingService;
 import com.mindforger.shiftsolver.shared.FieldVerifier;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
-/**
- * The server side implementation of the RPC service.
- */
 @SuppressWarnings("serial")
 public class GreetingServiceImpl extends RemoteServiceServlet implements GreetingService {
 
+	public GreetingServiceImpl() {		
+	}
+	
+	public PeriodPreferences createPeriodPreferences(int year, int month) {
+		PeriodPreferences periodPreferences = new PeriodPreferences(year, month);
+		
+		Calendar myCalendar = new GregorianCalendar(year, month, 1);
+		int numberOfDaysInMonth=myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+		periodPreferences.setMonthDays(numberOfDaysInMonth);
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(myCalendar.getTime());
+		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+		periodPreferences.setStartWeekDay(dayOfWeek);
+		
+		return periodPreferences;
+	}
+	
+	
+
+	
+	
+	@Deprecated
 	public String greetServer(String input) throws IllegalArgumentException {
 		// Verify that the input is valid. 
 		if (!FieldVerifier.isValidName(input)) {

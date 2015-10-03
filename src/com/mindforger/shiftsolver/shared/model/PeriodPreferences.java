@@ -1,10 +1,18 @@
 package com.mindforger.shiftsolver.shared.model;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Period preferences aka <i>dlouhan</i>.
+ */
 public class PeriodPreferences {
 
+	String key;
+	int startWeekDay;
+	int monthDays;
 	int year;
 	int month;
 	private Map<Employee,EmployeePreferences> employeeToPreferences;
@@ -15,6 +23,14 @@ public class PeriodPreferences {
 		this.month=month;
 	}
 	
+	public String getKey() {
+		return key;
+	}
+	
+	public void setKey(String key) {
+		this.key = key;
+	}
+
 	public int getYear() {
 		return year;
 	}
@@ -29,6 +45,22 @@ public class PeriodPreferences {
 
 	public void setMonth(int month) {
 		this.month = month;
+	}
+	
+	public int getStartWeekDay() {
+		return startWeekDay;
+	}
+
+	public void setStartWeekDay(int startWeekDay) {
+		this.startWeekDay = startWeekDay;
+	}
+	
+	public int getMonthDays() {
+		return monthDays;
+	}
+
+	public void setMonthDays(int monthDays) {
+		this.monthDays = monthDays;
 	}
 
 	public void addEmployeePreferences(Employee employee, EmployeePreferences preferences) {

@@ -4,6 +4,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Widget;
+import com.mindforger.shiftsolver.client.ui.DlouhanEditPanel;
+import com.mindforger.shiftsolver.client.ui.DlouhanTable;
+import com.mindforger.shiftsolver.client.ui.EmployeeEditPanel;
 import com.mindforger.shiftsolver.client.ui.EmployeesTable;
 import com.mindforger.shiftsolver.client.ui.StatusLine;
 import com.mindforger.shiftsolver.shared.FieldVerifier;
@@ -37,6 +41,9 @@ public class RiaContext implements ShiftSolverConstants {
 	// UI components
 	private StatusLine statusLine;
 	private EmployeesTable employeesTable;
+	private EmployeeEditPanel employeeEditPanel;
+	private DlouhanTable dlouhanTable;
+	private DlouhanEditPanel dlouhanPanel;
 	
 	// data
 	private RiaState state;
@@ -49,11 +56,14 @@ public class RiaContext implements ShiftSolverConstants {
 		i18n=GWT.create(RiaMessages.class);		
 		service=GWT.create(GreetingService.class);		
 		fieldVerifier=new FieldVerifier();
+		state=new RiaState();
 		
 		// UI
 		statusLine=new StatusLine(this);
-		employeesTable=new EmployeesTable(this);		
-		state=new RiaState();
+		employeesTable=new EmployeesTable(this);
+		employeeEditPanel=new EmployeeEditPanel(this);
+		dlouhanTable=new DlouhanTable(this);		
+		dlouhanPanel=new DlouhanEditPanel(this);		
 	}
 
 	public RiaMessages getI18n() {
@@ -80,10 +90,26 @@ public class RiaContext implements ShiftSolverConstants {
 		return employeesTable;
 	}
 
+	public EmployeeEditPanel getEmployeesEditPanel() {
+		return employeeEditPanel;
+	}
+	
+	public DlouhanTable getDlouhanTable() {
+		return dlouhanTable;
+	}
+	
+	public DlouhanEditPanel getDlouhanEditPanel() {
+		return dlouhanPanel;
+	}
+	
 	public RiaState getState() {
 		return state;
 	}	
 	
+	public void setState(RiaState state) {
+		this.state = state;
+	}
+
 	public Ria getRia() {
 		return ria;
 	}

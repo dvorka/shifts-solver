@@ -4,11 +4,11 @@ import java.util.Comparator;
 
 import com.mindforger.shiftsolver.shared.model.Employee;
 
-public class ComparatorGrowBeanByName implements Comparator<Employee> {
+public class ComparatorEmployeeByName implements Comparator<Employee> {
 
 	private int descending; 
 	
-	public ComparatorGrowBeanByName(boolean descending) {
+	public ComparatorEmployeeByName(boolean descending) {
 		if(descending) {
 			this.descending=1;						
 		} else {
