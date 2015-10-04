@@ -22,13 +22,17 @@ public class HomePanel extends VerticalPanel implements ShiftSolverConstants {
 
 		HTML html;
 										
-		html = new HTML("<span class='mf-hint'>3. Documentation</span> Check <a class='mf-docLink' href='http://www.github.com/dvorka/shifts-solver/' target='blank'>ShiftSolver documentation</a>.");
+		html = new HTML(
+				"<a class='mf-docLink' href='http://www.github.com/dvorka/shifts-solver/' target='blank'>ShiftsSolver</a> "
+				+ "is a web application for creation of schedules in shift based works. For a team of employees (employees differ "
+				+ "by role) and their preferences (e.g. I'm on holidays, I prefer morning shift, I'm unable to make night shift)"
+				+ "is created a schedule for entire month. Every shift is covered with required roles (like editor and part time employees), "
+				+ "...");
 		html.setTitle("Study documentation");
 		html.setStyleName("mf-cheatSheetReadHelp");
-		add(html);
-		
-		html = new HTML("<span class='mf-hint mf-hintGreen'>... follow green color</span>");
-		html.setStyleName("mf-cheatSheetGreenColor");
 		add(html);		
+//		html = new HTML("<span class='mf-hint mf-hintGreen'>... follow green color</span>");
+//		html.setStyleName("mf-cheatSheetGreenColor");
+//		add(html);		
 	}
 }

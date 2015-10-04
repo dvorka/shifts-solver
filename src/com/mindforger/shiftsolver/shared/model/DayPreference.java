@@ -9,6 +9,7 @@ public class DayPreference implements Serializable {
 	private int month;
 	private int day;
 	
+	private boolean noDay;
 	private boolean noMorning;
 	private boolean noAfternoon;
 	private boolean noNight;

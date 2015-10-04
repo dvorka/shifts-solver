@@ -1,5 +1,8 @@
 package com.mindforger.shiftsolver.client.ui;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -8,7 +11,6 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.solver.ShiftsSolver;
@@ -33,13 +35,21 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 	private ListBox yearListBox;
 	private ListBox monthListBox;
 	private FlexTable preferencesTable;
+	private Map<String,CheckBox> checkboxes;
 	
 	private PeriodPreferences periodPreferences;
+
+	private static final int CHECK_NA=1;
+	private static final int CHECK_VACATIONS=2;
+	private static final int CHECK_MORNING=3;
+	private static final int CHECK_AFTERNOON=4;
+	private static final int CHECK_NIGHT=5;
 	
 	public PeriodPreferencesEditPanel(final RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
 		this.solver=new ShiftsSolver();
+		this.checkboxes=new HashMap<String,CheckBox>();
 		
 		FlowPanel buttonPanel = newButtonPanel(ctx);
 		setWidget(0, 0, buttonPanel);
@@ -148,6 +158,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		ctx.getStatusLine().showInfo(i18n.buildingPeriodPreferences());
 
 		table.removeAllRows();
+		checkboxes.clear();
 		
 		if(result!=null && result.getEmployeeToPreferences()!=null && result.getEmployeeToPreferences().size()>0) {
 			HTML html = new HTML("Employee"); // TODO i18n
@@ -193,15 +204,17 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			employeePrefsTable.setWidget(0, i, html);
 		}
 		
-		employeePrefsTable.setWidget(1, 0, new HTML("N/A"));
-		employeePrefsTable.setWidget(2, 0, new HTML("Vacations"));
-		employeePrefsTable.setWidget(3, 0, new HTML("Morning"));
-		employeePrefsTable.setWidget(4, 0, new HTML("Afternoon"));
-		employeePrefsTable.setWidget(5, 0, new HTML("Night"));
+		employeePrefsTable.setWidget(CHECK_NA, 0, new HTML("N/A"));
+		employeePrefsTable.setWidget(CHECK_VACATIONS, 0, new HTML("Vacations"));
+		employeePrefsTable.setWidget(CHECK_MORNING, 0, new HTML("Morning"));
+		employeePrefsTable.setWidget(CHECK_AFTERNOON, 0, new HTML("Afternoon"));
+		employeePrefsTable.setWidget(CHECK_NIGHT, 0, new HTML("Night"));
 		
 		for(int c=1; c<=monthDays; c++) {
 			for(int r=1; r<=5; r++) {
-				employeePrefsTable.setWidget(r, c, new CheckBox());
+				CheckBox checkbox = new CheckBox();
+				employeePrefsTable.setWidget(r, c, checkbox);
+				checkboxes.put(employee.getKey()+"#"+c+"#"+r,checkbox);
 			}
 		}
 		
@@ -239,6 +252,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		monthListBox.setSelectedIndex(periodPreferences.getMonth()-1);
 		
 		refreshPreferencesTable(preferencesTable, periodPreferences);
+		// TODO insert preferences
 	}
 
 	private void riaToObject() {
@@ -248,5 +262,33 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		}
 		
 		// TODO preferences
+//		for(String key:checkboxes.keySet()) {
+//			if(checkboxes.get(key).getValue()) {
+//				DayPreference dayPreference = new DayPreference();
+//				dayPreference.setYear(year);
+//				dayPreference.setMonth(month);
+//				dayPreference.setDay(day);
+//				
+//				int preferenceType=0;
+//				switch(preferenceType) {
+//				case CHECK_NA:
+//					dayPreference.setNoDay(true);
+//					break;
+//				case CHECK_VACATIONS:
+//					dayPreference.setNoDay(true);
+//					break;
+//				case CHECK_MORNING:
+//					dayPreference.setNoMorning(true);
+//					break;
+//				case CHECK_AFTERNOON:
+//					dayPreference.setNoAfternoon(true);
+//					break;
+//				case CHECK_NIGHT:
+//					dayPreference.setNoNight(true);
+//				default:
+//					break;
+//				}
+//			}
+//		}
 	}	
 }
