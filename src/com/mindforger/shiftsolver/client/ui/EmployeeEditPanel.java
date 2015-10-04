@@ -1,7 +1,11 @@
 package com.mindforger.shiftsolver.client.ui;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
 import com.mindforger.shiftsolver.client.RiaContext;
@@ -19,12 +23,54 @@ public class EmployeeEditPanel extends FlexTable {
 	private CheckBox sportakCheckbox;
 	private CheckBox editorCheckbox;
 	private CheckBox femaleCheckbox;
+	private Employee employee;
 
-	public EmployeeEditPanel(RiaContext ctx) {
+	public EmployeeEditPanel(final RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
 		
 		int numRows=0;
+		
+		FlowPanel buttonPanel=new FlowPanel();
+		Button saveButton=new Button("Save"); // TODO i18n
+		saveButton.setStyleName("mf-button");
+		saveButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if(employee!=null) {
+		    		ctx.getStatusLine().showProgress(ctx.getI18n().savingEmployee());
+		      		ctx.getRia().saveEmployee(employee);
+		      		ctx.getStatusLine().hideStatus();					
+				}
+			}
+		});		
+		buttonPanel.add(saveButton);
+		Button cancelButton=new Button("Cancel"); // TODO i18n
+		cancelButton.setStyleName("mf-buttonLooser");
+		cancelButton.setTitle("Discard changes"); // TODO i18n
+		cancelButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if(employee!=null) {
+		      		ctx.getRia().showEmployeesTable();
+				}
+			}
+		});		
+		buttonPanel.add(cancelButton);
+		Button deleteButton=new Button("Delete"); // TODO i18n
+		deleteButton.setStyleName("mf-button");
+		deleteButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if(employee!=null) {
+		    		ctx.getStatusLine().showProgress(ctx.getI18n().deletingEmployee());
+		      		ctx.getRia().deleteEmployee(employee);
+		      		ctx.getStatusLine().hideStatus();					
+				}
+			}
+		});		
+		buttonPanel.add(deleteButton);
+		
+	    FlexCellFormatter cellFormatter = getFlexCellFormatter();
+		cellFormatter.setColSpan(0, 0, 2);
+		setWidget(++numRows, 0, buttonPanel);
 		
 		// TODO i18n
 		HTML html = new HTML("First name");
@@ -76,13 +122,9 @@ public class EmployeeEditPanel extends FlexTable {
 		setWidget(++numRows, 0, html);
 		fulltimeCheckbox = new CheckBox();
 		fulltimeCheckbox.setValue(false);
-		setWidget(numRows, 1, fulltimeCheckbox);
-		
-		// CREATE button (call server to create, handler refreshes table)
-		// UPDATE button (... same)
-		// DELETE button (... same)
+		setWidget(numRows, 1, fulltimeCheckbox);		
 	}
-		
+	
 	public void refresh(Employee employee) {
 		if(employee==null) {
 			setVisible(false);
@@ -91,11 +133,27 @@ public class EmployeeEditPanel extends FlexTable {
 			setVisible(true);
 		}
 
+		objectToRia(employee);
+	}
+
+	private void objectToRia(Employee employee) {
+		this.employee=employee;		
 		firstNameTextBox.setText(employee.getFirstname());
 		familyNameTextBox.setText(employee.getFamilyname());
 		femaleCheckbox.setValue(employee.isFemale());
 		sportakCheckbox.setValue(employee.isSportak());
 		editorCheckbox.setValue(employee.isEditor());
 		fulltimeCheckbox.setValue(employee.isFulltime());
+	}
+
+	public void riaToObject() {
+		if(employee!=null) {
+			employee.setEditor(editorCheckbox.getValue());
+			employee.setFamilyname(familyNameTextBox.getText());
+			employee.setFemale(femaleCheckbox.getValue());
+			employee.setFirstname(firstNameTextBox.getText());
+			employee.setFulltime(fulltimeCheckbox.getValue());
+			employee.setSportak(sportakCheckbox.getValue());
+		}
 	}
 }

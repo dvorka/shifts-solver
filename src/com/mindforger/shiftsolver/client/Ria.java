@@ -54,7 +54,9 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		ctx.getStatusLine().hideStatus();
 		
 		RootPanel statusPanel = RootPanel.get(CONTAINER_STATUS_LINE);
-		RootPanel menuPanel = RootPanel.get(CONTAINER_MENU);		
+		RootPanel pageTitlePanel = RootPanel.get(CONTAINER_PAGE_TITLE);
+		RootPanel menuPanel = RootPanel.get(CONTAINER_MENU);
+		RootPanel homePanel = RootPanel.get(CONTAINER_HOME);
 		RootPanel employeesTablePanel = RootPanel.get(CONTAINER_EMPLOYEES_TABLE);
 		RootPanel employeeEditPanel = RootPanel.get(CONTAINER_EMPLOYEE_EDITOR);
 		RootPanel dlouhanTable = RootPanel.get(CONTAINER_DLOUHAN_TABLE);
@@ -63,6 +65,9 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		RootPanel solutionViewPanel = RootPanel.get(CONTAINER_SOLUTION_VIEW);
 				
 		statusPanel.add(ctx.getStatusLine());
+		pageTitlePanel.add(ctx.getPageTitlePanel());
+		menuPanel.add(ctx.getMenu());
+		homePanel.add(ctx.getHomePanel());
 		employeesTablePanel.add(ctx.getEmployeesTable());
 		employeeEditPanel.add(ctx.getEmployeesEditPanel());
 		dlouhanTable.add(ctx.getDlouhanTable());
@@ -70,9 +75,16 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		solutionTable.add(ctx.getSolutionTable());
 		solutionViewPanel.add(ctx.getSolutionViewPanel());
 
+		showHome();		
 //      }		
 	}
 
+	public void handleServiceError(Throwable caught) {
+		final String errorMessage = caught.getMessage();
+		GWT.log("Error: "+errorMessage, caught);
+		ctx.getStatusLine().showError(i18n.ooops());
+	}
+	
 	private void createFooRiaState() {
 		RiaState state = new RiaState();
 		List<Employee> employeesList=new ArrayList<Employee>();
@@ -121,13 +133,90 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		// TODO consider loading from the server
 		Employee employee = ctx.getState().getEmployee(employeeId);
 		ctx.getEmployeesEditPanel().refresh(employee);
+		showEmployeeEditPanel();
 	}
 
 	public void loadPeriodPreferences(String periodPreferencesId) {
 		// TODO consider loading from the server
 		PeriodPreferences periodPreferences = ctx.getState().getPeriodPreferences(periodPreferencesId);
 		ctx.getDlouhanEditPanel().refresh(periodPreferences);
+		// TODO show period preference edit panel
 	}
+
+	private void hideAllContainers() {
+		ctx.getPageTitlePanel().setHTML("");
+		
+		RootPanel.get(CONTAINER_EMPLOYEES_TABLE).setVisible(false);
+		RootPanel.get(CONTAINER_EMPLOYEE_EDITOR).setVisible(false);
+		RootPanel.get(CONTAINER_DLOUHAN_TABLE).setVisible(false);
+		RootPanel.get(CONTAINER_DLOUHAN_EDITOR).setVisible(false);
+		RootPanel.get(CONTAINER_SOLUTION_TABLE).setVisible(false);
+		RootPanel.get(CONTAINER_SOLUTION_VIEW).setVisible(false);
+		RootPanel.get(CONTAINER_HOME).setVisible(false);		
+	}
+	
+	public void showHome() {
+		hideAllContainers();
+		ctx.getPageTitlePanel().setHTML(i18n.home());
+		RootPanel.get(CONTAINER_HOME).setVisible(true);
+	}
+	
+	public void showEmployeesTable() {
+		hideAllContainers();
+		ctx.getPageTitlePanel().setHTML(i18n.employees());
+		RootPanel.get(CONTAINER_EMPLOYEES_TABLE).setVisible(true);
+	}
+
+	public void showEmployeeEditPanel() {
+		hideAllContainers();
+		ctx.getPageTitlePanel().setHTML(i18n.employee());
+		RootPanel.get(CONTAINER_EMPLOYEE_EDITOR).setVisible(true);
+	}
+	
+	public void showPeriodPreferencesTable() {
+		hideAllContainers();
+		ctx.getPageTitlePanel().setHTML(i18n.periodPreferences());
+		RootPanel.get(CONTAINER_DLOUHAN_TABLE).setVisible(true);
+	}
+
+	public void saveEmployee(Employee employee) {
+		if(employee!=null) {
+			Employee[] employees = ctx.getState().getEmployees();
+			if(employees!=null && ctx.getState().getEmployee(employee.getKey())==null) {
+				List<Employee> list = new ArrayList<Employee>();
+				for(Employee e:employees) list.add(e); // Arrays.asList() returns unmodifiable list
+				list.add(employee);
+				Employee[] newArray = list.toArray(new Employee[list.size()]);
+				ctx.getState().setEmployees(newArray);
+			}
+			ctx.getEmployeesTable().refresh(ctx.getState().getEmployees());
+		}
+		showEmployeesTable();		
+	}
+
+	public void deleteEmployee(Employee employee) {
+		if(employee!=null) {
+			Employee[] employees = ctx.getState().getEmployees();
+			if(employees!=null && ctx.getState().getEmployee(employee.getKey())!=null) {
+				List<Employee> list = Arrays.asList(employees);
+				Employee victim=null;
+				for(Employee e:list) {
+					if(e.getKey().equals(employee.getKey())) {
+						victim=e;
+						break;
+					}
+				}
+				if(victim!=null) {
+					list.remove(victim);					
+				}
+				Employee[] newArray = list.toArray(new Employee[list.size()]);
+				ctx.getState().setEmployees(newArray);
+			}
+			ctx.getEmployeesTable().refresh(ctx.getState().getEmployees());
+		}
+		showEmployeesTable();		
+	}
+
 	
 	
 	

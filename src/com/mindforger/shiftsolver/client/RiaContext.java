@@ -4,16 +4,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Widget;
 import com.mindforger.shiftsolver.client.ui.DlouhanEditPanel;
 import com.mindforger.shiftsolver.client.ui.DlouhanTable;
 import com.mindforger.shiftsolver.client.ui.EmployeeEditPanel;
 import com.mindforger.shiftsolver.client.ui.EmployeesTable;
+import com.mindforger.shiftsolver.client.ui.HomePanel;
 import com.mindforger.shiftsolver.client.ui.PeriodSolutionTable;
 import com.mindforger.shiftsolver.client.ui.PeriodSolutionViewPanel;
 import com.mindforger.shiftsolver.client.ui.StatusLine;
+import com.mindforger.shiftsolver.client.ui.menu.LeftMenubar;
 import com.mindforger.shiftsolver.shared.FieldVerifier;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
+import com.mindforger.shiftsolver.shared.model.PageTitlePanel;
 
 /**
  * This is an analogy of Spring Application Context. It gives overview of the most
@@ -42,6 +44,9 @@ public class RiaContext implements ShiftSolverConstants {
 
 	// UI components
 	private StatusLine statusLine;
+	private PageTitlePanel pageTitlePanel;
+	private LeftMenubar menu;
+	private HomePanel homePanel;
 	private EmployeesTable employeesTable;
 	private EmployeeEditPanel employeeEditPanel;
 	private DlouhanTable dlouhanTable;
@@ -64,6 +69,9 @@ public class RiaContext implements ShiftSolverConstants {
 		
 		// UI
 		statusLine=new StatusLine(this);
+		pageTitlePanel=new PageTitlePanel();
+		menu=new LeftMenubar(this);
+		homePanel=new HomePanel(this);
 		employeesTable=new EmployeesTable(this);
 		employeeEditPanel=new EmployeeEditPanel(this);
 		dlouhanTable=new DlouhanTable(this);		
@@ -88,6 +96,14 @@ public class RiaContext implements ShiftSolverConstants {
 		return statusLine;
 	}
 
+	public LeftMenubar getMenu() {
+		if(!initialized.contains(menu)) {
+			initialized.add(menu);
+			menu.init();
+		}
+		return menu;
+	}
+	
 	public EmployeesTable getEmployeesTable() {
 		if(!initialized.contains(employeesTable)) {
 			initialized.add(employeesTable);
@@ -134,5 +150,13 @@ public class RiaContext implements ShiftSolverConstants {
 
 	public PeriodSolutionViewPanel getSolutionViewPanel() {
 		return periodSolutionViewPanel;
+	}
+
+	public PageTitlePanel getPageTitlePanel() {
+		return pageTitlePanel;
+	}
+	
+	public HomePanel getHomePanel() {
+		return homePanel;
 	}
 }

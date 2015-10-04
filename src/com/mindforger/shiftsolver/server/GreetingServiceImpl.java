@@ -2,21 +2,28 @@ package com.mindforger.shiftsolver.server;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.mindforger.shiftsolver.client.GreetingService;
 import com.mindforger.shiftsolver.shared.FieldVerifier;
+import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
 @SuppressWarnings("serial")
 public class GreetingServiceImpl extends RemoteServiceServlet implements GreetingService {
 
-	public GreetingServiceImpl() {		
+	@Deprecated
+	private AtomicLong sequence;
+	
+	public GreetingServiceImpl() {
+		sequence=new AtomicLong(1000);
 	}
 	
-	public PeriodPreferences createPeriodPreferences(int year, int month) {
+	public PeriodPreferences newPeriodPreferences(int year, int month) {
 		PeriodPreferences periodPreferences = new PeriodPreferences(year, month);
-		
+		periodPreferences.setKey(""+sequence.incrementAndGet());
+
 		Calendar myCalendar = new GregorianCalendar(year, month, 1);
 		int numberOfDaysInMonth=myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 		periodPreferences.setMonthDays(numberOfDaysInMonth);
@@ -67,5 +74,13 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		}
 		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
 				.replaceAll(">", "&gt;");
+	}
+
+	@Override
+	public Employee newEmployee() {
+		Employee employee=new Employee();
+		employee.setKey(""+sequence.incrementAndGet());
+		employee.setFulltime(true);
+		return employee;
 	}
 }

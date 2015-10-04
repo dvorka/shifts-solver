@@ -11,6 +11,8 @@ public interface ShiftSolverConstants {
 	// HTML
 	String CONTAINER_STATUS_LINE="solverStatusLineContainer";
 	String CONTAINER_MENU="solverLeftMenuContainer";
+	String CONTAINER_PAGE_TITLE= "pageTitleContainer";
+	String CONTAINER_HOME="solverHomeContainer";	
 	String CONTAINER_EMPLOYEES_TABLE="solverEmployeesTableContainer";
 	String CONTAINER_EMPLOYEE_EDITOR="solverEmployeeEditorContainer";
 	String CONTAINER_DLOUHAN_TABLE="solverDlouhanTableContainer";

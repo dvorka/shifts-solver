@@ -22,5 +22,13 @@ public interface RiaMessages extends Messages {
 	String create();
 	String createNewPeriodPreferences();
 	String creatingNewPeriodPreferences();
-	String yearAndMonth();
+	String yearAndMonth();	
+	String employees();
+	String newEmployee();
+	String home();
+	String periodPreferences();
+	String newPeriodPreferences();
+	String employee();
+	String savingEmployee();
+	String deletingEmployee();
 }

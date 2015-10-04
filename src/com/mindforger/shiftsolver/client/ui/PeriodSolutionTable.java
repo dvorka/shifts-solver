@@ -104,6 +104,8 @@ public class PeriodSolutionTable extends FlexTable implements SortableTable {
 	}
 	
 	private void addTableTitle() {
+		// preferences link / solution timestamp is link to editor / view as calendar JSP / view by employee JSP 
+		
 		setWidget(1, 0, new TableSetSortingButton(i18n.yearAndMonth(),TableSortCriteria.BY_YEAR_AND_MONTH, this, ctx));
 	}
 		

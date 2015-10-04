@@ -1,0 +1,2633 @@
+/* MindForger CSS
+
+ MF colors:
+  Base black #FFF
+  Comments gray #777
+  Help #008C00
+  Hover dark gray #36393D
+  MR blue #356AA0  
+
+ Web 2.0 colors:  
+  Shiny silver [#EEEEEE]
+  Reddit white [#FFFFFF]
+  Magnolia Mag.nolia [#F9F7ED]
+  Interactive action yellow [#FFFF88]
+  Qoop Mint [#CDEB8B]
+  Gmail blue [#C3D9FF]
+  Shadows Grey [#36393D]
+  Mozilla Red [#FF1A00]
+  Rollyo Red [#CC0000]
+  RSS Orange [#FF7400]
+  Techcrunch green [#008C00]
+  Newsvine Green [#006E2E]
+  Flock Blue [#4096EE]
+  Flickr Pink [#FF0084]
+  Ruby on Rails Red [#B02B2C]
+  Etsy Vermillion [#D15600]
+  43 Things Gold [#C79810]
+  Writely Olive [#73880A]
+  Basecamp Green [#6BBA70]
+  Mozilla Blue [#3F4C6B]
+  Digg Blue [#356AA0]
+  Last.fm Crimson [#D01F3C]  
+
+ Minimizer:
+  http://tools.w3clubs.com/cssmin/
+  http://www.codebeautifier.com/
+*/
+
+html {
+	margin: 0px;
+	padding: 0px;
+}
+
+body {
+	margin: 0px;
+	padding: 0px;
+	font-family: Cambria,Georgia,Myriad Pro,Arial,Helvetica;
+	font-size: 100%;
+	background: #fff;
+}
+
+a:link {text-decoration: none; color: black;}
+a:visited {text-decoration: none; color: black;}
+a:active {text-decoration: none; color: black;}
+a:hover {text-decoration: underline; color: black;}
+
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+  color: #777777;
+  margin: 40px 0px 70px;
+  text-align: center;
+}
+
+/** Most GWT widgets already have a style name defined */
+
+.gwt-DialogBox {
+  width: 400px;
+}
+
+.dialogVPanel {
+  margin: 5px;
+}
+
+.serverResponseLabelError {
+  color: red;
+}
+
+/** Set ids using widget.getElement().setId("idOfElement") */
+#closeButton {
+  margin: 15px 6px 6px;
+}
+
+/** TABS TABS TABS */
+
+.gwt-DecoratedTabBar {
+}
+.gwt-DecoratedTabBar .gwt-TabBarFirst {
+  width: 5px;  /* first tab distance from the left */
+}
+.gwt-DecoratedTabBar .gwt-TabBarRest {
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem {
+  border-collapse: collapse;
+  margin-left: 6px;
+}
+
+.gwt-DecoratedTabBar .tabTopCenter {
+  padding: 0px;
+  background: #ccc; /*#d0e4f6;*/;
+}
+.gwt-DecoratedTabBar .tabTopLeft,
+.gwt-DecoratedTabBar .tabTopRight {
+  padding: 0px;
+  zoom: 1;
+}
+
+.gwt-DecoratedTabBar .tabTopLeftInner,
+.gwt-DecoratedTabBar .tabTopRightInner {
+  width: 6px;
+  height: 6px;
+}
+
+.gwt-DecoratedTabBar .tabTopLeft {
+	/*
+  background: url(images/corner.png) no-repeat 0px -55px;
+  -background: url(images/corner_ie6.png) no-repeat 0px -55px;
+  */
+  background-color: #ccc;
+}
+.gwt-DecoratedTabBar .tabTopRight {
+	/*
+  background: url(images/corner.png) no-repeat -6px -55px;
+  -background: url(images/corner_ie6.png) no-repeat -6px -55px;
+  */
+  background-color: #ccc;
+}
+
+.gwt-DecoratedTabBar .tabMiddleLeft,
+.gwt-DecoratedTabBar .tabMiddleRight {
+  width: 6px;
+  padding: 0px;
+  background: #ccc; /*#d0e4f6;*/;
+}
+
+.gwt-DecoratedTabBar .tabMiddleLeftInner,
+.gwt-DecoratedTabBar .tabMiddleRightInner {
+  width: 1px;
+  height: 1px;
+}
+
+.gwt-DecoratedTabBar .tabMiddleCenter {
+  padding: 0px 5px 2px 5px;
+  cursor: pointer;
+  cursor: hand;
+  color: black;
+  font-weight: bold;
+  text-align: center;
+  background: #ccc; /*#d0e4f6;*/;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopCenter {
+  background: #000; /*#92c1f0;*/
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopLeft {
+  background-position: 0px -61px;
+  background: #000;
+}
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopRight {
+  background-position: -6px -61px;
+  background: #000;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleLeft,
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleRight {
+  background: #000; /*#92c1f0;*/;
+}
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleCenter {
+  cursor: default;
+  background: #000; /*#92c1f0;*/;
+  color: white;
+}
+.gwt-DecoratedTabBar .gwt-TabBarItem-disabled .tabMiddleCenter {
+  cursor: default;
+  color: #999999;
+}
+html>body .gwt-DecoratedTabBar {
+}
+* html .gwt-DecoratedTabBar .tabTopLeftInner,
+* html .gwt-DecoratedTabBar .tabTopRightInner {
+  width: 6px;
+  height: 6px;
+  overflow: hidden;
+}
+.gwt-TabPanel {
+}
+.gwt-TabPanelBottom {
+  border-color: #000; /*#92c1f0;*/;
+  border-style: solid;
+  border-width: 3px 2px 2px;
+  overflow: hidden;
+  padding: 6px;
+}
+
+.cw-FlexTable td {
+  border: 1px solid #BBBBBB;
+  padding: 3px;
+}
+.cw-FlexTable-buttonPanel td {
+  border: 0px;
+}
+
+/* ----------------------------------------------------------------------- */
+
+.mf-hidden {
+	display: none;
+}
+
+.mf-applicationPanel {
+  width: 100%;
+}
+
+.mf-sharedGrowsTable {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: collapse;
+}
+.mf-sharedGrowsTable tbody > tr:first-child {
+  background-color: #eee;
+}
+.mf-sharedGrowsTable td {
+  border: 1px solid #ccc;
+}
+
+.mf-growsTable {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: collapse;
+}
+.mf-growsTable tbody > tr:first-child {
+  background-color: #eee;
+}
+.mf-growsTable td {
+  border: 1px solid #ccc;
+}
+
+.mf-goalHeaderPanel {
+  width: 100%;
+  margin-top: 0.5em;
+  padding-top: 0.5em;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+/*  border-right: 1px solid #ccc;*/
+}
+.gwt-DecoratedTabBar {
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+.mf-goalHeaderPanel > tbody > tr > td+td {
+	width: 160px;
+}
+
+.mf-goalFooterPanel {
+  margin-top: 0.5em;
+  padding-top: 0.5em;
+}
+
+
+
+.mf-importanceAndUrgencyPanel {
+	float: right;
+}
+
+.mf-goalTab {
+  width: 100%;  
+}
+
+.mf-goalTabVertical {
+  padding-top: 0.3em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  border: solid 3px #000;
+}
+
+.mf-goalTabDocumentation {
+	text-align: justify;
+	margin-top: 0.3em;
+	margin-left: 1em;
+	color: #777;
+}
+
+.mf-addQuestionButton {
+	white-space: pre;
+	width: 100px;
+}
+
+.mf-questionsStream {
+  width: 100%;		
+}
+
+.mf-growTabs {
+  width: 100%;	
+}
+
+.mf-growPanel {
+  width: 100%;		
+}
+
+.mf-questionPanel {
+  width: 100%;		
+}
+
+table.mf-questionPanel > tbody > tr > td+td {
+	width: 150px;
+}
+
+.mf-questionButtonsPanel {
+	float: right;
+}
+
+.mf-questionTextPanel {
+  width: 100%;
+}
+table.mf-questionTextPanel > tbody > tr > td:first-child {
+	width: 80px;
+}
+table.mf-questionTextPanel > tbody > tr > td+td+td {
+	width: 80px;
+}
+
+
+.mf-questionEditableList {
+  width: 100%;
+}
+
+.mf-questionTextBox {
+  width: 99%;
+  margin-left: 0.2em;
+  font-weight: bolder;		
+}
+.mf-questionSuggestions {
+  width: 99%;
+  margin-left: 0.2em;
+}
+
+
+.mf-questionAnswer {
+  margin-top: 0.5em;
+  padding-bottom: 0.5em;  
+  width: 100%;		
+}
+
+.mf-answerLabel {
+	padding-left: 0.3em;
+	font-weight: bolder;
+}
+
+.mf-answerTextArea {
+  	width: 99%;
+  	height: 10em;
+	margin-left: 0.3em;
+}
+
+/* TODO make this aditive - base + add on styles */
+.mf-statusInfo {
+	background-color: #F0F0F0; 
+	color: black; 
+	font-weight: bolder;
+	padding-top: 3px; 
+	padding-bottom: 2px; 
+	padding-left: 10px; 
+	padding-right: 10px; 
+	float: left; 
+	position: fixed;
+	top: 0.3em;	
+	left: 0.3em;	
+}
+.mf-statusProgress {
+	background-color: #FFFF88; 
+	color: black; 
+	font-weight: bolder;
+	padding-top: 3px; 
+	padding-bottom: 2px; 
+	padding-left: 10px; 
+	padding-right: 10px; 
+	float: left; 
+	position: fixed;
+	top: 0.3em;	
+	left: 0.3em;	
+}
+.mf-statusError {
+	background-color: #CC0000; 
+	color: white; 
+	font-weight: bolder;
+	padding-top: 3px; 
+	padding-bottom: 2px; 
+	padding-left: 10px; 
+	padding-right: 10px; 
+	float: left; 
+	position: fixed;
+	top: 0.3em;	
+	left: 0.3em;	
+}
+.mf-statusHelp {
+	background-color: #008C00; 
+	color: white; 
+	font-weight: bolder;
+	margin-top: 1px;
+	padding-top: 2px; 
+	padding-bottom: 2px; 
+	padding-left: 10px; 
+	padding-right: 10px; 
+	float: left;	 
+	position: fixed;
+	top: 0.3em;	
+	left: 0.3em;	
+}
+
+.mf-hint {
+	background-color: #777;
+	color: #fff;
+	font-weight: bolder;
+	white-space: pre;
+	
+	padding: 3px 5px 3px 5px;
+	border-width: 0px;
+}
+
+.mf-hintGreen {
+	background-color: #008C00;
+}
+
+.mf-organizerDoc {
+	margin-top: 1em;
+	color: #777;
+	width: 800px;
+	text-align: justify;
+}
+
+.mf-helpGuideButton {
+	background-color: #008C00;
+	color: #fff;
+	font-weight: bolder;
+	white-space: pre;
+	
+	padding: 5px 10px 5px 10px;
+	border-width: 0px;
+	
+    cursor: hand;
+    cursor: pointer;
+}
+.mf-button:hover {
+	background-color: #36393D;
+	color: #fff;
+	font-weight: bolder;
+	white-space: pre;
+	
+	padding: 5px 10px 5px 10px;
+	border-width: 0px;
+	
+    cursor: hand;
+    cursor: pointer;
+}
+.mf-buttonLooser:hover {
+	background-color: #36393D;
+	color: #fff;
+	white-space: pre;
+	
+	padding: 5px 10px 5px 10px;
+	border-width: 0px;
+	
+    cursor: hand;
+    cursor: pointer;
+}
+
+.mf-button {
+	background-color: #000;
+	color: #fff;
+	font-weight: bolder;
+	white-space: pre;
+	
+	padding: 5px 10px 5px 10px;
+	margin-right: 3px;
+	border-width: 0px;	
+
+	cursor: hand;
+    cursor: pointer;
+}
+
+.mf-buttonLooser {
+	background-color: #000;
+	color: #fff;
+	font-weight: normal;
+	white-space: pre;
+	
+	padding: 5px 10px 5px 10px;
+	margin-right: 3px;
+	border-width: 0px;	
+
+	cursor: hand;
+    cursor: pointer;
+}
+
+.mf-buttonUp {
+	background: url('../images/up-white.png') no-repeat 5px 7px;
+	background-color: #000;
+	color: #fff;
+	
+	width: 25px;
+	height: 26px;
+
+	border-width: 0px;		
+	padding: 5px 10px 5px 10px;
+	margin-top: 2px;
+	margin-right: 3px;
+
+	cursor: hand;
+    cursor: pointer;
+}
+.mf-buttonUp:hover {
+	background-color: #36393D;
+}
+.mf-buttonDown {
+	background: url('../images/down-white.png') no-repeat 5px 5px;
+	background-color: #000;
+	color: #fff;
+
+	width: 25px;
+	height: 26px;
+
+	padding: 5px 10px 5px 10px;
+	margin-top: 2px;
+	margin-right: 1px;
+	border-width: 0px;	
+
+	cursor: hand;
+    cursor: pointer;
+}
+.mf-buttonDown:hover {
+	background-color: #36393D;
+}
+.mf-buttonDemote {
+	background: url('../images/demote-white.png') no-repeat 5px 5px;
+	background-color: #000;
+	color: #fff;
+	
+	width: 25px;
+	height: 26px;
+
+	border-width: 0px;		
+	padding: 5px 10px 0px 10px;
+	margin-top: 2px;
+	margin-right: 3px;
+
+	cursor: hand;
+    cursor: pointer;
+}
+.mf-buttonDemote:hover {
+	background-color: #36393D;
+}
+.mf-buttonPromote{
+	background: url('../images/promote-white.png') no-repeat 5px 5px;
+	background-color: #000;
+	color: #fff;
+	
+	width: 25px;
+	height: 26px;
+
+	border-width: 0px;		
+	padding: 5px 10px 5px 10px;
+	margin-top: 2px;
+	margin-right: 3px;
+
+	cursor: hand;
+    cursor: pointer;
+}
+.mf-buttonPromote:hover {
+	background-color: #36393D;
+}
+
+.mf-growsTableHeadColumnButton {
+	background-color: #eee;
+	color: #000;
+    width: 100%;
+    text-align: left;
+	font-weight: bolder;
+	
+	border-width: 0px;	
+
+	cursor: hand;
+    cursor: pointer;    
+}
+
+.mf-growsTableGoalButton {
+	background-color: #fff;
+	color: #000;
+    width: 100%;
+    text-align: left;
+	font-weight: bolder;
+	font-style: oblique;
+	
+	border-width: 0px;	
+
+	cursor: hand;
+    cursor: pointer;    
+}
+.mf-growsTableGoalButton:hover {
+	background-color: #000;
+	color: #fff;
+    width: 100%;
+    text-align: left;
+	font-weight: bolder;
+	font-style: oblique;
+	
+	border-width: 0px;	
+
+	cursor: hand;
+    cursor: pointer;    
+}
+.mf-growsTableGoalFinishedButton {
+	color: #ccc;
+}
+
+.mf-newTagName {
+	width: 90px;
+	margin-right: 3px;
+	margin-top: 5px;
+}
+
+
+
+
+
+.mf-showUrgencyOff {
+	background-color: #fff;
+	color: #ddd;
+	text-align: left;
+	font-weight: bolder;
+	font-size: 20px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.mf-showUrgencyOn {
+	background-color: #fff;
+	color: #000;
+	text-align: left;
+	font-weight: bolder;
+	font-size: 20px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.mf-showImportanceOff {
+	background-color: #fff;
+	color: #ddd;
+	text-align: left;
+	font-weight: bolder;
+	font-size: 20px;
+	padding-left: 0px;
+	padding-right: 0px;
+	border: solid 1px #fff;
+}
+.mf-showImportanceOn {
+	background-color: #fff;
+	color: #000;
+	text-align: left;
+	font-weight: bolder;
+	font-size: 20px;
+	padding-left: 0px;
+	padding-right: 0px;
+	border: solid 1px #fff;
+}
+
+.mf-progressHtml {
+	text-align: right;
+}
+
+.mf-showImportancePanel td,
+.mf-showUrgencyPanel td {
+	border-color: #ffffff;
+}
+
+.mf-urgencyButtonOff {
+	background-color: #eee;
+	color: #fff;
+	font-weight: bolder;
+	
+	width: 25px;
+	height: 25px;
+	padding: 3px 3px 3px 3px;
+	margin: 2px;
+	border-width: 0px;	
+	
+	cursor: hand;
+    cursor: pointer;
+ }
+.mf-importanceButtonOff {
+	background: url('../images/star-white-gray.png') no-repeat 4px 4px;
+	background-color: #eee;
+	color: #fff;
+	font-weight: bolder;
+	width: 25px;
+	height: 25px;
+	padding: 3px 3px 3px 3px;
+	margin: 2px;
+	border-width: 0px;	
+	
+	cursor: hand;
+    cursor: pointer;
+ }
+
+.mf-importanceButtonOff:hover, 
+.mf-importanceButtonOn:hover, 
+.mf-importanceButtonOn {
+	background: url('../images/star-white-black.png') no-repeat 4px 4px;
+	background-color: #000;
+	color: #fff;
+	font-weight: bolder;
+	
+	width: 25px;
+	height: 25px;
+	padding: 3px 3px 3px 3px;
+	margin: 2px;
+	border-width: 0px;	
+	
+	cursor: hand;
+    cursor: pointer;
+ }
+	
+
+.mf-urgencyButtonOff:hover, 
+.mf-urgencyButtonOn:hover, 
+.mf-urgencyButtonOn {
+	background-color: #000;
+	color: #fff;
+	font-weight: bolder;
+	
+	width: 25px;
+	height: 25px;
+	padding: 3px 3px 3px 3px;
+	margin: 2px;
+	border-width: 0px;	
+	
+	cursor: hand;
+    cursor: pointer;
+ }
+
+
+
+.mf-viewQuestionAnswer {
+  	width: 100%;
+}
+.mf-viewQuestionAnswerQ {
+  	width: 100%;
+  	font-weight: bolder;
+  	border-top: solid 1px #ccc;		
+	cursor: hand;
+    cursor: pointer;
+}
+.mf-viewQuestionAnswerA {
+	font-family: monospace;
+	white-space: pre-wrap;
+	padding-left: 1em;
+	padding-right: 1em;
+	width: 95%;
+	border-left: 1px solid #ccc;
+	cursor: hand;
+    cursor: pointer;
+}
+.mf-viewQuestionAnswerA:hover {
+	background-color: #eee;
+}
+
+.mf-goalTitlePanel {
+	width: 100%;
+}
+.mf-goalTitleViewPanel {
+	width: 100%;
+}
+.mf-goalTitleViewField {
+	width: 100%;
+	font-size: 1.5em;
+	margin-left: 0.5em;
+	cursor: hand;
+    cursor: pointer;
+}
+.mf-goalTitleEditField {
+	margin-left: 0.5em;
+	width: 100%;
+}
+.mf-goalTitleEditPanel {
+	width: 100%;
+}
+/*
+.mf-goalTitleEditPanel > tbody > tr > td:first-child {
+	width: 40px;
+}
+.mf-goalTitleLabel {
+	font-weight: bolder;
+	width: 30px;
+	padding-top: 0.3em;
+}
+.mf-goalTitlePanel > tbody > tr > td:first-child {
+	width: 40px;
+}
+*/
+
+.mf-goalDescriptionView {
+	font-style: italic;
+	width: 100%;
+	margin-left: 1em;
+	margin-top: 0.5em;
+	margin-bottom: 1em;
+	white-space: pre-wrap;
+	cursor: hand;
+    cursor: pointer;    
+}
+.mf-goalDescriptionEdit {
+	width: 100%;
+	height: 4em;
+	margin-left: 1em;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+
+/* GWT suggest box *********************************************************** */
+
+.mf-questionEditableList > tbody > tr:first-child {
+  width: 100%;
+}
+.gwt-SuggestBox {
+	width: 99%;
+}
+.gwt-SuggestBoxPopup {
+	/*width: 100%;*/
+}
+.gwt-SuggestBoxPopup {
+	background-color: #fff;
+}
+.item {
+	background-color: #fff;
+	color: #000;
+}
+.item-selected {
+	background-color: #008C00;
+	color: #fff;
+}
+.suggestPopupMiddleLeft, .suggestPopupMiddleRight {
+	background-color: #ccc;
+}
+.suggestPopupTop, .suggestPopupBottom {
+	background-color: #ccc;
+	height: 1px;
+}
+
+/* Dashboard *********************************************************** */
+
+.mf-dashboard {
+  	margin-left: auto;
+	margin-right: auto;
+}
+.mf-dashboard > tbody > tr > td+td {
+	vertical-align: top;
+}
+
+.mf-portletTitle {
+	padding-top: 1.5em;
+	color: #555;
+	font-size: 1.3em;
+	text-decoration: underline;
+}
+
+/* Chart *********************************************************** */
+
+.mf-iuChart {
+  	border-collapse: collapse;
+  	margin-left: auto;
+	margin-right: auto;
+}
+
+.mf-iuChartLegendImportant {
+	font-size: 20px;
+	font-weight: bold;
+}
+.mf-iuChartLegendNotImportant {
+	font-size: 20px;
+	font-weight: bold;
+	color: #aaa;
+}
+.mf-iuChartLegendUrgent {
+	font-size: 20px;
+	font-weight: bold;
+	padding-left: 190px;
+}
+.mf-iuChartLegendNotUrgent {
+	font-size: 20px;
+	font-weight: bold;
+	color: #aaa;	
+	padding-left: 200px;
+}
+
+.mf-iuChartSoon {
+	font-size: 25px; 
+	padding: 3px;
+	text-align: center;
+	color: #777;
+}
+.mf-iuChartSometime {
+	font-size: 25px; 
+	padding: 3px;
+	text-align: center;
+	color: #ccc;
+}
+.mf-iuChartFirst {
+	font-size: 25px; 
+	padding: 3px;
+	text-align: center;
+	color: #777;
+}
+.mf-iuChartPlan {
+	font-size: 25px; 
+	padding: 3px;
+	text-align: center;
+	color: #777;
+}
+
+.importanceUrgencyChartContainer {
+	width: 100%;
+}
+
+.mf-chartNotImportantNotUrgent {
+  	border-collapse: collapse;
+  	border: 1px solid #ccc;
+  	border-left: 1px solid #ccc;
+}
+
+.mf-chartImportantNotUrgent, .mf-chartNotImportantUrgent {
+  	border-collapse: collapse;
+	background-color: #ccc;
+}
+.mf-chartImportantUrgent {
+  	border-collapse: collapse;
+	background-color: #000;
+	color; #fff;
+}
+
+.mf-chartNotImportantNotUrgent > tbody > tr:first-child,
+.mf-chartImportantNotUrgent > tbody > tr:first-child,
+.mf-chartNotImportantUrgent > tbody > tr:first-child,
+.mf-chartImportantUrgent > tbody > tr:first-child {
+	height: 25px;	
+}
+
+.mf-chartNotImportantUrgent button, .mf-chartImportantNotUrgent button {
+	background-color: #ccc;
+}
+.mf-chartImportantUrgent button {
+	background-color: #000;
+	color: #fff;
+}
+
+.mf-iuChartGoalButton {
+	margin-left: 10px;
+	
+	background-color: #fff;
+	color: #000;
+    width: 95%;
+    text-align: left;
+	font-weight: bolder;
+	
+	border-width: 0px;	
+
+	cursor: hand;
+    cursor: pointer;    
+	
+}
+
+.mf-iuChartGoalButton:hover {
+	margin-left: 10px;
+	
+	background-color: #555; 
+	color: #fff;
+    width: 95%;
+    text-align: left;
+	font-weight: bolder;
+	
+	border-width: 0px;	
+
+	cursor: hand;
+    cursor: pointer;    
+}
+
+/* Left menu *********************************************************** */
+
+.mf-leftMenubarContainer {
+	width: 178px;
+    height: 400px;
+}
+
+.mf-leftMenu {
+	width: 178px;
+	
+	position: fixed;
+	top: 5.5em;	
+  	border-collapse: collapse;
+  	margin-top: 0.3em;
+  	margin-bottom: 5em;
+}
+
+.mf-leftMenu {
+	width: 178px;
+	
+	position: fixed;
+	top: 5.5em;	
+  	border-collapse: collapse;
+  	margin-top: 0.3em;
+  	margin-bottom: 5em;
+}
+
+.mf-leftMenu td {
+	padding: 0px;
+}
+
+.mf-leftMenuHr {
+	height: 1px; 
+	width: 178px;
+	background-color: #ccc;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+.mf-leftMenuPendingConnections {
+	background-color: #C00;
+	color: #fff;
+	font-weight: bold;
+	padding-left: 3px;
+	padding-right: 3px;
+	font-size: xx-small;
+	vertical-align: top;
+}
+
+.mf-menuButtonOn {
+	font-weight: bold; 
+	font-size: 16px;
+	font-family: Cambria, Georgia; 
+	background-color: #eee;
+	width: 178px;
+	border-width: 0px;
+	text-align: left;
+	
+	padding-left: 7px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	margin-top: 0px; 
+	margin-bottom: 0px;
+	 
+	cursor: hand;
+    cursor: pointer;    
+}
+
+.mf-menuButtonOff:hover {
+	font-size: 16px;
+	font-family: Cambria, Georgia; 
+	background-color: #eee;
+	width: 178px;
+	border-width: 0px;
+	text-align: left;
+	
+	padding-left: 7px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	margin-top: 0px; 
+	margin-bottom: 0px;
+	 
+	cursor: hand;
+    cursor: pointer;    
+}
+
+.mf-menuButtonOff {
+	text-align: left;
+	font-size: 16px;
+	font-family: Cambria, Georgia; 
+	background-color: #fff;
+	width: 178px;
+	border-width: 0px;
+	
+	margin-top: 0px; 
+	margin-bottom: 0px; 
+	padding-left: 7px; 
+	padding-top: 0px;
+	padding-bottom: 0px;
+	
+	cursor: hand;
+    cursor: pointer;    
+}
+
+.mf-menuButtonOffCheatSheet {
+	font-weight: bold;
+}
+
+.mf-inviteFriend {
+	width: 171px;
+}
+.mf-inviteFriend:hover {
+	width: 171px;
+}
+div.mf-inviteFriend > a:hover {
+	text-decoration: none;
+}
+
+.mf-menuButtonNews {
+	font-weight: bold;
+}
+
+.mf-newGoalButton {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.mf-friendRequestsText {
+	padding-top: 0.3em;
+}
+
+.mf-leftMenuItemSection {
+	color: #bbb;
+	font-weight: bold;
+	border-bottom: solid 1px #ccc;
+    margin-bottom: 0.3em;
+    
+    font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
+    font-size: 80%;    
+}
+/* Magic triangle *********************************************************** */
+
+.mf-magicTriangle {
+	margin-left: 0.5em;
+}
+
+.mf-magicTriangleGC {
+	background-image: url('../images/magic-triangle-small-cg.png');
+	width: 60px;
+	height: 52px;
+	border-width: 0px;
+	cursor: hand;
+    cursor: pointer;
+    
+    margin-top: 10px;    
+}
+.mf-magicTriangleFC {
+	background-image: url('../images/magic-triangle-small-fc.png');
+	width: 60px;
+	height: 52px;
+	border-width: 0px;
+	cursor: hand;
+    cursor: pointer;
+    
+    margin-top: 10px;    
+}
+.mf-magicTriangleFG {
+	background-image: url('../images/magic-triangle-small-gf.png');
+	width: 60px;
+	height: 52px;
+	border-width: 0px;
+	cursor: hand;
+    cursor: pointer;    
+}
+
+.mf-growModelHelpButton {
+	background: url(../images/grow-model-logo.png) no-repeat 0px 0px;
+	width: 102px;
+	height: 96px;
+	border-width: 0px;	
+}
+
+.mf-progressViewField {
+	font-size: 3em;
+	margin-left: 1em;
+	cursor: hand;
+    cursor: pointer;    
+}
+.mf-progressViewField:hover {
+	color: #fff;
+	background-color: #000;
+}
+.mf-progressPercentHtml {
+	font-size: 3em;
+}
+.mf-progressEditField {
+	width: 1.9em;
+	font-size: 3em;
+	margin-left: 1em;
+}
+
+/* CheatSheet *********************************************************** */
+
+.mf-cheatSheet {
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 1em;
+}
+
+.mf-welcomeTitle {
+	width: 100%;
+	font-size: 3em;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 0.5em;
+}
+
+.mf-welcomeImageContainer {
+  	/* background: url(../images/goal-lifecycle.png) no-repeat; */
+	width: 753px;
+	height: 326px;
+	border: solid 0px #fff;
+	cursor: hand;
+    cursor: pointer;
+}
+
+.mf-welcomeActionsPanel {
+	display: none;
+	width: 100%;
+	padding-top: 2em;
+}
+.mf-welcomeActionsPanel > tbody > tr > td {
+	text-align: center;
+}
+
+a.mf-welcomePageHelpAction {
+	background-color: #008C00;
+	color: #fff;
+	font-family: Arial;
+	font-weight: bold;
+	font-size: 0.8em;
+	text-decoration: none;
+	white-space: pre;
+	padding: 5px 10px 5px 10px;
+	border-width: 0px;
+    cursor: hand;
+    cursor: pointer;
+}
+
+.mf-cheatSheetSocialNetworking, .mf-cheatSheetReadHelp, .mf-cheatSheetGreenColor {
+	color: #777;
+	text-align: left;
+	width: 753px;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+.mf-perspectiveSelectionPanel {
+	width: 753px;
+	margin-left: 2em;
+}
+
+.mf-perspectiveSelectionButton {
+	background-color: #fff;
+	color: #000;
+	font-weight: bolder;
+	white-space: pre;
+	
+	width: 10em;
+	height: 5em;
+	border-width: 0px;	
+
+	cursor: hand;
+    cursor: pointer;
+}
+
+.mf-perspectiveSelectionButtonSelected {
+	background-color: #000;
+	color: #fff;
+}
+
+.mf-perspectiveSelectionTitle {
+	color: #777;
+	text-align: left;
+	margin-bottom: 1em;
+	cursor: hand;
+    cursor: pointer;
+}
+
+.mf-perspectiveSelectionDescription {
+	color: #777;
+	text-align: justify;
+	padding-left: 0.5em;
+}
+
+.mf-perspectiveSelectionDescription:hover {
+}
+
+.mf-cheatSheetSocialNetworking {
+	cursor: hand;
+    cursor: pointer;
+}
+
+.mf-perspectiveSelectionPanel > tbody > tr:hover {
+	background-color: #eee;
+	cursor: hand;
+	cursor: pointer;
+}
+
+/* MindRaider ***************************************** */
+
+.mf-recentNotebooksTable {
+	margin-left: 1em;
+}
+
+.mf-mrGuideButton{
+	background-color: #356AA0;
+	color: #fff;
+	font-weight: bolder;
+	white-space: pre;
+	
+	padding: 5px 10px 5px 10px;
+	border-width: 0px;
+	
+    cursor: hand;
+    cursor: pointer;
+}
+
+/* Social ***************************************** */
+
+.mf-friendsPanel {
+	width: 100%;
+}
+
+/*
+.mf-friendsPanel > tbody > tr > td+td {
+	border-bottom: solid 1px #ccc;
+}
+
+.mf-friendsPanel > tbody > tr > td:FIRST-CHILD {
+	width: 5em;
+	height: 3em;
+}
+
+.mf-friendsPanel > tbody > tr > td+td+td {
+	width: 30px;
+	text-align: right;
+	padding-right: 1em;
+}
+
+*/
+
+.mf-addFriendName {
+	font-weight: bold;
+	color: #000;
+}
+.mf-addFriendName:hover {
+	font-weight: bold;
+	color: #000;
+}
+
+.mf-showUserProfile {
+	font-weight: bold;
+	width: 100%;
+	text-align: left;
+	border: solid 0px #fff;
+	background-color: #fff;
+    cursor: pointer;
+    cursor: hand;
+}
+.mf-showUserProfile:hover {
+	background-color: #000;
+	color: #fff;
+}
+
+.mf-findFriendTextBox {
+	width: 30em;
+	margin-top: 0.3em;
+	margin-left: 0.3em;
+}
+
+.mf-pendingFriend {
+	width: 9.5em;
+	text-align: center;
+}
+
+.mf-connectionsProfilePanel {
+	display: inline-table;
+  	width: 10em;
+  	margin-top: 1em;
+  	margin-bottom: 1em;
+}
+
+.mf-connectionsProfilePanelRole {
+	font-style: italic;
+}
+
+.mf-connectionsProfilePanel > tbody > tr > td {
+  	text-align: center;
+}
+
+.mf-showUserProfileConfirmed {
+	white-space: nowrap;
+	width: 9.5em;
+	text-align: center;
+	font-weight: bold;
+	border: solid 0px #fff;
+	background-color: #fff;
+    cursor: pointer;
+    cursor: hand;
+}
+.mf-showUserProfileConfirmed:hover {
+	background-color: #000;
+	color: #fff;
+}
+
+.mf-connectionsProfilePhoto {
+    cursor: pointer;
+    cursor: hand;
+}
+
+.mf-foundConnectionsPanel {
+	width: 100%;
+}
+
+.mf-connectionsProfileNameAddAs {
+	width: 100%;
+}
+
+.mf-connectionsActionPanelPhoto {
+	margin-right: 1em;
+}
+
+.mf-friendPanelFilteringControls {	
+}
+
+.mf-friendsPanelDelimiterPanel {
+	width: 100%;
+	border-bottom: 1px solid #ccc;
+}
+.mf-friendsPanelDelimiterText {
+	color: #999;
+	padding-left: 0.5em;
+}
+
+/* Nickname upper right corner ***************************************** */
+
+#nicknameContainer {
+	display: inline-table;
+}
+
+.mf-nicknameEdit {
+	font-weight: bold;
+	text-align: center;
+}
+
+.mf-nicknameView {
+	white-space: pre;
+	font-weight: bold;
+	cursor: pointer;
+    cursor: hand;
+}
+
+/* User profile ***************************************** */
+
+.mf-userProfile {
+	width: 100%;
+}
+
+.mf-userProfileTop {
+}
+
+.mf-userProfileTop > tbody > tr > td {
+	vertical-align: top;	
+}
+
+.mf-userProfileNicknameEditable {
+	font-size: 1.5em;
+	font-weight: bold;
+	padding-bottom: 0.3em;
+	cursor: pointer;
+    cursor: hand;
+}
+
+.mf-userProfileNickname {
+	font-size: 1.5em;
+	font-weight: bold;
+	padding-bottom: 0.3em;
+}
+
+.mf-userProfileFriends, .mf-userProfileGrows {
+	width: 100%;
+  	border-top: 1px solid #ccc;
+  	padding-bottom: 1em;
+}
+
+.mf-userProfileFriendsTitle, .mf-userProfileGrowsTitle {
+	font-size: 1.5em;
+	font-weight: bold;
+	height: 35px;
+}
+
+.mf-userProfileRight {
+	padding-left: 2em;
+	width: 100%;	
+}
+
+.mf-userProfileFriendsGrows {
+	text-align: center;
+}
+
+/* Action Plan for Grow ***************************************** */
+
+.mf-actionPlanForGrowPanel {
+  border-top: 1px solid #ccc;
+  padding-top: 0.5em;
+  margin-top: 0.5em;
+
+  margin-bottom: 0.5em;
+}
+
+
+.mf-actionPlanLeftTitle {
+	width: 3.5em;
+	text-align: center;
+	font-size: 1.5em;
+	
+	background-color: #fff;
+	color: #000;
+	white-space: pre;
+	
+	padding: 5px 10px 5px 10px;
+	margin-right: 3px;
+	border-width: 0px;
+	
+    cursor: pointer;
+    cursor: hand;
+}
+
+/* S.W.O.T. for Grow ***************************************** */
+
+.mf-swotForGrowPanel {
+  border-top: 1px solid #ccc;
+  padding-top: 0.5em;
+  margin-top: 0.5em;
+
+  margin-bottom: 0.5em;
+}
+
+.mf-swotLeftTitle {
+	width: 3.5em;
+	text-align: center;
+	font-size: 1.5em;
+	
+	background-color: #fff;
+	color: #000;
+	white-space: pre;
+	
+	padding: 5px 10px 5px 10px;
+	margin-right: 3px;
+	border-width: 0px;	
+	
+    cursor: pointer;
+    cursor: hand;
+}
+
+.mf-swot4growMitigation {
+	font-size: 0.5em;
+}
+
+.mf-swot4growInternal, .mf-swot4growExternal {
+	text-align: center;
+	font-style: italic;
+	color: #777;
+}
+
+/* Check List ***************************************** */
+
+.mf-checklistPanel {
+  border-top: 1px solid #ccc;
+  padding-top: 0.5em;
+  margin-top: 0.5em;
+
+  margin-bottom: 0.5em;
+}
+
+.mf-viewChecklist {
+}
+
+.mf-updateChecklistButton {
+	width: 11em;
+}
+
+.mf-checklistHead {
+}
+
+.mf-checklistDocumentation {
+	text-align: justify;
+	margin-top: 0.0em;
+	margin-left: 0.3em;
+	color: #777;
+}
+
+.mf-checklistUnknown {
+	background-color: #f9c000;
+	color: #fff;
+	font-weight: bold;
+	white-space: pre;	
+	padding: 5px 5px 5px 5px;
+	border-width: 0px;	
+	text-align: center;
+}
+.mf-checklistOk {
+	background-color: #008C00;
+	color: #fff;
+	font-weight: bold;
+	white-space: pre;	
+	padding: 5px 5px 5px 5px;
+	border-width: 0px;
+	text-align: center;
+}
+.mf-checklistNotOk {
+	background-color: #CC0000;
+	color: #fff;
+	font-weight: bold;
+	white-space: pre;	
+	padding: 5px 5px 5px 5px;
+	border-width: 0px;
+	text-align: center;
+}
+
+.mf-checklistImportant {
+	font-weight: bold;
+}
+
+.mf-checklistCompletionStatus {
+	width: 3.5em;
+	text-align: center;
+	font-size: 2em;
+	
+	background-color: #fff;
+	color: #000;
+	white-space: pre;
+	
+	padding: 5px 10px 0px 10px;
+	margin-right: 3px;
+	border-width: 0px;	
+
+	cursor: hand;
+    cursor: pointer;
+}
+
+.mf-checklistCompletionStatus:hover {
+	background-color: #000;
+	color: #fff;
+}
+
+.mf-checkListWizardQuestion {
+	margin-top: 0.3em;
+	margin-left: 1em;
+	color: #000;
+}
+
+.mf-checkListWizardHint {
+	margin-top: 0.3em;
+	margin-left: 1em;
+	color: #777;
+}
+
+.mf-checklistWizardButtons {
+	margin-top: 0.5em;
+	margin-left: 1em;
+}
+
+.mf-checklistQualityHtml {
+	color: #000;
+	font-size: 0.8em;
+	text-align: center;
+}
+
+/* ***************************************** */
+
+.mf-deadlineAndProgressPanel > tbody > tr > td {
+	vertical-align: bottom;
+}
+
+.mf-deadlineLabel {
+	padding-left: 3em;
+	padding-top: 0.3em;
+}
+
+.mf-progressLabel {
+	padding-left: 1em;
+	padding-right: 0.3em;
+	padding-top: 0.3em;
+}
+
+.mf-progressPercentLabel {
+	padding-top: 0.3em;
+}
+
+.mf-growProgress {
+	width: 2em;
+}
+
+.mf-deadlineAndProgressView {
+	font-size: 80%;
+	color: #777;
+	padding-left: 3em;
+	cursor: hand;
+    cursor: pointer;
+}
+
+.gwt-DatePicker {
+  	border: 1px solid #000;
+}
+
+.datePickerDays {
+  width: 100%;
+  background: white;
+  cursor: pointer;
+  cursor: hand;
+}
+.datePickerWeekdayLabel,
+.datePickerWeekendLabel {
+  background: #000;
+  color: #fff;
+  padding: 0px 4px 2px;
+  cursor: default;
+}
+.datePickerDayIsWeekend {
+  background: #EEEEEE;
+}
+.datePickerDayIsFiller {
+  color: #888888;
+}
+.datePickerDayIsValue {
+  background: #F9C000;
+}
+.datePickerDayIsDisabled {
+  color: #AAAAAA;
+  font-style: italic;
+}
+.datePickerDayIsValueAndHighlighted {
+  background: #bbddd9;
+}
+.datePickerMonthSelector {
+  background: #000;
+  color: #fff;
+  width: 100%;
+  font-weight: bold;
+  cursor: pointer;
+  cursor: hand;
+}
+.dateBoxFormatError {
+  background: #ffcccc;
+}
+.datePickerDayIsToday {
+  background: #ff0000;
+  color: #fff;
+}
+.datePickerDayIsHighlighted {
+  background: #008C00;
+  color: #fff;
+}
+
+/* ***************************************** */
+
+.mf-actionPlanDeadline {
+	background-color: #ccc;
+	color: #fff;
+	padding-left: 0.7em;
+	padding-right: 0.7em;
+	padding-top: 0.2em;
+	padding-bottom: 0.2em;
+}
+
+/* ***************************************** */
+
+.mf-actionsTable {
+  width: 100%;	
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: collapse;
+}
+.mf-actionsTable tbody > tr:first-child {
+  background-color: #eee;
+}
+.mf-actionsTable td {
+  border: 1px solid #ccc;
+}
+table.mf-actionsTable > tbody > tr > td:first-child {
+	width: 3em;
+	text-align: center;
+}
+table.mf-actionsTable > tbody > tr > td+td+td {
+	width: 15em;
+	text-align: left;
+	padding-left: 0.5em;
+}
+table.mf-actionsTable > tbody > tr > td+td+td+td {
+	width: 10em;
+	text-align: center;
+}
+
+.mf-actionDeadline {
+	background-color: #fff;
+}
+.mf-actionDeadlineMissed {
+	background-color: #B02B2C;
+	color: #fff;
+}
+.mf-actionDeadlineToday {
+	background-color: #000;
+	color: #fff;
+}
+.mf-actionDeadlineTomorrow {
+	background-color: #777;
+	color: #000;
+}
+.mf-actionDeadlineWeek {
+	background-color: #ccc;
+	color: #000;
+}
+
+/* *********** */
+
+.mf-wheelOfLifePanel {
+	margin-left: auto;
+	margin-right: auto;
+	width: 750px;
+}
+
+.mf-wheelOfLifeRadarChart {
+	text-align: center;
+  	cursor: pointer;
+  	cursor: hand;
+}
+
+.mf-wheelOfLifeDoc {
+	margin-top: 1em;
+	color: #777;
+	text-align: justify;
+}
+
+/* ************************ */
+
+.mf-growWolLabel {
+	width: 8.9em;
+}
+
+.mf-growWolLabelView {
+  	cursor: pointer;
+  	cursor: hand;
+}
+
+.mf-growWolLabelEdit {
+	width: 10.7em;	
+}
+
+.mf-improveWoLButtonWizard {
+	border-top: solid 1px #ccc;
+	padding-top: 0.5em;	
+	width: 100%;
+}
+
+.mf-wizardStepAnswerTextBox {
+	margin-left: 3.5em;
+	margin-top: 0.7em;
+	width: 35em;
+}
+
+/* ***************************************** */
+
+.mf-growTabsVertical {
+	width: 100%;
+  	border-collapse: collapse;
+}
+
+.mf-growTabsVerticalSectionButton {
+	width: 100px;
+	text-aligh: left;
+	
+	background-color: #000;
+	color: #fff;
+	white-space: pre;
+	font-size: 1.3em;
+	font-weight: bolder;
+	
+	padding: 5px 10px 5px 10px;
+	margin-right: 3px;
+	margin-bottom: 0px;
+	border-width: 0px;	
+
+	cursor: hand;
+    cursor: pointer;
+}
+
+.mf-growTabsVerticalSectionButton:hover {
+	width: 100px;
+	
+	background-color: #36393D;
+	color: #fff;
+	font-weight: bolder;
+	white-space: pre;
+	
+	padding: 5px 10px 5px 10px;
+	border-width: 0px;
+	
+    cursor: hand;
+    cursor: pointer;
+}
+
+.mf-growsTabVerticalSectionHead {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.mf-growsTabVerticalSectionHead > tbody > tr > td:first-child {
+	width: 110px;
+}
+
+.mf-growsTabVerticalSectionHead > tbody > tr > td+td {
+}
+
+.mf-growsTabVerticalSectionHead > tbody > tr > td+td+td {
+	text-align: right;
+	font-size: 1.8em;
+	color: #ccc; 
+	width: 100px;
+}
+
+.mf-growsTabVerticalSectionSubTitle {
+	width: 100px;
+}
+
+.mf-growsTabVerticalSectionHr {
+	height: 1px; 
+	width: 99%;
+	background-color: #ccc;
+	margin-top: 1.3em;
+}
+
+/* ***************************************** */
+
+.mf-lessonsLearnedTable {
+  width: 100%;	
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: collapse;
+}
+.mf-lessonsLearnedTable tbody > tr:first-child {
+  background-color: #eee;
+}
+.mf-lessonsLearnedTable td {
+  border: 1px solid #ccc;
+}
+table.mf-lessonsLearnedTable > tbody > tr > td+td {
+	width: 15em;
+	text-align: left;
+	padding-left: 0.5em;
+}
+
+/* ***************************************** */
+
+.mf-lifeDesignerIntroText {
+	color: #777;
+	text-align: justify;
+	width: 100%;
+}
+
+.mf-lifeDesignerIntroDiagramEnvelope {
+	width: 100%;
+	text-align: center;
+}
+
+.mf-lifeDesignerIntroDiagram {
+}
+
+.mf-lifeVision {
+	width: 100%;
+}
+
+.mf-lifeVisionWatermark {
+	color: #aaa;
+	width: 100%;
+	font-size: 1.3em;
+	text-align: right;
+}
+
+.mf-lifeVisionEdit {
+	width: 100%;
+	height: 10em;
+}
+
+.mf-lifeVisionView {
+	white-space: pre-wrap;
+	border: solid #eee 1px;
+	padding: 0.3em;
+    cursor: pointer;
+    cursor: hand;
+}
+
+/* ***************************************** */
+
+.mf-growSharingPanel {
+	width: 100%;
+	border: solid #ccc 1px;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+.mf-growPermissionsList {
+    border-collapse: collapse;
+    margin-top: 0.5em;
+    margin-left: 0.5em;
+    margin-bottom: 0.5em;
+}
+.mf-growPermissionsList  tbody > tr:first-child {
+  	background-color: #eee;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}
+.mf-growPermissionsList  td {
+	border: 1px solid #ccc;
+	text-align: center;
+}
+table.mf-growPermissionsList > tbody > tr > td:first-child {
+	width: 3em;
+	text-align: left;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}
+
+.mf-growPermissionListPhotoName > tbody > tr > td {
+	border: 0px;
+	background-color: white;
+	padding-left: 0.3em;	
+}
+
+.mf-growPermissionListNickname {
+	white-space: pre;
+}
+
+/* ***************************************** */
+
+.mf-blueLifePanel {
+  border-collapse: collapse;
+  width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mf-blueLifePanel > tbody > tr > td {
+	padding: 0px;
+	marging: 0px;
+}
+
+.mf-blueLifeDocIntro {
+	text-align: justify;
+	margin-bottom: 1em;
+	color: #777;
+}
+
+.mf-blueLifeDocOutro {
+	text-align: justify;
+	margin-top: 2em;
+	color: #777;
+}
+
+.mf-blueLifeCell {
+	background-color: #000;
+	color: #ccc;
+	font-weight: bolder;
+	white-space: pre;
+	
+	margin: 0px;
+	padding: 3px 3px 3px 3px;
+	border-width: 0px;
+
+	cursor: hand;
+    cursor: pointer;
+}
+
+.mf-blueLifeCell:hover {
+	background-color: #C3D9FF;
+	color: #C3D9FF;	
+}
+
+/*
+.mf-actionsTable > tbody > tr+tr+tr > td {
+  border: 1px solid #ccc;
+}
+*/
+
+a.mf-docLink:link {text-decoration: none; color: black; border-bottom: 1px dotted #000;}
+a.mf-docLink:visited {text-decoration: none; color: black; border-bottom: 1px dotted #000;}
+a.mf-docLink:active {text-decoration: none; color: black; border-bottom: 1px dotted #000;}
+a.mf-docLink:hover {text-decoration: none; color: black; border-bottom: 1px dotted #000;}
+
+.mf-blueDayOfMonth {
+	text-align: center;
+	padding: 0px;
+	margin: 0px;
+}
+
+.mf-blueLifeLaw {
+}
+
+.mf-blueLifeInTheMonth {
+	color: #999;
+	padding-left: 0.5em;
+ 	border-bottom: 1px solid #ccc;
+ 	font-size: 1.5em;
+ 	margin-bottom: 0.5em;
+}
+
+/* ***************************************** */
+
+#rightCornerContainer {
+}
+
+.mf-rightCornerPanel{
+	float: right;
+}
+
+#perspectiveContainer {
+	display: inline;
+}
+
+.mf-rcGravatar {
+	margin-right: 0.2em;
+}
+
+.mf-perspectivePanel {
+	display: inline-table;
+}
+
+.mf-perspectivePanelView {
+	vertical-align: top;
+	white-space: pre;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.mf-perspectiveRightCorner {	
+	font-weight: bold;
+}
+
+.mf-settingsRightCorner {
+	vertical-align: top;
+}
+.mf-settingsRightCornerImg {
+	width: 18px;
+	height: 24px;
+	cursor: pointer;
+	cursor: hand;
+}
+
+/* **************************** */
+
+.mf-userProfileDescriptionView {
+	text-align: justify;
+	cursor: pointer;
+    cursor: hand;
+}
+.mf-userProfileDescriptionEdit {
+	width: 30em;
+	height: 5em;
+}
+.mf-userProfileWebEdit {
+	width: 30em;
+}
+a.mf-userProfileWebViewLink, a.mf-userProfileWebViewLink:hover {
+    cursor: pointer;
+    cursor: hand;
+    border-bottom: 1px dotted #000;
+    text-decoration: none;
+}
+
+/* **************************** */
+
+.mf-questionCommentsPanel {
+	margin-top: 0.5em;
+	margin-left: 4em;
+	width: 27em;
+	background-color: #eee;
+}
+
+.mf-questionCommentsPanel > tbody > tr > td {
+	border-bottom: solid  2px #fff;
+}
+
+.mf-commentUserButton {
+	background-color: #eee;
+	color: #000;
+	font-weight: bold;
+	white-space: pre;
+	
+	margin-right: 0px;
+	border-width: 0px;	
+
+	cursor: hand;
+    cursor: pointer;
+}
+
+.mf-commentUserButton:hover {
+	background-color: #000;
+	color: #fff;
+}
+
+.mf-viewCommentTimestamp {
+	color: #999;
+	font-size: 0.8em;
+}
+
+.mf-viewCommentRemove {
+	background-color: #fff;
+	color: #000;
+	font-weight: bold;
+	
+	margin-left: ;
+	border-width: 0px;	
+
+	cursor: hand;
+    cursor: pointer;
+}
+
+.mf-viewCommentRemove:hover {
+	background-color: #000;
+	color: #fff;
+}
+
+.mf-viewCommentComment {
+	text-align: justify;
+	font-size: 0.8em;
+	margin-left: 0.5em;
+}
+
+.mf-writeACommentButton {
+	width: 100%;
+	text-align: left;
+	background-color: #fff;
+	color: #777;
+	font-weight: normal;
+	
+	margin-right: 0px;
+	
+	border-width: 1px;
+	border-color: #777;	
+
+	cursor: hand;
+    cursor: pointer;
+}
+
+.mf-writeACommentTextArea {
+	width: 99%;
+}
+
+.mf-newCommentPanel {
+	width: 100%;
+}
+
+.mf-writeACommentTextBox {
+	width: 99%;
+}
+
+
+.mf-questionCommentsPanel > tbody > tr > td > table {
+	width: 100%;
+}
+.mf-questionCommentsPanel > tbody > tr > td > table > tbody > tr > td+td+td {
+	width: 7em;
+	text-align: right;
+}
+.mf-questionCommentsPanel > tbody > tr > td > table > tbody > tr > td+td+td+td {
+	width: 1.5em;
+	text-align: right;
+}
+.mf-commentConnectionsProfilePhotoTd {
+	width: 32px;
+	vertical-align: top;
+}
+.mf-commentConnectionsProfilePhoto {
+	width: 32px;
+	margin-right: 0px;
+}
+
+/* **************************** */
+
+.mf-sharedGrowsOwnerProfilePhoto {
+	margin-left: 1em;
+  	cursor: pointer;
+  	cursor: hand;
+}
+
+/* **************************** */
+
+.mf-pageTitlePanel {
+	font-size: 1.7em;
+	font-weight: bold;
+	text-align: right;
+	padding-right: 1em;
+}
+
+/* **************************** */
+
+.mf-helpEmptyActionsTable, .mf-helpEmptyLessonsTable {
+	width: 100%;
+}
+
+.mf-helpEmptyActions, .mf-helpEmptyLessons {
+	background-color: #fff;
+	border: solid 0px #fff;
+	text-align: center;
+}
+.mf-helpEmptyActionsImg {
+	width: 521px;
+	height: 325px;
+	padding: 2em;
+}
+.mf-helpEmptyLessonsImg {
+	width: 524px;
+	height: 356px;
+	padding: 2em;
+}
+
+/* notes ***************************************** */
+
+.mf-editNoteTitle {
+	width: 98%;
+}
+
+.mf-noteTabVertical{
+	width: 100%;
+    padding-top: 0.3em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    border: solid 3px #000;
+}
+
+/* attachments ***************************************** */
+
+.mf-viewNoteAttachmentsPanel {
+	padding-top: 0.5em;
+	padding-left: 2em;
+}
+
+.mf-viewAttachmentsLabel {
+	display: inline;
+	font-weight: bold;
+}
+.mf-editAttachmentsLabel {
+	display: inline;
+	font-weight: bold;
+	padding-left: 0.3em;
+}
+
+a.mf-viewAttachmentName {
+	display: inline;
+	padding-left: 0.5em;
+	text-decoration: underline;
+}
+.mf-viewAttachmentNameType {
+	display: inline;
+	padding-left: 0.3em;
+}
+.mf-viewAttachmentNameOutlineGrow {
+	background-color: #fff;
+	color: #000;
+    text-align: left;
+	display: inline;
+	text-decoration: underline;
+	border-width: 0px;	
+	cursor: hand;
+    cursor: pointer;    
+}
+
+.mf-viewNoteStyledTitle {
+  	width: 100%;
+  	font-weight: bolder;
+  	border-top: solid 1px #ccc;		
+	cursor: hand;
+    cursor: pointer;
+    padding-left: 0.3em;
+}
+.mf-viewNoteStyledTitleNone {
+	background-color: #fff;
+	color: #000;
+    padding-left: 0em;
+}
+.mf-viewNoteStyledTitleImportant {
+	background-color: #ff8181;
+	color: #fff;
+}
+.mf-viewNoteStyledTitleCool {
+	background-color: #99b1ff;
+	color: #fff;
+}
+.mf-viewNoteStyledTitleToDo {
+	background-color: #ffcd8d;
+	color: #fff;
+}
+.mf-viewNoteStyledTitlePersonal {
+	background-color: #7fc074;
+	color: #fff;
+}
+.mf-viewNoteStyledTitleLater {
+	background-color: #c79ec9;
+	color: #fff;
+}
+.mf-viewNoteStyledTitleObsolete {
+	background-color: #fff;
+	color: #999;
+}
+.mf-viewNoteStyledTitleProblem {
+	background-color: #000;
+	color: #fff;
+}
+
+/* *********************************************************************************************** */
+
+.gwt-MenuBar {
+  cursor: default;
+}
+.gwt-MenuBar .gwt-MenuItem {
+  cursor: default;
+}
+.gwt-MenuBar .gwt-MenuItem-selected {
+  background: #000;
+  margin-right: 3px;
+}
+.gwt-MenuBar-horizontal {
+  background: #000;
+}
+.gwt-MenuBar-horizontal .gwt-MenuItem {
+  /* padding: 5px 10px; */
+/*   vertical-align: bottom;
+ */  color: #000;
+}
+.gwt-MenuBar-horizontal .gwt-MenuItemSeparator {
+  width: 1px;
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  border-left: 1px solid #ccc;
+  background: white;
+}
+.gwt-MenuBar-horizontal .gwt-MenuItemSeparator .menuSeparatorInner {
+  width: 1px;
+  height: 1px;
+  background: white; 
+}
+.gwt-MenuBar-vertical {
+  margin-top: 0px;
+  margin-left: 0px;
+  background: white;
+}
+.gwt-MenuBar-vertical table {
+  border-collapse: collapse;
+}
+.gwt-MenuBar-vertical .gwt-MenuItem {
+  /* padding: 2px 40px 2px 1px; */
+}
+.gwt-MenuBar-vertical .gwt-MenuItemSeparator {
+  padding: 2px 0px;
+}
+.gwt-MenuBar-vertical .gwt-MenuItemSeparator .menuSeparatorInner {
+  height: 1px;
+  padding: 0px;
+  border: 0px;
+  border-top: 1px solid #ccc;
+  overflow: hidden;
+}
+.gwt-MenuBar-vertical .subMenuIcon {
+  padding-right: 4px;
+}
+.gwt-MenuBar-vertical .subMenuIcon-selected {
+  background: #000;
+}
+.gwt-MenuBarPopup {
+  margin: 0px 0px 0px 3px;
+}
+.gwt-MenuBarPopup .menuPopupTopCenter {
+  background-color: #f00;
+}
+.gwt-MenuBarPopup .menuPopupBottomCenter {
+  background-color: #ff0;
+}
+.gwt-MenuBarPopup .menuPopupMiddleLeft {
+  background-color: #f0f;
+}
+.gwt-MenuBarPopup .menuPopupMiddleRight {
+  background-color: #0ff;
+}
+.gwt-MenuBarPopup .menuPopupTopLeftInner {
+  width: 5px;
+  height: 5px;
+  zoom: 1;
+}
+.gwt-MenuBarPopup .menuPopupTopRightInner {
+  width: 8px;
+  height: 5px;
+  zoom: 1;
+}
+.gwt-MenuBarPopup .menuPopupBottomLeftInner {
+  width: 5px;
+  height: 8px;
+  zoom: 1;
+}
+.gwt-MenuBarPopup .menuPopupBottomRightInner {
+  width: 8px;
+  height: 8px;
+  zoom: 1;
+}
+.gwt-MenuBarPopup .menuPopupTopLeft {
+	background-color: #f00;
+}
+.gwt-MenuBarPopup .menuPopupTopRight {
+	background-color: #0f0;
+}
+.gwt-MenuBarPopup .menuPopupBottomLeft {
+	background-color: #00f;
+}
+.gwt-MenuBarPopup .menuPopupBottomRight {
+	background-color: #0ff;
+}
+html>body .gwt-MenuBarPopup {
+}
+* html .gwt-MenuBarPopup .menuPopupTopLeftInner {
+  width: 5px;
+  height: 5px;
+  overflow: hidden;
+}
+* html .gwt-MenuBarPopup .menuPopupTopRightInner {
+  width: 8px;
+  height: 5px;
+  overflow: hidden;
+}
+* html .gwt-MenuBarPopup .menuPopupBottomLeftInner {
+  width: 5px;
+  height: 8px;
+  overflow: hidden;
+}
+* html .gwt-MenuBarPopup .menuPopupBottomRightInner {
+  width: 8px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.gwt-MenuItem {
+	background-color: #000;
+	color: #fff;
+}
+
+/* *************************** */
+
+.mf-controlPanel {
+	padding-top: 0.3em;
+}
+
+.mf-buttonSmall {
+	padding: 0.3em 0.5em 0.3em 0.5em;
+	font-size: 0.7em;
+	border-width: 0px;
+	margin: 1px 2px 1px 1px;		
+	
+	background-color: #000;
+	color: #fff;
+	cursor: hand;
+    cursor: pointer;
+}
+
+/*
+.mf-buttonSmall:hover {
+	padding: 0em 0.5em 0em 0.5em;
+	font-size: 0.7em;
+}
+*/
+
+.mf-buttonSmallMaximize {
+	background: url('../images/button-small-maximize.png') no-repeat; 
+	padding: 0.3em;
+	width: 20px;
+	height: 20px;
+    margin: 1px;
+}
+.mf-buttonSmallMinimize {
+	background: url('../images/button-small-minimize.png') no-repeat; 
+	padding: 0.3em;
+	width: 20px;
+	height: 20px;
+    margin: 1px;
+}
+.mf-buttonSmallAddChild {
+	background: url('../images/button-small-add-child.png') no-repeat; 
+	padding: 0.3em;
+	width: 20px;
+    height: 20px;
+	margin: 1px;
+}
+.mf-buttonSmallPromote {
+	background: url('../images/button-small-left.png') no-repeat; 
+	padding: 0.3em;
+	width: 20px;
+	height: 20px;
+    margin: 1px;
+}
+.mf-buttonSmallMoveUp {
+	background: url('../images/button-small-up.png') no-repeat; 
+	padding: 0.3em;
+	width: 20px;
+	height: 20px;
+    margin: 1px;
+}
+.mf-buttonSmallMoveDown {
+	background: url('../images/button-small-down.png') no-repeat; 
+	padding: 0.3em;
+	width: 20px;
+	height: 20px;
+	margin: 1px;
+}
+.mf-buttonSmallDemote {
+	background: url('../images/button-small-right.png') no-repeat; 
+	padding: 0.3em;
+	width: 20px;
+	height: 20px;
+    margin: 1px;
+}
+
+
+.mf-searchPanel {
+	width: 100%;
+}
+.mf-searchPanel > tbody > tr > td:first-child {
+	width: 75px;
+}
+.mf-searchButton {
+}
+.mf-searchTextBox {
+	width: 100%;
+	border: 1px solid #000;
+	margin-top: 3px; 
+	padding: 3px;
+}
+
+/** EOF **/
