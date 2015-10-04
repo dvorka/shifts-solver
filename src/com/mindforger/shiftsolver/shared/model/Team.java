@@ -1,6 +1,7 @@
 package com.mindforger.shiftsolver.shared.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,14 @@ public class Team implements Serializable {
 	
 	public void addEmployee(Employee employee) {
 		employees.put(employee.getFullName(), employee);
+	}
+
+	public void addEmployees(Collection<Employee> employees) {
+		if(employees!=null) {
+			for(Employee e:employees) {
+				addEmployee(e);
+			}			
+		}
 	}
 	
 	public Map<String, Employee> getEmployees() {

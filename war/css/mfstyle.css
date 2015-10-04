@@ -5,7 +5,7 @@
   Comments gray #777
   Help #008C00
   Hover dark gray #36393D
-  MR blue #356AA0  
+  MR blue #356AA0
 
  Web 2.0 colors:  
   Shiny silver [#EEEEEE]
@@ -61,6 +61,43 @@ h1 {
   margin: 40px 0px 70px;
   text-align: center;
 }
+
+/* S2 */
+
+.s2-shiftFree {
+	background-color: #FFF 
+	color: #FFF; 
+	font-weight: normal;
+}
+.s2-shiftNa {
+	background-color: #CC0000 
+	color: #FFF; 
+	font-weight: normal;
+}
+.s2-shiftVacations {
+	background-color: #FFFF88; 
+	color: black; 
+	font-weight: normal;
+}
+.s2-shiftMorning {
+	background-color: #356AA0; 
+	color: #FFF; 
+	font-weight: normal;
+}
+.s2-shiftAfternoon {
+	background-color: #008C00; 
+	color: #FFF; 
+	font-weight: normal;
+}
+.s2-shiftNight {
+	background-color: #000; 
+	color: #FFF;
+	font-weight: normal;
+}
+
+
+
+
 
 /** Most GWT widgets already have a style name defined */
 

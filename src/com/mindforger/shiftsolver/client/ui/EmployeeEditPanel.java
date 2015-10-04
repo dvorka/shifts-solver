@@ -23,6 +23,7 @@ public class EmployeeEditPanel extends FlexTable {
 	private CheckBox sportakCheckbox;
 	private CheckBox editorCheckbox;
 	private CheckBox femaleCheckbox;
+	
 	private Employee employee;
 
 	public EmployeeEditPanel(final RiaContext ctx) {
@@ -147,7 +148,7 @@ public class EmployeeEditPanel extends FlexTable {
 		fulltimeCheckbox.setValue(employee.isFulltime());
 	}
 
-	public void riaToObject() {
+	private void riaToObject() {
 		if(employee!=null) {
 			employee.setEditor(editorCheckbox.getValue());
 			employee.setFamilyname(familyNameTextBox.getText());

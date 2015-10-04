@@ -1,7 +1,6 @@
 package com.mindforger.shiftsolver.client;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -12,6 +11,7 @@ import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
+import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -70,8 +70,8 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		homePanel.add(ctx.getHomePanel());
 		employeesTablePanel.add(ctx.getEmployeesTable());
 		employeeEditPanel.add(ctx.getEmployeesEditPanel());
-		dlouhanTable.add(ctx.getDlouhanTable());
-		dlouhanEditPanel.add(ctx.getDlouhanEditPanel());
+		dlouhanTable.add(ctx.getPeriodPreferencesTable());
+		dlouhanEditPanel.add(ctx.getPeriodPreferencesEditPanel());
 		solutionTable.add(ctx.getSolutionTable());
 		solutionViewPanel.add(ctx.getSolutionViewPanel());
 
@@ -139,8 +139,8 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 	public void loadPeriodPreferences(String periodPreferencesId) {
 		// TODO consider loading from the server
 		PeriodPreferences periodPreferences = ctx.getState().getPeriodPreferences(periodPreferencesId);
-		ctx.getDlouhanEditPanel().refresh(periodPreferences);
-		// TODO show period preference edit panel
+		ctx.getPeriodPreferencesEditPanel().refresh(periodPreferences);
+		showPeriodPreferencesEditPanel();
 	}
 
 	private void hideAllContainers() {
@@ -179,7 +179,14 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		RootPanel.get(CONTAINER_DLOUHAN_TABLE).setVisible(true);
 	}
 
+	public void showPeriodPreferencesEditPanel() {
+		hideAllContainers();
+		ctx.getPageTitlePanel().setHTML(i18n.periodPreferences());
+		RootPanel.get(CONTAINER_DLOUHAN_EDITOR).setVisible(true);
+	}
+		
 	// TODO merge save and delete/update to single method
+	@Deprecated
 	public void saveEmployee(Employee employee) {
 		if(employee!=null) {
 			Employee[] employees = ctx.getState().getEmployees();
@@ -199,7 +206,6 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		}
 		showEmployeesTable();		
 	}
-
 	public void deleteOrUpdateEmployee(Employee employee, boolean delete) {
 		if(employee!=null) {
 			Employee[] employees = ctx.getState().getEmployees();
@@ -226,7 +232,65 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		showEmployeesTable();		
 	}
 
-	
+	// TODO merge save and delete/update to single method
+	@Deprecated
+	public void savePeriodPreferences(PeriodPreferences preferences) {
+		if(preferences!=null) {
+			PeriodPreferences[] array = ctx.getState().getPeriodPreferencesList();
+			if(array!=null) {
+				if(ctx.getState().getPeriodPreferences(preferences.getKey())==null) {			
+					List<PeriodPreferences> list = new ArrayList<PeriodPreferences>();
+					for(PeriodPreferences e:array) list.add(e); // Arrays.asList() returns unmodifiable list
+					list.add(preferences);
+					PeriodPreferences[] newArray = list.toArray(new PeriodPreferences[list.size()]);
+					ctx.getState().setPeriodPreferencesList(newArray);
+				} else {
+					deleteOrUpdatePeriodPreferences(preferences, false);					
+					return;
+				}
+			}
+			ctx.getPeriodPreferencesTable().refresh(ctx.getState().getPeriodPreferencesList());
+		}
+		showPeriodPreferencesTable();		
+	}
+	public void deleteOrUpdatePeriodPreferences(PeriodPreferences employee, boolean delete) {
+		if(employee!=null) {
+			PeriodPreferences[] employees = ctx.getState().getPeriodPreferencesList();
+			if(employees!=null && ctx.getState().getPeriodPreferences(employee.getKey())!=null) {
+				List<PeriodPreferences> list = new ArrayList<PeriodPreferences>();
+				PeriodPreferences victim=null;
+				for(PeriodPreferences e:employees) {
+					list.add(e);
+					if(e.getKey().equals(employee.getKey())) {
+						victim=e;
+					}
+				}
+				if(victim!=null) {
+					list.remove(victim);					
+					if(!delete) {
+						list.add(employee);
+					}
+				}
+				PeriodPreferences[] newArray = list.toArray(new PeriodPreferences[list.size()]);
+				ctx.getState().setPeriodPreferencesList(newArray);
+			}
+			ctx.getPeriodPreferencesTable().refresh(ctx.getState().getPeriodPreferencesList());
+		}
+		showPeriodPreferencesTable();		
+	}
+
+	public void showSolution(PeriodSolution solution) {
+		hideAllContainers();
+		ctx.getPageTitlePanel().setHTML(i18n.solution());
+		RootPanel.get(CONTAINER_SOLUTION_VIEW).setVisible(true);
+	}
+
+	public void showSolutionsTable() {
+		hideAllContainers();
+		ctx.getPageTitlePanel().setHTML(i18n.solutions());
+		RootPanel.get(CONTAINER_SOLUTION_TABLE).setVisible(true);
+	}
+
 	
 	
 //	@Deprecated

@@ -1,5 +1,8 @@
 package com.mindforger.shiftsolver.client.ui.menu;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -13,6 +16,8 @@ import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.model.Employee;
+import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
+import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
 public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 	
@@ -28,11 +33,9 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 	HTML menuSectionsDelimiter;
 	
 	Button newEmployeeButton;
-	Button employeesButton; // TODO employees
+	Button employeesButton;
 	Button newPeriodPreferencesButton;
-	Button periodPreferencesButton;	// TODO dlouhan
-
-	// help
+	Button periodPreferencesButton;
 	Button homeButton;
 
 	private Ria ria;
@@ -65,7 +68,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 		
 		newEmployeeButton = new Button(ctx.getI18n().newEmployee(), new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				createNewEmployee(null);		
+				createNewEmployee();		
 			}
 		});
 	    newEmployeeButton.setStyleName("mf-helpGuideButton");
@@ -80,7 +83,13 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 
 		periodPreferencesButton=new Button(i18n.periodPreferences(), new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				showPeriodPreferencesTable();
+				if(ctx.getState().getPeriodPreferencesList()!=null && ctx.getState().getPeriodPreferencesList().length>0) {
+					int count=(ctx.getState().getEmployees()!=null?ctx.getState().getPeriodPreferencesList().length:0);
+					setPeriodPreferencesCount(count);
+					showPeriodPreferencesTable();
+				} else {
+					showHome();					
+				}
 			}
 		});
 		periodPreferencesButton.setStyleName("mf-menuButtonOff");
@@ -154,7 +163,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 		newEmployeeButton.addStyleName("mf-newGoalButton");		
 	}
 	
-	public void createNewEmployee(final String growTitle) {
+	public void createNewEmployee() {
 		service.newEmployee(new AsyncCallback<Employee>() {
 			public void onFailure(Throwable caught) {
 				ria.handleServiceError(caught);
@@ -169,30 +178,25 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 	}
 
 	public void createNewPeriodPreferences() {
-//		service.newOutline(new AsyncCallback<OutlineBean>() {
-//			public void onFailure(Throwable caught) {
-//				ria.handleServiceError(caught);
-//			}
-//			public void onSuccess(OutlineBean result) {
-//				// TODO fix error reporting
-////				if(result!=null && result.startsWith(UserLimitsBean.LIMIT_EXCEEDED)) {
-////					statusLine.showError(
-////							i18n.youExceededOutlinesLimit()+
-////							" - "+
-////							result.substring(UserLimitsBean.LIMIT_EXCEEDED.length())+
-////							"!");
-////				} else {
-//					GWT.log("RIA - new outline succesfuly created! "+result);
-//					
-//					outlinePanel.onNewOutline(result);
-//					ria.showOutline();
-//					
-//				    newOutlineButton.setStyleName("mf-button");
-//					newOutlineButton.addStyleName("mf-newGoalButton");
-//					statusLine.hideStatus();
-////				}
-//			}
-//		});
+		service.newPeriodPreferences(new AsyncCallback<PeriodPreferences>() {
+			public void onFailure(Throwable caught) {
+				ria.handleServiceError(caught);
+			}
+			public void onSuccess(PeriodPreferences result) {
+				GWT.log("RIA - new preferences succesfuly created! "+result);
+				
+				Employee[] employees = ctx.getState().getEmployees();
+				Map<Employee,EmployeePreferences> prefs=new HashMap<Employee,EmployeePreferences>();
+				for(Employee e:employees) {
+					prefs.put(e, new EmployeePreferences());
+				}
+				result.setEmployeeToPreferences(prefs);
+				
+				ctx.getPeriodPreferencesEditPanel().refresh(result);
+				ria.showPeriodPreferencesEditPanel();
+				ctx.getStatusLine().hideStatus();
+			}
+		});
 	}
 
 	// TODO optimize this (perhaps one reinitialize doing everything is OK

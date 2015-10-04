@@ -83,4 +83,9 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		employee.setFulltime(true);
 		return employee;
 	}
+
+	@Override
+	public PeriodPreferences newPeriodPreferences() {
+		return newPeriodPreferences(2015, 9);
+	}
 }

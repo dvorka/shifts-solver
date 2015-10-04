@@ -3,11 +3,7 @@ package com.mindforger.shiftsolver.client.ui;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.ListBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.ui.buttons.PeriodPreferencesTableToEditorButton;
@@ -15,7 +11,7 @@ import com.mindforger.shiftsolver.client.ui.buttons.TableSetSortingButton;
 import com.mindforger.shiftsolver.client.ui.comparators.ComparatorPeriodPreferencesByYearAndMonth;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
-public class DlouhanTable extends FlexTable implements SortableTable {
+public class PeriodPreferencesTable extends FlexTable implements SortableTable {
 	
 	private RiaMessages i18n;
 	private RiaContext ctx;
@@ -23,13 +19,12 @@ public class DlouhanTable extends FlexTable implements SortableTable {
 	private TableSortCriteria sortCriteria;
 	private boolean sortIsAscending;
 
-	public DlouhanTable(RiaContext ctx) {
+	public PeriodPreferencesTable(RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
 	}
 	
 	public void init() {
-		// TODO style rename
 		addStyleName("mf-growsTable");
 		sortCriteria=TableSortCriteria.BY_YEAR_AND_MONTH;
 		sortIsAscending=true;
@@ -63,7 +58,6 @@ public class DlouhanTable extends FlexTable implements SortableTable {
 	}
 	
 	private void addRows(PeriodPreferences[] result) {
-		addNewPeriodPreferencesRow();
 		addTableTitle();
 		if(result!=null) {
 			for (int i = 0; i < result.length; i++) {
@@ -73,34 +67,6 @@ public class DlouhanTable extends FlexTable implements SortableTable {
 						result[i].getMonth());
 			}			
 		}
-	}
-
-	private void addNewPeriodPreferencesRow() {
-		Button newPeriodPreferencesButton=new Button();
-		newPeriodPreferencesButton.setText(i18n.create());
-		newPeriodPreferencesButton.setTitle(i18n.createNewPeriodPreferences());
-		// TODO newPeriodPreferencesButton.setStyleName();
-		newPeriodPreferencesButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-	    		ctx.getStatusLine().showProgress(ctx.getI18n().creatingNewPeriodPreferences());
-	    		// TODO
-	      		ctx.getStatusLine().hideStatus();
-			}
-		});
-
-		ListBox yearListBox=new ListBox(false);
-		for(int i=0; i<10; i++) {
-			yearListBox.addItem(""+(2015+i));			
-		}
-		
-		ListBox monthListBox=new ListBox(false);
-		for(int i=1; i<=12; i++) {
-			monthListBox.addItem(""+i);			
-		}
-		
-		setWidget(0, 0, yearListBox);
-		setWidget(0, 1, monthListBox);		
-		setWidget(0, 2, newPeriodPreferencesButton);
 	}
 	
 	private void addTableTitle() {

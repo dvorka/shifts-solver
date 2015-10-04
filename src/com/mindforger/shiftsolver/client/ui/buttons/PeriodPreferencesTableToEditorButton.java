@@ -13,13 +13,13 @@ public class PeriodPreferencesTableToEditorButton extends Button {
 			int month,
 			final String cssClass,
 			final RiaContext ctx) {
-		setText(year+"/"+(month+1));
+		setText(year+"/"+month);
 		// TODO i18n
 		setTitle("Year/Month");
 		setStyleName(cssClass);
 
 		addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+			public void onClick(ClickEvent event) {								
 	    		ctx.getStatusLine().showProgress(ctx.getI18n().loadingPeriodPreferences());
 	      		ctx.getRia().loadPeriodPreferences(periodPreferencesId);
 	      		ctx.getStatusLine().hideStatus();

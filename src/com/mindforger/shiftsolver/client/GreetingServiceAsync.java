@@ -11,6 +11,6 @@ public interface GreetingServiceAsync {
 			throws IllegalArgumentException;
 	
 	void newEmployee(AsyncCallback<Employee> asyncCallback);
-
 	void newPeriodPreferences(int year, int month, AsyncCallback<PeriodPreferences> callback);
+	void newPeriodPreferences(AsyncCallback<PeriodPreferences> asyncCallback);
 }

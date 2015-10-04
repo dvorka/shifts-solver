@@ -8,7 +8,7 @@ public class PeriodSolution implements Serializable {
 	private static final long serialVersionUID = 7586400671035292788L;
 
 	private String key;
-	private String dlouhanKey;
+	private String periodPreferencesKey;
 	private int year;
 	private int month; 
 	private List<DaySolution> days;
@@ -64,10 +64,10 @@ public class PeriodSolution implements Serializable {
 	}
 
 	public String getDlouhanKey() {
-		return dlouhanKey;
+		return periodPreferencesKey;
 	}
 
 	public void setDlouhanKey(String dlouhanKey) {
-		this.dlouhanKey = dlouhanKey;
+		this.periodPreferencesKey = dlouhanKey;
 	}
 }

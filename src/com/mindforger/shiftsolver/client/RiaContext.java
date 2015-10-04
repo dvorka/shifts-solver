@@ -4,11 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
-import com.mindforger.shiftsolver.client.ui.DlouhanEditPanel;
-import com.mindforger.shiftsolver.client.ui.DlouhanTable;
 import com.mindforger.shiftsolver.client.ui.EmployeeEditPanel;
 import com.mindforger.shiftsolver.client.ui.EmployeesTable;
 import com.mindforger.shiftsolver.client.ui.HomePanel;
+import com.mindforger.shiftsolver.client.ui.PeriodPreferencesEditPanel;
+import com.mindforger.shiftsolver.client.ui.PeriodPreferencesTable;
 import com.mindforger.shiftsolver.client.ui.PeriodSolutionTable;
 import com.mindforger.shiftsolver.client.ui.PeriodSolutionViewPanel;
 import com.mindforger.shiftsolver.client.ui.StatusLine;
@@ -49,8 +49,8 @@ public class RiaContext implements ShiftSolverConstants {
 	private HomePanel homePanel;
 	private EmployeesTable employeesTable;
 	private EmployeeEditPanel employeeEditPanel;
-	private DlouhanTable dlouhanTable;
-	private DlouhanEditPanel dlouhanPanel;
+	private PeriodPreferencesTable periodPreferencesTable;
+	private PeriodPreferencesEditPanel periodPreferencesEditPanel;
 	private PeriodSolutionTable periodSolutionTable;
 	private PeriodSolutionViewPanel periodSolutionViewPanel;
 	
@@ -74,8 +74,8 @@ public class RiaContext implements ShiftSolverConstants {
 		homePanel=new HomePanel(this);
 		employeesTable=new EmployeesTable(this);
 		employeeEditPanel=new EmployeeEditPanel(this);
-		dlouhanTable=new DlouhanTable(this);		
-		dlouhanPanel=new DlouhanEditPanel(this);
+		periodPreferencesTable=new PeriodPreferencesTable(this);		
+		periodPreferencesEditPanel=new PeriodPreferencesEditPanel(this);
 		periodSolutionTable=new PeriodSolutionTable(this);
 		periodSolutionViewPanel=new PeriodSolutionViewPanel(this);
 	}
@@ -116,16 +116,16 @@ public class RiaContext implements ShiftSolverConstants {
 		return employeeEditPanel;
 	}
 	
-	public DlouhanTable getDlouhanTable() {
-		if(!initialized.contains(dlouhanTable)) {
-			initialized.add(dlouhanTable);
-			dlouhanTable.init();
+	public PeriodPreferencesTable getPeriodPreferencesTable() {
+		if(!initialized.contains(periodPreferencesTable)) {
+			initialized.add(periodPreferencesTable);
+			periodPreferencesTable.init();
 		}
-		return dlouhanTable;
+		return periodPreferencesTable;
 	}
 	
-	public DlouhanEditPanel getDlouhanEditPanel() {
-		return dlouhanPanel;
+	public PeriodPreferencesEditPanel getPeriodPreferencesEditPanel() {
+		return periodPreferencesEditPanel;
 	}
 	
 	public RiaState getState() {

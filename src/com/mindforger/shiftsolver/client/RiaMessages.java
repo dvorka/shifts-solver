@@ -32,4 +32,8 @@ public interface RiaMessages extends Messages {
 	String savingEmployee();
 	String deletingEmployee();
 	String buildingPeriodPreferences();
+	String solvingShifts();
+	String savingPeriodPreferences();
+	String solution();
+	String solutions();
 }

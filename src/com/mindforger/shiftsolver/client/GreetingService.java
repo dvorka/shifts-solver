@@ -13,4 +13,5 @@ public interface GreetingService extends RemoteService {
 
 	Employee newEmployee();
 	PeriodPreferences newPeriodPreferences(int year, int month);
+	PeriodPreferences newPeriodPreferences();
 }
