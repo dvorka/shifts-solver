@@ -179,35 +179,44 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		RootPanel.get(CONTAINER_DLOUHAN_TABLE).setVisible(true);
 	}
 
+	// TODO merge save and delete/update to single method
 	public void saveEmployee(Employee employee) {
 		if(employee!=null) {
 			Employee[] employees = ctx.getState().getEmployees();
-			if(employees!=null && ctx.getState().getEmployee(employee.getKey())==null) {
-				List<Employee> list = new ArrayList<Employee>();
-				for(Employee e:employees) list.add(e); // Arrays.asList() returns unmodifiable list
-				list.add(employee);
-				Employee[] newArray = list.toArray(new Employee[list.size()]);
-				ctx.getState().setEmployees(newArray);
+			if(employees!=null) {
+				if(ctx.getState().getEmployee(employee.getKey())==null) {			
+					List<Employee> list = new ArrayList<Employee>();
+					for(Employee e:employees) list.add(e); // Arrays.asList() returns unmodifiable list
+					list.add(employee);
+					Employee[] newArray = list.toArray(new Employee[list.size()]);
+					ctx.getState().setEmployees(newArray);
+				} else {
+					deleteOrUpdateEmployee(employee, false);					
+					return;
+				}
 			}
 			ctx.getEmployeesTable().refresh(ctx.getState().getEmployees());
 		}
 		showEmployeesTable();		
 	}
 
-	public void deleteEmployee(Employee employee) {
+	public void deleteOrUpdateEmployee(Employee employee, boolean delete) {
 		if(employee!=null) {
 			Employee[] employees = ctx.getState().getEmployees();
 			if(employees!=null && ctx.getState().getEmployee(employee.getKey())!=null) {
-				List<Employee> list = Arrays.asList(employees);
+				List<Employee> list = new ArrayList<Employee>();
 				Employee victim=null;
-				for(Employee e:list) {
+				for(Employee e:employees) {
+					list.add(e);
 					if(e.getKey().equals(employee.getKey())) {
 						victim=e;
-						break;
 					}
 				}
 				if(victim!=null) {
 					list.remove(victim);					
+					if(!delete) {
+						list.add(employee);
+					}
 				}
 				Employee[] newArray = list.toArray(new Employee[list.size()]);
 				ctx.getState().setEmployees(newArray);

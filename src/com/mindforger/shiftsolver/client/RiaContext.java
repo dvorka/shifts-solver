@@ -157,6 +157,10 @@ public class RiaContext implements ShiftSolverConstants {
 	}
 	
 	public HomePanel getHomePanel() {
+		if(!initialized.contains(homePanel)) {
+			initialized.add(homePanel);
+			homePanel.init();
+		}
 		return homePanel;
 	}
 }

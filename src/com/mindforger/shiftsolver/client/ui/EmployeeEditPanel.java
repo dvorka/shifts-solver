@@ -38,6 +38,7 @@ public class EmployeeEditPanel extends FlexTable {
 			public void onClick(ClickEvent event) {
 				if(employee!=null) {
 		    		ctx.getStatusLine().showProgress(ctx.getI18n().savingEmployee());
+		    		riaToObject();
 		      		ctx.getRia().saveEmployee(employee);
 		      		ctx.getStatusLine().hideStatus();					
 				}
@@ -61,7 +62,7 @@ public class EmployeeEditPanel extends FlexTable {
 			public void onClick(ClickEvent event) {
 				if(employee!=null) {
 		    		ctx.getStatusLine().showProgress(ctx.getI18n().deletingEmployee());
-		      		ctx.getRia().deleteEmployee(employee);
+		      		ctx.getRia().deleteOrUpdateEmployee(employee, true);
 		      		ctx.getStatusLine().hideStatus();					
 				}
 			}

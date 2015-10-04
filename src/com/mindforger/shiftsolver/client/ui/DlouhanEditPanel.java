@@ -38,13 +38,14 @@ public class DlouhanEditPanel extends FlexTable {
 	}
 	
 	private void addRows(PeriodPreferences result) {
-		addTableTitle(result);
-		
+		ctx.getStatusLine().showInfo(i18n.buildingPeriodPreferences());
+		addTableTitle(result);		
 		if(result!=null) {
 			for(Employee employee:result.getEmployeeToPreferences().keySet()) {
 				addRow(employee, result.getEmployeeToPreferences().get(employee),result.getMonthDays());
 			}			
 		}
+		ctx.getStatusLine().hideStatus();
 	}
 
 	private void addTableTitle(PeriodPreferences result) {

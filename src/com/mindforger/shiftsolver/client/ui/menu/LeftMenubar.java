@@ -94,6 +94,8 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 	    newPeriodPreferencesButton.addStyleName("mf-newGoalButton");
 				
 		reinitialize();
+		setEmployeesCount(ctx.getState().getEmployees().length);
+		setPeriodPreferencesCount(ctx.getState().getPeriodPreferencesList().length);
 	}
 
 	public void reinitialize() {
@@ -112,7 +114,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 		setWidget(row++, 0, new HTML(HTML_MENU_DELIMITER));			
 
 		setWidget(row++, 0, newPeriodPreferencesButton);
-		setWidget(row++, 0, periodPreferencesButton);
+		setWidget(row++, 0, periodPreferencesButton);		
 	}
 	
 	private void switchOfAllButtons() {
