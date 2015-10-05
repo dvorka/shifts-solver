@@ -1,5 +1,5 @@
 # Shifts Solver
-Find a solution to fitting employees in a shifts.
+Finds a solution to creation of a schedule for shifts-based operation.
 
 ## Feedback
 
