@@ -13,13 +13,11 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
-import com.mindforger.shiftsolver.client.solver.ShiftsSolver;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
-import com.mindforger.shiftsolver.shared.model.Team;
 
 public class PeriodPreferencesEditPanel extends FlexTable {
 
@@ -27,7 +25,6 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 	
 	private RiaMessages i18n;
 	private RiaContext ctx;
-	private ShiftsSolver solver;
 
 	private TableSortCriteria sortCriteria;
 	private boolean sortIsAscending;
@@ -50,7 +47,6 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 	public PeriodPreferencesEditPanel(final RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
-		this.solver=new ShiftsSolver();
 		this.checkboxes=new HashMap<String,CheckBox>();
 		
 		FlowPanel buttonPanel = newButtonPanel(ctx);
@@ -70,18 +66,11 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		solveButton.setStyleName("mf-button");
 		solveButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if(periodPreferences!=null) {
-		    		ctx.getStatusLine().showProgress(ctx.getI18n().savingPeriodPreferences());
-		    		riaToObject();
-		      		ctx.getRia().savePeriodPreferences(periodPreferences);
-		      		
+				if(periodPreferences!=null) {		      		
 		    		ctx.getStatusLine().showProgress(ctx.getI18n().solvingShifts());
-		      		Team team=new Team();
-		      		team.addEmployees(periodPreferences.getEmployeeToPreferences().keySet());
-		      		PeriodSolution solution = solver.solve(team, periodPreferences);
-		      		
+		      		PeriodSolution solution = ctx.getSolver().solve(periodPreferences.getEmployeeToPreferences().keySet(), periodPreferences);		      		
 		      		ctx.getSolutionViewPanel().refresh(solution);
-		      		ctx.getRia().showSolution(solution);
+		      		ctx.getRia().showSolutionViewPanel();
 				}
 			}
 		});		

@@ -5,13 +5,13 @@ import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.thirdparty.guava.common.util.concurrent.UncaughtExceptionHandlers;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
-import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -38,10 +38,12 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 	
 	public Ria() {
 		ctx=new RiaContext(this);
-		i18n = ctx.getI18n();
+		i18n = ctx.getI18n();		
 	}
-	
+		
 	public void onModuleLoad() {
+		// debugging in GWT super dev mode ensuring that exception is thrown on consoel
+		GWT.setUncaughtExceptionHandler(new GwtJavascriptClientExceptionHander());	
 		
 		ctx.getStatusLine().showProgress(i18n.loadingEmployeesAndPreferences());
 
@@ -49,7 +51,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 //			public void onSuccess(RiaBootImageBean bean) {
 //				ctx.getStatusLine().showProgress(i18n.initializingMf());
 		
-		createFooRiaState();
+		ctx.setState(Utils.createSmallFooState());
 		
 		ctx.getStatusLine().hideStatus();
 		
@@ -63,6 +65,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		RootPanel dlouhanEditPanel = RootPanel.get(CONTAINER_DLOUHAN_EDITOR);
 		RootPanel solutionTable = RootPanel.get(CONTAINER_SOLUTION_TABLE);
 		RootPanel solutionViewPanel = RootPanel.get(CONTAINER_SOLUTION_VIEW);
+		RootPanel solverProgressPanel = RootPanel.get(CONTAINER_SOLVER_PROGRESS);
 				
 		statusPanel.add(ctx.getStatusLine());
 		pageTitlePanel.add(ctx.getPageTitlePanel());
@@ -74,6 +77,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		dlouhanEditPanel.add(ctx.getPeriodPreferencesEditPanel());
 		solutionTable.add(ctx.getSolutionTable());
 		solutionViewPanel.add(ctx.getSolutionViewPanel());
+		solverProgressPanel.add(ctx.getSolverProgressPanel());
 
 		showHome();		
 //      }		
@@ -84,52 +88,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		GWT.log("Error: "+errorMessage, caught);
 		ctx.getStatusLine().showError(i18n.ooops());
 	}
-	
-	private void createFooRiaState() {
-		RiaState state = new RiaState();
-		List<Employee> employeesList=new ArrayList<Employee>();
-		Employee lenka=new Employee();
-		lenka.setKey("1");
-		lenka.setFirstname("Lenka");
-		lenka.setFamilyname("Strelenka");
-		lenka.setEditor(true);
-		lenka.setFulltime(false);
-		lenka.setFemale(true);
-		employeesList.add(lenka);
-		Employee misa=new Employee();
-		misa.setKey("2");
-		misa.setFirstname("Misa");
-		misa.setFamilyname("Plysak");
-		misa.setEditor(true);
-		misa.setFulltime(true);
-		misa.setFemale(true);
-		employeesList.add(misa);
-		Employee mirek=new Employee();
-		mirek.setKey("3");
-		mirek.setFirstname("Mirek");
-		mirek.setFamilyname("Drson");
-		mirek.setEditor(true);
-		mirek.setFulltime(true);
-		mirek.setFemale(false);
-		employeesList.add(mirek);
-		state.setEmployees(employeesList.toArray(new Employee[employeesList.size()]));
 		
-		PeriodPreferences periodPreferences = new PeriodPreferences(2015, 10);
-		periodPreferences.setKey("1");
-		periodPreferences.setMonthDays(31);
-		periodPreferences.setStartWeekDay(5);
-		EmployeePreferences employeePreferences = new EmployeePreferences();
-		employeePreferences.setPreferences(new ArrayList<DayPreference>());
-		periodPreferences.addEmployeePreferences(lenka, employeePreferences);
-		periodPreferences.addEmployeePreferences(misa, employeePreferences);
-		periodPreferences.addEmployeePreferences(mirek, employeePreferences);
-		PeriodPreferences[] periodPreferencesArray=new PeriodPreferences[1];
-		periodPreferencesArray[0]=periodPreferences;
-		state.setPeriodPreferencesList(periodPreferencesArray);
-		
-		ctx.setState(state);
-	}
-
 	public void loadEmployee(String employeeId) {
 		// TODO consider loading from the server
 		Employee employee = ctx.getState().getEmployee(employeeId);
@@ -280,7 +239,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		showPeriodPreferencesTable();		
 	}
 
-	public void showSolution(PeriodSolution solution) {
+	public void showSolutionViewPanel() {
 		hideAllContainers();
 		ctx.getPageTitlePanel().setHTML(i18n.solution());
 		RootPanel.get(CONTAINER_SOLUTION_VIEW).setVisible(true);

@@ -3,28 +3,23 @@ package com.mindforger.shiftsolver.client.ui;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
-import com.mindforger.shiftsolver.client.solver.ShiftsSolver;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
-import com.mindforger.shiftsolver.shared.model.Team;
 
 public class PeriodSolutionViewPanel extends FlexTable {
 
 	private RiaMessages i18n;
 	private RiaContext ctx;
-	private ShiftsSolver solver;
 
 	private TableSortCriteria sortCriteria;
 	private boolean sortIsAscending;
@@ -33,12 +28,9 @@ public class PeriodSolutionViewPanel extends FlexTable {
 	private TextBox monthListBox;
 	private FlexTable preferencesTable;
 	
-	private PeriodSolution periodSolution;
-	
 	public PeriodSolutionViewPanel(final RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
-		this.solver=new ShiftsSolver();
 		
 		FlowPanel buttonPanel = newButtonPanel(ctx);
 		setWidget(0, 0, buttonPanel);
@@ -119,7 +111,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 
 		table.removeAllRows();
 		
-		if(solution!=null && solution.getShifts()!=null && solution.getShifts().size()>0) {
+		if(solution!=null && solution.getDays()!=null && solution.getDays().size()>0) {
 			HTML html = new HTML("Employee"); // TODO i18n
 			// TODO allow sorting the table by employee name
 			// setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
@@ -169,58 +161,65 @@ public class PeriodSolutionViewPanel extends FlexTable {
 				
 		HTML html;
 		for(int c=0; c<monthDays; c++) {
-			// TODO switch() case by solution
-			int fake=c%6;
-			switch(fake) {
-			case 0:
-				html = new HTML("N");
-				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_NA);
-				html.setTitle("N/A");
-				table.setWidget(numRows, c+1, html);
-				break;
-			case 1:
-				html = new HTML("V");
-				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_VACATIONS);
-				html.setTitle("Vacations");
-				table.setWidget(numRows, c+1, html);
-				break;
-			case 2:
-				html = new HTML("M");
-				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
-				html.setTitle("Morning shift");
-				table.setWidget(numRows, c+1, html);
-				break;
-			case 3:
-				html = new HTML("6");
-				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
-				html.setTitle("Morning shift");
-				table.setWidget(numRows, c+1, html);
-				break;
-			case 4:
-				html = new HTML("7");
-				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
-				html.setTitle("Morning shift");
-				table.setWidget(numRows, c+1, html);
-				break;
-			case 5:
-				html = new HTML("8");
-				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_AFTERNOON);
-				html.setTitle("Afternoon shift");
-				table.setWidget(numRows, c+1, html);
-				break;
-			case 6:
-				html = new HTML("N");
-				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_NIGHT);
-				html.setTitle("Night shift");
-				table.setWidget(numRows, c+1, html);
-				break;
-			default:
+			if(solution.getDays().get(c+1).isEmployeeAllocated(employee.getKey())) {
+				switch(solution.getDays().get(c+1).getShiftTypeForEmployee(employee.getKey())) {
+				case ShiftSolverConstants.SHIFT_MORNING:
+					html = new HTML("M");
+					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
+					html.setTitle("Morning shift");
+					table.setWidget(numRows, c+1, html);
+					break;
+				case ShiftSolverConstants.SHIFT_MORNING_6:
+					html = new HTML("6");
+					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
+					html.setTitle("Morning shift 6am");
+					table.setWidget(numRows, c+1, html);
+					break;
+				case ShiftSolverConstants.SHIFT_MORNING_7:
+					html = new HTML("7");
+					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
+					html.setTitle("Morning shift 7am");
+					table.setWidget(numRows, c+1, html);
+					break;
+				case ShiftSolverConstants.SHIFT_MORNING_8:
+					html = new HTML("8");
+					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
+					html.setTitle("Morning shift 8am");
+					table.setWidget(numRows, c+1, html);
+					break;
+				case ShiftSolverConstants.SHIFT_AFTERNOON:
+					html = new HTML("A");
+					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_AFTERNOON);
+					html.setTitle("Afternoon shift");
+					table.setWidget(numRows, c+1, html);
+					break;
+				case ShiftSolverConstants.SHIFT_NIGHT:
+					html = new HTML("N");
+					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_NIGHT);
+					html.setTitle("Night shift");
+					table.setWidget(numRows, c+1, html);
+					break;
+				}				
+			} else {
+				// TODO determine whether employee is NA, holidays, ... and render if needed
+				
+//				html = new HTML("N");
+//				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_NA);
+//				html.setTitle("N/A");
+//				table.setWidget(numRows, c+1, html);
+//				break;
+//				
+//				html = new HTML("V");
+//				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_VACATIONS);
+//				html.setTitle("Vacations");
+//				table.setWidget(numRows, c+1, html);
+//				break;
+				
 				html = new HTML("F");
 				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_FREE);
 				html.setTitle("Free day");
-				table.setWidget(numRows, c+1, html);
-				break;
-			}
+				table.setWidget(numRows, c+1, html);				
+			}			
 		}		
 	}
 
@@ -248,9 +247,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		return sortIsAscending;
 	}
 	
-	private void objectToRia(PeriodSolution periodSolution) {
-		this.periodSolution=periodSolution;
-		
+	private void objectToRia(PeriodSolution periodSolution) {		
 		yearListBox.setText(""+periodSolution.getYear());
 		monthListBox.setText(""+periodSolution.getMonth());
 		

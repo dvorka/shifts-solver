@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
+import com.mindforger.shiftsolver.client.solver.ShiftsSolver;
 import com.mindforger.shiftsolver.client.ui.EmployeeEditPanel;
 import com.mindforger.shiftsolver.client.ui.EmployeesTable;
 import com.mindforger.shiftsolver.client.ui.HomePanel;
@@ -11,6 +12,7 @@ import com.mindforger.shiftsolver.client.ui.PeriodPreferencesEditPanel;
 import com.mindforger.shiftsolver.client.ui.PeriodPreferencesTable;
 import com.mindforger.shiftsolver.client.ui.PeriodSolutionTable;
 import com.mindforger.shiftsolver.client.ui.PeriodSolutionViewPanel;
+import com.mindforger.shiftsolver.client.ui.SolverProgressPanel;
 import com.mindforger.shiftsolver.client.ui.StatusLine;
 import com.mindforger.shiftsolver.client.ui.menu.LeftMenubar;
 import com.mindforger.shiftsolver.shared.FieldVerifier;
@@ -39,6 +41,9 @@ public class RiaContext implements ShiftSolverConstants {
 	// server
 	private GreetingServiceAsync service;
 	
+	// solver
+	private ShiftsSolver solver;
+	
 	// validation
 	private FieldVerifier fieldVerifier;
 
@@ -53,6 +58,7 @@ public class RiaContext implements ShiftSolverConstants {
 	private PeriodPreferencesEditPanel periodPreferencesEditPanel;
 	private PeriodSolutionTable periodSolutionTable;
 	private PeriodSolutionViewPanel periodSolutionViewPanel;
+	private SolverProgressPanel solverProgressPanel;
 	
 	// data
 	private RiaState state;
@@ -66,6 +72,7 @@ public class RiaContext implements ShiftSolverConstants {
 		service=GWT.create(GreetingService.class);		
 		fieldVerifier=new FieldVerifier();
 		state=new RiaState();
+		solver=new ShiftsSolver(this);
 		
 		// UI
 		statusLine=new StatusLine(this);
@@ -78,6 +85,7 @@ public class RiaContext implements ShiftSolverConstants {
 		periodPreferencesEditPanel=new PeriodPreferencesEditPanel(this);
 		periodSolutionTable=new PeriodSolutionTable(this);
 		periodSolutionViewPanel=new PeriodSolutionViewPanel(this);
+		solverProgressPanel=new SolverProgressPanel(this);
 	}
 
 	public RiaMessages getI18n() {
@@ -156,11 +164,20 @@ public class RiaContext implements ShiftSolverConstants {
 		return pageTitlePanel;
 	}
 	
+
+    public SolverProgressPanel getSolverProgressPanel() {
+	return solverProgressPanel;
+    }
+
 	public HomePanel getHomePanel() {
 		if(!initialized.contains(homePanel)) {
 			initialized.add(homePanel);
 			homePanel.init();
 		}
 		return homePanel;
+	}
+
+	public ShiftsSolver getSolver() {
+		return solver;
 	}
 }
