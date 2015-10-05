@@ -398,20 +398,21 @@ table.mf-questionTextPanel > tbody > tr > td+td+td {
 }
 
 /* TODO make this aditive - base + add on styles */
-.mf-statusInfo {
+.s2-statusInfo {
 	background-color: #F0F0F0; 
 	color: black; 
 	font-weight: bolder;
 	padding-top: 3px; 
 	padding-bottom: 2px; 
 	padding-left: 10px; 
-	padding-right: 10px; 
+	padding-right: 10px;
+	margin-bottom: 10px; 
 	float: left; 
 	position: fixed;
 	top: 0.3em;	
 	left: 0.3em;	
 }
-.mf-statusProgress {
+.s2-statusProgress {
 	background-color: #FFFF88; 
 	color: black; 
 	font-weight: bolder;
@@ -424,7 +425,7 @@ table.mf-questionTextPanel > tbody > tr > td+td+td {
 	top: 0.3em;	
 	left: 0.3em;	
 }
-.mf-statusError {
+.s2-statusError {
 	background-color: #CC0000; 
 	color: white; 
 	font-weight: bolder;
@@ -437,7 +438,7 @@ table.mf-questionTextPanel > tbody > tr > td+td+td {
 	top: 0.3em;	
 	left: 0.3em;	
 }
-.mf-statusHelp {
+.s2-statusHelp {
 	background-color: #008C00; 
 	color: white; 
 	font-weight: bolder;

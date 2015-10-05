@@ -1,16 +1,10 @@
 package com.mindforger.shiftsolver.client.ui;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
-import com.mindforger.shiftsolver.shared.model.Employee;
 
 public class SolverProgressPanel extends FlexTable {
 
@@ -34,7 +28,7 @@ public class SolverProgressPanel extends FlexTable {
 	}
 	
 	public void refresh(int percent) {
-		objectToRia(employee);
+		objectToRia(percent);
 	}
 
 	private void objectToRia(int percent) {

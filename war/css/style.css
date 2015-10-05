@@ -84,7 +84,7 @@ h1 {
  */
 
 /* TODO make this additive - base + add on styles */
-.mf-statusInfo {
+.s2-statusInfo {
 	background-color: #F0F0F0; 
 	color: black; 
 	font-weight: bolder;
@@ -97,7 +97,7 @@ h1 {
 	top: 0.3em;	
 	left: 0.3em;	
 }
-.mf-statusProgress {
+.s2-statusProgress {
 	background-color: #FFFF88; 
 	color: black; 
 	font-weight: bolder;
@@ -110,7 +110,7 @@ h1 {
 	top: 0.3em;	
 	left: 0.3em;	
 }
-.mf-statusError {
+.s2-statusError {
 	background-color: #CC0000; 
 	color: white; 
 	font-weight: bolder;
@@ -123,7 +123,7 @@ h1 {
 	top: 0.3em;	
 	left: 0.3em;	
 }
-.mf-statusHelp {
+.s2-statusHelp {
 	background-color: #008C00; 
 	color: white; 
 	font-weight: bolder;

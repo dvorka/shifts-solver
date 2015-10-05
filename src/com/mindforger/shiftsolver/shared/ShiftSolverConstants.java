@@ -5,11 +5,13 @@ public interface ShiftSolverConstants {
 	String CODENAME="ShiftSolver";
 	
 	// types
-	int SHIFT_MORNING_6=1;
-	int SHIFT_MORNING_7=2;
-	int SHIFT_MORNING_8=3;
-	int SHIFT_AFTERNOON=4;
-	int SHIFT_NIGHT=5;
+	int NO_SHIFT = 0;	
+	int SHIFT_MORNING=1;
+	int SHIFT_MORNING_6=2;
+	int SHIFT_MORNING_7=3;
+	int SHIFT_MORNING_8=4;
+	int SHIFT_AFTERNOON=5;
+	int SHIFT_NIGHT=6;
 	
 	// URLs                                                        
     String BASE_URL = "http://shiftsolver.appspot.com";
@@ -40,4 +42,5 @@ public interface ShiftSolverConstants {
 	String CSS_SHIFT_MORNING="s2-shiftMorning";
 	String CSS_SHIFT_AFTERNOON="s2-shiftAfternoon";
 	String CSS_SHIFT_NIGHT="s2-shiftNight";
+
 }

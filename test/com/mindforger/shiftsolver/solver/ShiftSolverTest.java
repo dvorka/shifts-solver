@@ -1,159 +1,64 @@
 package com.mindforger.shiftsolver.solver;
 
+import java.util.List;
+import java.util.Set;
+
+import com.mindforger.shiftsolver.client.RiaState;
+import com.mindforger.shiftsolver.client.Utils;
+import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
 import com.mindforger.shiftsolver.client.solver.ShiftsSolver;
-import com.mindforger.shiftsolver.shared.model.DayPreference;
-import com.mindforger.shiftsolver.shared.model.Employee;
-import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
+import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
-import com.mindforger.shiftsolver.shared.model.Team;
 
 public class ShiftSolverTest {
 
-	public void buildModelTest() {
-
-		Team team=new Team();
-		
-		/*
-		 * editors
-		 */
-
-		Employee lenka=new Employee();
-		lenka.setEditor(true);
-		lenka.setFulltime(true);
-		lenka.setFemale(false);
-		team.addEmployee(lenka);
-
-		Employee misa=new Employee();
-		misa.setEditor(true);
-		misa.setFulltime(true);
-		misa.setFemale(false);
-		team.addEmployee(misa);
-		
-		Employee mirek=new Employee();
-		mirek.setEditor(true);
-		mirek.setFulltime(true);
-		mirek.setFemale(false);
-		team.addEmployee(mirek);
-		
-		Employee martin=new Employee();
-		martin.setEditor(true);
-		martin.setFulltime(true);
-		martin.setFemale(false);
-		team.addEmployee(martin);
-
-		Employee igor=new Employee();
-		igor.setEditor(true);
-		igor.setFulltime(true);
-		igor.setFemale(false);
-		team.addEmployee(igor);
-		
-		Employee alice=new Employee();
-		alice.setEditor(true);
-		alice.setFulltime(true);
-		alice.setFemale(true);
-		team.addEmployee(alice);
-		
-		/*
-		 * sportaci
-		 */
-
-		Employee simona=new Employee();
-		simona.setSportak(true);
-		simona.setFulltime(true);
-		simona.setFemale(false);
-		team.addEmployee(simona);
-		
-		Employee david=new Employee();
-		david.setSportak(true);
-		david.setFulltime(true);
-		david.setFemale(false);
-		team.addEmployee(david);
-
-		Employee vojta=new Employee();
-		vojta.setSportak(true);
-		vojta.setFulltime(true);
-		vojta.setFemale(false);
-		team.addEmployee(vojta);
-		
-		Employee katka=new Employee();
-		katka.setSportak(true);
-		katka.setFulltime(true);
-		katka.setFemale(true);
-		team.addEmployee(katka);
-		
-		/*
-		 * fulltime
-		 */
-
-		Employee honza=new Employee();
-		honza.setSportak(true);
-		honza.setFulltime(true);
-		honza.setFemale(true);
-		team.addEmployee(honza);
-
-		Employee kristina=new Employee();
-		kristina.setSportak(true);
-		kristina.setFulltime(true);
-		kristina.setFemale(true);
-		team.addEmployee(kristina);
-
-		Employee dominika=new Employee();
-		dominika.setSportak(true);
-		dominika.setFulltime(true);
-		dominika.setFemale(true);
-		team.addEmployee(dominika);
-		
-		Employee anna=new Employee();
-		anna.setSportak(true);
-		anna.setFulltime(true);
-		anna.setFemale(true);
-		team.addEmployee(anna);
-		
-		Employee milan=new Employee();
-		milan.setSportak(true);
-		milan.setFulltime(true);
-		milan.setFemale(true);
-		team.addEmployee(milan);
-		
-		/*
-		 * part time
-		 */
-		
-		// ...
-		
-		/*
-		 * preferences
-		 */
-		
-		PeriodPreferences periodPreferences = new PeriodPreferences(2015,9);		
-		EmployeePreferences employeePreferences;
-
-		employeePreferences=createBlankEmployeePreferences();		
-		periodPreferences.addEmployeePreferences(lenka, employeePreferences);
-		// ...
-		employeePreferences=createBlankEmployeePreferences();		
-		periodPreferences.addEmployeePreferences(anna, employeePreferences);
-		employeePreferences=createBlankEmployeePreferences();		
-		periodPreferences.addEmployeePreferences(milan, employeePreferences);
-		
-		/*
-		 * solver
-		 */
-		
-		ShiftsSolver shiftsSolver=new ShiftsSolver();
-		PeriodSolution periodSolution=shiftsSolver.solve(team, periodPreferences);		
-		System.out.println(periodSolution.toString());
-	}
-
-	private EmployeePreferences createBlankEmployeePreferences() {
-		EmployeePreferences employeePreferences;
-		employeePreferences = new EmployeePreferences();
-		for(int day=1; day<=31; day++) {
-			employeePreferences.addPreference(new DayPreference(2015, 9, day, false, false, false));			
-		}
-		
-		return employeePreferences;
+	public ShiftSolverTest() {		
 	}
 	
+	public void testRiaDataSolution() {		
+		ShiftsSolver solver=new ShiftsSolver();
+		RiaState state = Utils.createBigFooState();
+		PeriodPreferences preferences = state.getPeriodPreferencesList()[0];
+		PeriodSolution solution = solver.solve(preferences.getEmployeeToPreferences().keySet(), preferences);
+
+		System.out.println("Employee allocation ("+solver.getEmployeeAllocations().size()+"):");
+		Set<String> keys = solver.getEmployeeAllocations().keySet();
+		for(String key:keys) {
+			EmployeeAllocation a = solver.getEmployeeAllocations().get(key);
+			System.out.println("  "+a.employee.getFullName()+": "+a.shiftsCount+"/"+a.shiftsToGet);
+		}
+		
+		List<DaySolution> days = solution.getDays();
+		for(DaySolution ds:days) {
+			System.out.println("Day "+ ds.getDay() +":");
+			if(ds.isWorkday()) {
+				System.out.println("  Morning:");
+				System.out.println("    "+ds.getWorkdayMorningShift().editor.getFullName());
+				System.out.println("    "+ds.getWorkdayMorningShift().drone6am.getFullName());
+				System.out.println("    "+ds.getWorkdayMorningShift().drone7am.getFullName());
+				System.out.println("    "+ds.getWorkdayMorningShift().drone8am.getFullName());
+				System.out.println("    "+ds.getWorkdayMorningShift().editor.getFullName());
+				
+				System.out.println("  Afternoon:");
+				System.out.println("    "+ds.getWorkdayAfternoonShift().editor.getFullName());
+				System.out.println("    "+ds.getWorkdayAfternoonShift().drones[0].getFullName());
+				System.out.println("    "+ds.getWorkdayAfternoonShift().drones[1].getFullName());
+				System.out.println("    "+ds.getWorkdayAfternoonShift().drones[2].getFullName());
+				System.out.println("    "+ds.getWorkdayAfternoonShift().drones[3].getFullName());
+				System.out.println("    "+ds.getWorkdayAfternoonShift().editor.getFullName());
+				
+				System.out.println("  Night:");
+				System.out.println("    "+ds.getNightShift().drone.getFullName());
+			} else {
+				
+			}
+		}
+		
+	}
+	
+	public static void main(String[] args) {
+		ShiftSolverTest shiftSolverRiaTest = new ShiftSolverTest();
+		shiftSolverRiaTest.testRiaDataSolution();
+	}
 }

@@ -19,6 +19,7 @@ public class PeriodSolution implements Serializable {
 	public PeriodSolution(int year, int month) {
 		this.year=year;
 		this.month=month;
+		this.days=new ArrayList<DaySolution>();
 	}
 
 	public int getYear() {
@@ -45,16 +46,10 @@ public class PeriodSolution implements Serializable {
 		this.days = days;
 	}
 	
-	public List<ShiftSolution> getShifts() {
-		List<ShiftSolution> result=new ArrayList<ShiftSolution>();
-		for(DaySolution day:days) {
-			result.add(day.getMorning());
-			result.add(day.getAfternoon());
-			result.add(day.getNight());
-		}
-		return result;
+	public void addDaySolution(DaySolution daySolution) {
+		this.days.add(daySolution);
 	}
-
+	
 	public String getKey() {
 		return key;
 	}
