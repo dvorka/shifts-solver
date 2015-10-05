@@ -4,6 +4,13 @@ public interface ShiftSolverConstants {
 
 	String CODENAME="ShiftSolver";
 	
+	// types
+	int SHIFT_MORNING_6=1;
+	int SHIFT_MORNING_7=2;
+	int SHIFT_MORNING_8=3;
+	int SHIFT_AFTERNOON=4;
+	int SHIFT_NIGHT=5;
+	
 	// URLs                                                        
     String BASE_URL = "http://shiftsolver.appspot.com";
     String GRAVATAR_BASE_URL = "http://www.gravatar.com/avatar/";

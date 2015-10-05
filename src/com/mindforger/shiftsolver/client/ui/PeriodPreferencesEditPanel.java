@@ -41,9 +41,11 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 
 	private static final int CHECK_NA=1;
 	private static final int CHECK_VACATIONS=2;
-	private static final int CHECK_MORNING=3;
-	private static final int CHECK_AFTERNOON=4;
-	private static final int CHECK_NIGHT=5;
+	private static final int CHECK_MORNING_6=3;
+	private static final int CHECK_MORNING_7=4;
+	private static final int CHECK_MORNING_8=5;
+	private static final int CHECK_AFTERNOON=6;
+	private static final int CHECK_NIGHT=7;
 	
 	public PeriodPreferencesEditPanel(final RiaContext ctx) {
 		this.ctx=ctx;
@@ -199,26 +201,46 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		
 		for (int i = 1; i<=monthDays; i++) {
 			// TODO append Mon...Sun to the number; weekend to have different color
-			HTML html = new HTML(""+i);
+			HTML html = new HTML(""+i+getDayLetter(i));
 			//html.addStyleName("mf-progressHtml");
-			employeePrefsTable.setWidget(0, i, html);
+			employeePrefsTable.setWidget(0, i, html);				
+			if(isWeekend(i)) {
+				html.addStyleName("s2-weekendDay");
+			}
 		}
-		
+
+		// TODO consider encoding this as bits in int/long
 		employeePrefsTable.setWidget(CHECK_NA, 0, new HTML("N/A"));
 		employeePrefsTable.setWidget(CHECK_VACATIONS, 0, new HTML("Vacations"));
-		employeePrefsTable.setWidget(CHECK_MORNING, 0, new HTML("Morning"));
+		employeePrefsTable.setWidget(CHECK_MORNING_6, 0, new HTML("Morning&nbsp;6"));
+		employeePrefsTable.setWidget(CHECK_MORNING_7, 0, new HTML("Morning&nbsp;7"));
+		employeePrefsTable.setWidget(CHECK_MORNING_8, 0, new HTML("Morning&nbsp;8"));
 		employeePrefsTable.setWidget(CHECK_AFTERNOON, 0, new HTML("Afternoon"));
 		employeePrefsTable.setWidget(CHECK_NIGHT, 0, new HTML("Night"));
 		
 		for(int c=1; c<=monthDays; c++) {
-			for(int r=1; r<=5; r++) {
+			for(int r=1; r<=7; r++) {
 				CheckBox checkbox = new CheckBox();
 				employeePrefsTable.setWidget(r, c, checkbox);
+				// TODO make this composite key
 				checkboxes.put(employee.getKey()+"#"+c+"#"+r,checkbox);
 			}
 		}
 		
 		table.setWidget(numRows, 1, employeePrefsTable);		
+	}
+
+	private boolean isWeekend(int i) {
+		return "S".equals(getDayLetter(i));
+	}
+
+	private static final String[] WEEKDAY_LETTERS = {
+		"S", "M", "T", "W", "T", "F", "S"
+	};
+	
+	private String getDayLetter(int i) {
+		int startWeekDay = periodPreferences.getStartWeekDay();
+		return WEEKDAY_LETTERS[(i-1+startWeekDay-1)%7];
 	}
 
 	public void refresh(PeriodPreferences result) {

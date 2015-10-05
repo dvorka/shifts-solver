@@ -114,9 +114,10 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		employeesList.add(mirek);
 		state.setEmployees(employeesList.toArray(new Employee[employeesList.size()]));
 		
-		PeriodPreferences periodPreferences = new PeriodPreferences(2015, 9);
+		PeriodPreferences periodPreferences = new PeriodPreferences(2015, 10);
 		periodPreferences.setKey("1");
 		periodPreferences.setMonthDays(31);
+		periodPreferences.setStartWeekDay(5);
 		EmployeePreferences employeePreferences = new EmployeePreferences();
 		employeePreferences.setPreferences(new ArrayList<DayPreference>());
 		periodPreferences.addEmployeePreferences(lenka, employeePreferences);

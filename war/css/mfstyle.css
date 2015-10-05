@@ -64,6 +64,11 @@ h1 {
 
 /* S2 */
 
+.s2-weekendDay {
+	font-weight: bolder;
+	color: #FF0000;
+}
+
 .s2-shiftFree {
 	background-color: #FFF 
 	color: #FFF; 
