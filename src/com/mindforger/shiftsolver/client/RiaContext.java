@@ -53,6 +53,7 @@ public class RiaContext implements ShiftSolverConstants {
 	private PeriodPreferencesEditPanel periodPreferencesEditPanel;
 	private PeriodSolutionTable periodSolutionTable;
 	private PeriodSolutionViewPanel periodSolutionViewPanel;
+        private SolverProgressPanel solverProgressPanel;
 	
 	// data
 	private RiaState state;
@@ -78,6 +79,7 @@ public class RiaContext implements ShiftSolverConstants {
 		periodPreferencesEditPanel=new PeriodPreferencesEditPanel(this);
 		periodSolutionTable=new PeriodSolutionTable(this);
 		periodSolutionViewPanel=new PeriodSolutionViewPanel(this);
+		solverProgressPanel=new SolverProgressPanel(this);
 	}
 
 	public RiaMessages getI18n() {
@@ -156,6 +158,11 @@ public class RiaContext implements ShiftSolverConstants {
 		return pageTitlePanel;
 	}
 	
+
+    public SolverProgressPanel getSolverProgressPanel() {
+	return solverProgressPanel;
+    }
+
 	public HomePanel getHomePanel() {
 		if(!initialized.contains(homePanel)) {
 			initialized.add(homePanel);

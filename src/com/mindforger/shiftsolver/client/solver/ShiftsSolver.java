@@ -132,6 +132,10 @@ public class ShiftsSolver {
 		return result;
 	}
 
+    private void showProgress(int days, int processedDays) {
+	ctx.getSolverProgressPanel().refresh(Math.round(((float)processDays) / (((float)days)/100f)));
+    }
+
 	private boolean fitsPartTimeDronePreferences(Employee partTimeDrone, PeriodPreferences periodPreferences) {
 		// TODO Auto-generated method stub
 		return true;

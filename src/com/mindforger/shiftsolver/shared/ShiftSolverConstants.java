@@ -26,6 +26,7 @@ public interface ShiftSolverConstants {
 	String CONTAINER_DLOUHAN_EDITOR="solverDlouhanEditorContainer";
 	String CONTAINER_SOLUTION_TABLE="solverSolutionTableContainer";
 	String CONTAINER_SOLUTION_VIEW="solverSolutionViewContainer";	
+	String CONTAINER_SOLVER_PROGRESS="solverProgressContainer";	
 	
 	// CSS
 	String CSS_HELP_STYLE="s2-statusHelp";
