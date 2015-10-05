@@ -10,8 +10,11 @@ import com.mindforger.shiftsolver.shared.model.ShiftSolution;
 import com.mindforger.shiftsolver.shared.model.Team;
 
 /**
- * Shifts solver runs on the client side (browser) to off-load workflow from
+ * Solver runs on the client side (browser) to off-load work from
  * the server (server is used for persistence only - team/preferences/solution).
+ * 
+ * Solver is stateful i.e. after initialization caller gets solutions using
+ * next() method.
  */
 public class ShiftsSolver {
 
@@ -31,14 +34,28 @@ public class ShiftsSolver {
 	/**
 	 * Solver uses backtracking with a few heuristics and solutions pruning.
 	 * 
-	 * Method and constraints:
+	 * Constraints:
 	 * <ul>
 	 *   <li>There MUST be at least one EDITOR in work week day.
 	 *   <li>There MUST be at least one SPORTAK in work week day.
 	 *   <li>Limit on number of shifts per employee ?.
 	 *   <li>There must be at least 4 hours between two shifts employee is assigned for morning/afternoon shift.
 	 *   <li>There must be at least 8 hours between two shifts employee is assigned for night shift.
-	 *   <li>
+	 * </ul>
+	 * 
+	 * Method:
+	 * <ul>
+	 *   <li>Iterate days 1st, ...
+	 *   <li>Is it working day? Is it weekend day?
+	 *   <li>Based on day type determine shift slots (e.g. 1x editor, 2x drones, ...) to be filled i.e. tuple.
+	 *   <li>Take shift's slot (e.g. editor) and iterate corresponding employees who WANT (if nobody, who CAN), ... 
+	 *   <li>Check whether employee can be allocated (constraints): Is fully busy for the month? Is there mandatory hour shift gap?
+	 *   <li>... until all slots, shifts and days are allocated.
+	 *   <li>If slot has NO SOLUTION, then BACKTRACK (requires FIXED order of employees, days and slots in days > enables backtrack).
+	 *   <li>... iterate other employees until the end of list
+	 *   <li>... if this slot doesn't have solution, try to iterate PREVIOUS slot - take employee that was chosen and iterate employees
+	 *           from there.
+	 *   <li>If slot still doesn't have SOLUTION, then report slot not filled e.g. Sunday morning editor slot (and show partial result).
 	 * </ul>
 	 * 
 	 * @param periodPreferences		preferences of employees for a given period.

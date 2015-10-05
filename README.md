@@ -31,16 +31,11 @@ Find a solution to fitting employees in a shifts.
 
    * night (1x) ... anybody except sport employee (OK: normal, editor, MorningSportak)
 
-* employee definition:
-   * add MorningSportak
-* holidays tab (set of days)
+* national holidays tab (a set of days)
 * preferences definition: ...
-   * highlight weekends
    * 3 states of preferences: WANT green, default white, NO red > 3 state
      button that changes color by value (mod: 0/1/2)
    * 3 states N/A OK, WANT, IMPOSSIBLE
-* solution
-   * morning: morning6, morning7, morning8
 
 * desired
    * normal night anybody
@@ -58,7 +53,7 @@ Find a solution to fitting employees in a shifts.
    * fulltime: max 2 night shifts + morning/afternoon (50%/50%)
    * fulltime MUST get enough shifts (+/-1 shift):
       * workdays * 8 / 7.5 e.g. 21*8/7.5 > nr. of shifts to get (round)
-   * IF shift in 5 consecutive days THEN, one day FREE (recommended; if broke solution) ... almost good solution list 
+   * IF shift in 5 consecutive days THEN, one day FREE (recommended; if broke solution) ... almost good solution list
 
 ## Plan
 Implementation plan:

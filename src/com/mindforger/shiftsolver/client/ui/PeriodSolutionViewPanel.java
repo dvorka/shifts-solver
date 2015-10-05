@@ -191,12 +191,24 @@ public class PeriodSolutionViewPanel extends FlexTable {
 				table.setWidget(numRows, c+1, html);
 				break;
 			case 3:
-				html = new HTML("A");
+				html = new HTML("6");
+				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
+				html.setTitle("Morning shift");
+				table.setWidget(numRows, c+1, html);
+				break;
+			case 4:
+				html = new HTML("7");
+				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
+				html.setTitle("Morning shift");
+				table.setWidget(numRows, c+1, html);
+				break;
+			case 5:
+				html = new HTML("8");
 				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_AFTERNOON);
 				html.setTitle("Afternoon shift");
 				table.setWidget(numRows, c+1, html);
 				break;
-			case 4:
+			case 6:
 				html = new HTML("N");
 				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_NIGHT);
 				html.setTitle("Night shift");
