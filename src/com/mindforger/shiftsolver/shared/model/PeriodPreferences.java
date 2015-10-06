@@ -13,6 +13,7 @@ public class PeriodPreferences implements Serializable  {
 	String key;
 	int startWeekDay;
 	int monthDays;
+	int monthWorkDays;
 	int year;
 	int month;
 	private Map<Employee,EmployeePreferences> employeeToPreferences;
@@ -77,5 +78,13 @@ public class PeriodPreferences implements Serializable  {
 	public void setEmployeeToPreferences(
 			Map<Employee, EmployeePreferences> employeeToPreferences) {
 		this.employeeToPreferences = employeeToPreferences;
+	}
+
+	public int getMonthWorkDays() {
+		return monthWorkDays;
+	}
+
+	public void setMonthWorkDays(int monthWorkDays) {
+		this.monthWorkDays = monthWorkDays;
 	}
 }

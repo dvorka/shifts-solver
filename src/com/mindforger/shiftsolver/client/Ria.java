@@ -43,7 +43,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		
 	public void onModuleLoad() {
 		// debugging in GWT super dev mode ensuring that exception is thrown on consoel
-		GWT.setUncaughtExceptionHandler(new GwtJavascriptClientExceptionHander());	
+		//GWT.setUncaughtExceptionHandler(new GwtJavascriptClientExceptionHander());	
 		
 		ctx.getStatusLine().showProgress(i18n.loadingEmployeesAndPreferences());
 
@@ -51,7 +51,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 //			public void onSuccess(RiaBootImageBean bean) {
 //				ctx.getStatusLine().showProgress(i18n.initializingMf());
 		
-		ctx.setState(Utils.createSmallFooState());
+		ctx.setState(Utils.createBigFooState());
 		
 		ctx.getStatusLine().hideStatus();
 		

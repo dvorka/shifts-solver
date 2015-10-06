@@ -7,11 +7,11 @@ public class EmployeeAllocation {
 	public Employee employee;
 
 	public int shiftsToGet;
-	public int shiftsCount;
+	public int shifts;
 	
 	public EmployeeAllocation(Employee employee, int workdaysInPeriod) {
 		this.employee=employee;
-		this.shiftsCount=0;
+		this.shifts=0;
 		
 		if(employee.isFulltime()) {
 			shiftsToGet=Math.round(((float)workdaysInPeriod)/8f*7.5f);
@@ -21,11 +21,10 @@ public class EmployeeAllocation {
 	}
 
 	public void assign() {
-		shiftsCount++;
+		shifts++;
 	}
 	
 	public boolean hasCapacity() {
-		return true;
-		// TODO infinite ;) return shiftsToGet>0 && shiftsToGet<shiftsCount;
+		return shiftsToGet>0 && shiftsToGet>shifts;
 	}
 }

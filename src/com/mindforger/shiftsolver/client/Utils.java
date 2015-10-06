@@ -17,60 +17,49 @@ public class Utils {
 		Team team=new Team();
 		int key=0;
 
+		Employee e;
+
 		/*
 		 * editors
 		 */
-
-		Employee e;
-		e=new Employee();
-		e.setKey(""+key++);
-		e.setFirstname("Lenka");
-		e.setFamilyname("X");
-		e.setEditor(true);
-		e.setFulltime(true);
-		e.setFemale(false);
-		team.addEmployee(e);
-
-		e=new Employee();
-		e.setKey(""+key++);
-		e.setFirstname("Misa");
-		e.setFamilyname("X");
-		e.setEditor(true);
-		e.setFulltime(true);
-		e.setFemale(false);
-		team.addEmployee(e);
 		
-		e=new Employee();
-		e.setKey(""+key++);
-		e.setFirstname("Mirek");
-		e.setFamilyname("X");
-		e.setEditor(true);
-		e.setFulltime(true);
-		e.setFemale(false);
-		team.addEmployee(e);
-		
-		e=new Employee();
-		e.setKey(""+key++);
-		e.setFirstname("Martin");
-		e.setFamilyname("X");
-		e.setEditor(true);
-		e.setFulltime(true);
-		e.setFemale(false);
-		team.addEmployee(e);
-
 		e=new Employee();
 		e.setKey(""+key++);
 		e.setFirstname("Igor");
-		e.setFamilyname("X");
+		e.setFamilyname("M");
 		e.setEditor(true);
 		e.setFulltime(true);
-		e.setFemale(false);
 		team.addEmployee(e);
 		
 		e=new Employee();
 		e.setKey(""+key++);
+		e.setFirstname("Mirko");
+		e.setFamilyname("K");
+		e.setEditor(true);
+		e.setFulltime(true);
+		team.addEmployee(e);
+
+		e=new Employee();
+		e.setKey(""+key++);
 		e.setFirstname("Alice");
-		e.setFamilyname("X");
+		e.setFamilyname("K");
+		e.setEditor(true);
+		e.setFulltime(true);
+		e.setFemale(true);
+		team.addEmployee(e);
+
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Martin");
+		e.setFamilyname("B");
+		e.setEditor(true);
+		e.setFulltime(true);
+		team.addEmployee(e);
+		
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Lenka");
+		e.setFamilyname("K");
 		e.setEditor(true);
 		e.setFulltime(true);
 		e.setFemale(true);
@@ -83,37 +72,59 @@ public class Utils {
 		e=new Employee();
 		e.setKey(""+key++);
 		e.setFirstname("Simona");
-		e.setFamilyname("X");
-		e.setSportak(true);
+		e.setFamilyname("B");
+		e.setMorningSportak(true);
 		e.setFulltime(true);
-		e.setFemale(false);
+		e.setFemale(true);
+		team.addEmployee(e);
+		
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Katarina");
+		e.setFamilyname("B");
+		e.setMorningSportak(true);
+		e.setFulltime(true);
+		e.setFemale(true);
 		team.addEmployee(e);
 		
 		e=new Employee();
 		e.setKey(""+key++);
 		e.setFirstname("David");
-		e.setFamilyname("X");
-		e.setSportak(true);
+		e.setFamilyname("B");
+		e.setMorningSportak(true);
 		e.setFulltime(true);
-		e.setFemale(false);
 		team.addEmployee(e);
 
 		e=new Employee();
 		e.setKey(""+key++);
 		e.setFirstname("Vojta");
-		e.setFamilyname("X");
+		e.setFamilyname("M");
 		e.setSportak(true);
 		e.setFulltime(true);
-		e.setFemale(false);
+		team.addEmployee(e);
+
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Vojta");
+		e.setFamilyname("B");
+		e.setSportak(true);
+		e.setFulltime(true);
 		team.addEmployee(e);
 		
 		e=new Employee();
 		e.setKey(""+key++);
-		e.setFirstname("Katka");
-		e.setFamilyname("X");
+		e.setFirstname("Standa");
+		e.setFamilyname("Z");
 		e.setSportak(true);
 		e.setFulltime(true);
-		e.setFemale(true);
+		team.addEmployee(e);
+
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Marek");
+		e.setFamilyname("A");
+		e.setSportak(true);
+		e.setFulltime(true);
 		team.addEmployee(e);
 		
 		/*
@@ -122,40 +133,60 @@ public class Utils {
 
 		e=new Employee();
 		e.setKey(""+key++);
-		e.setFirstname("Honza");
-		e.setFamilyname("X");
+		e.setFirstname("Martin");
+		e.setFamilyname("H");
 		e.setFulltime(true);
-		e.setFemale(true);
-		team.addEmployee(e);
-
-		e=new Employee();
-		e.setKey(""+key++);
-		e.setFirstname("Kristina");
-		e.setFamilyname("X");
-		e.setFulltime(true);
-		e.setFemale(true);
-		team.addEmployee(e);
-
-		e=new Employee();
-		e.setKey(""+key++);
-		e.setFirstname("Dominika");
-		e.setFamilyname("X");
-		e.setFulltime(true);
-		e.setFemale(true);
-		team.addEmployee(e);
-		
-		e=new Employee();
-		e.setFirstname("Anna");
-		e.setFamilyname("X");
-		e.setSportak(true);
-		e.setFulltime(true);
-		e.setFemale(true);
 		team.addEmployee(e);
 		
 		e=new Employee();
 		e.setKey(""+key++);
 		e.setFirstname("Milan");
-		e.setFamilyname("X");
+		e.setFamilyname("K");
+		e.setFulltime(true);
+		team.addEmployee(e);
+		
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Jan");
+		e.setFamilyname("P");
+		e.setFulltime(true);
+		team.addEmployee(e);
+
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Marika");
+		e.setFamilyname("T");
+		e.setFulltime(true);
+		e.setFemale(true);
+		team.addEmployee(e);
+		
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Michaela");
+		e.setFamilyname("V");
+		e.setFulltime(true);
+		e.setFemale(true);
+		team.addEmployee(e);
+		
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Kristina");
+		e.setFamilyname("W");
+		e.setFulltime(true);
+		e.setFemale(true);
+		team.addEmployee(e);
+
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Vojtech");
+		e.setFamilyname("K");
+		e.setFulltime(true);
+		team.addEmployee(e);
+		
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Anna");
+		e.setFamilyname("K");
 		e.setFulltime(true);
 		e.setFemale(true);
 		team.addEmployee(e);
@@ -164,12 +195,46 @@ public class Utils {
 		 * part time
 		 */
 		
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("David");
+		e.setFamilyname("B");
+		e.setFulltime(false);
+		e.setFemale(false);
+		team.addEmployee(e);
+		
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Matej");
+		e.setFamilyname("S");
+		e.setFulltime(false);
+		e.setFemale(false);
+		team.addEmployee(e);
+		
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Marie");
+		e.setFamilyname("H");
+		e.setFulltime(false);
+		e.setFemale(true);
+		team.addEmployee(e);
+
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Dominika");
+		e.setFamilyname("P");
+		e.setFulltime(false);
+		e.setFemale(true);
+		team.addEmployee(e);
+		
 		// ...
+		
 		state.setEmployees(team.getStableEmployeeList().toArray(new Employee[team.getStableEmployeeList().size()]));
 		
 		PeriodPreferences periodPreferences = new PeriodPreferences(2015, 10);
 		periodPreferences.setKey("2");
 		periodPreferences.setMonthDays(31);
+		periodPreferences.setMonthWorkDays(22);
 		periodPreferences.setStartWeekDay(5);
 		
 		EmployeePreferences employeePreferences = new EmployeePreferences();
@@ -222,6 +287,7 @@ public class Utils {
 		PeriodPreferences periodPreferences = new PeriodPreferences(2015, 10);
 		periodPreferences.setKey("1");
 		periodPreferences.setMonthDays(31);
+		periodPreferences.setMonthWorkDays(22);
 		periodPreferences.setStartWeekDay(5);
 		EmployeePreferences employeePreferences = new EmployeePreferences();
 		employeePreferences.setPreferences(new ArrayList<DayPreference>());

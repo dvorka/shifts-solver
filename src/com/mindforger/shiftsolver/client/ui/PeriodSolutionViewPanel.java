@@ -116,8 +116,10 @@ public class PeriodSolutionViewPanel extends FlexTable {
 			// TODO allow sorting the table by employee name
 			// setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
 			table.setWidget(0, 0, html);
+			html = new HTML("Job"); // TODO i18n
+			table.setWidget(0, 1, html);			
 			html = new HTML("Shifts"); // TODO i18n
-			table.setWidget(0, 1, html);
+			table.setWidget(0, 2, html);
 
 			PeriodPreferences preferences = ctx.getState().getPeriodPreferences(solution.getDlouhanKey());
 			
@@ -151,53 +153,64 @@ public class PeriodSolutionViewPanel extends FlexTable {
 				"mf-growsTableGoalButton", 
 				ctx);
 		table.setWidget(numRows, 0, button);
-				
+
+		
+		
+		table.setWidget(
+				numRows, 
+				1, 
+				new HTML(
+						solution.getEmployeeJobs().get(employee.getKey()).shifts+"/"+
+						solution.getEmployeeJobs().get(employee.getKey()).shiftsLimit)); 
+		
 		for (int i = 0; i<monthDays; i++) {
 			// TODO append Mon...Sun to the number; weekend to have different color
-			HTML html = new HTML(""+(i+1));
-			//html.addStyleName("mf-progressHtml");
-			table.setWidget(0, i+1, html);
+			HTML html = new HTML(""+(i+1)+PeriodPreferencesEditPanel.getDayLetter(i+1, preferences));
+			if(PeriodPreferencesEditPanel.isWeekend(i,preferences)) {
+				html.addStyleName("s2-weekendDay");
+			}
+			table.setWidget(0, i+2, html);
 		}
 				
 		HTML html;
 		for(int c=0; c<monthDays; c++) {
-			if(solution.getDays().get(c+1).isEmployeeAllocated(employee.getKey())) {
-				switch(solution.getDays().get(c+1).getShiftTypeForEmployee(employee.getKey())) {
+			if(solution.getDays().get(c).isEmployeeAllocated(employee.getKey())) {
+				switch(solution.getDays().get(c).getShiftTypeForEmployee(employee.getKey())) {
 				case ShiftSolverConstants.SHIFT_MORNING:
 					html = new HTML("M");
 					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
 					html.setTitle("Morning shift");
-					table.setWidget(numRows, c+1, html);
+					table.setWidget(numRows, c+2, html);
 					break;
 				case ShiftSolverConstants.SHIFT_MORNING_6:
 					html = new HTML("6");
 					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
 					html.setTitle("Morning shift 6am");
-					table.setWidget(numRows, c+1, html);
+					table.setWidget(numRows, c+2, html);
 					break;
 				case ShiftSolverConstants.SHIFT_MORNING_7:
 					html = new HTML("7");
 					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
 					html.setTitle("Morning shift 7am");
-					table.setWidget(numRows, c+1, html);
+					table.setWidget(numRows, c+2, html);
 					break;
 				case ShiftSolverConstants.SHIFT_MORNING_8:
 					html = new HTML("8");
 					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
 					html.setTitle("Morning shift 8am");
-					table.setWidget(numRows, c+1, html);
+					table.setWidget(numRows, c+2, html);
 					break;
 				case ShiftSolverConstants.SHIFT_AFTERNOON:
 					html = new HTML("A");
 					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_AFTERNOON);
 					html.setTitle("Afternoon shift");
-					table.setWidget(numRows, c+1, html);
+					table.setWidget(numRows, c+2, html);
 					break;
 				case ShiftSolverConstants.SHIFT_NIGHT:
 					html = new HTML("N");
 					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_NIGHT);
 					html.setTitle("Night shift");
-					table.setWidget(numRows, c+1, html);
+					table.setWidget(numRows, c+2, html);
 					break;
 				}				
 			} else {
@@ -206,19 +219,19 @@ public class PeriodSolutionViewPanel extends FlexTable {
 //				html = new HTML("N");
 //				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_NA);
 //				html.setTitle("N/A");
-//				table.setWidget(numRows, c+1, html);
+//				table.setWidget(numRows, c+2, html);
 //				break;
 //				
 //				html = new HTML("V");
 //				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_VACATIONS);
 //				html.setTitle("Vacations");
-//				table.setWidget(numRows, c+1, html);
+//				table.setWidget(numRows, c+2, html);
 //				break;
 				
 				html = new HTML("F");
 				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_FREE);
 				html.setTitle("Free day");
-				table.setWidget(numRows, c+1, html);				
+				table.setWidget(numRows, c+2, html);				
 			}			
 		}		
 	}

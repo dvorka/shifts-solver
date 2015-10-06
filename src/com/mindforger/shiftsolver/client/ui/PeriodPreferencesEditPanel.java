@@ -190,10 +190,10 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		
 		for (int i = 1; i<=monthDays; i++) {
 			// TODO append Mon...Sun to the number; weekend to have different color
-			HTML html = new HTML(""+i+getDayLetter(i));
+			HTML html = new HTML(""+i+getDayLetter(i, periodPreferences));
 			//html.addStyleName("mf-progressHtml");
 			employeePrefsTable.setWidget(0, i, html);				
-			if(isWeekend(i)) {
+			if(isWeekend(i, periodPreferences)) {
 				html.addStyleName("s2-weekendDay");
 			}
 		}
@@ -219,15 +219,15 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		table.setWidget(numRows, 1, employeePrefsTable);		
 	}
 
-	private boolean isWeekend(int i) {
-		return "S".equals(getDayLetter(i));
+	public static boolean isWeekend(int i, PeriodPreferences periodPreferences) {
+		return "S".equals(getDayLetter(i, periodPreferences));
 	}
 
 	private static final String[] WEEKDAY_LETTERS = {
 		"S", "M", "T", "W", "T", "F", "S"
 	};
 	
-	private String getDayLetter(int i) {
+	public static String getDayLetter(int i, PeriodPreferences periodPreferences) {
 		int startWeekDay = periodPreferences.getStartWeekDay();
 		return WEEKDAY_LETTERS[(i-1+startWeekDay-1)%7];
 	}
