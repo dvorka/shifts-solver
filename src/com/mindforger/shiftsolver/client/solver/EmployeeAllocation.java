@@ -8,6 +8,8 @@ public class EmployeeAllocation {
 
 	public int shiftsToGet;
 	public int shifts;
+
+	public int stableArrayIndex;
 	
 	public EmployeeAllocation(Employee employee, int workdaysInPeriod) {
 		this.employee=employee;
@@ -22,6 +24,10 @@ public class EmployeeAllocation {
 
 	public void assign() {
 		shifts++;
+	}
+	
+	public void unassign() {
+		shifts--;
 	}
 	
 	public boolean hasCapacity() {

@@ -55,6 +55,17 @@ Finds a solution to creation of a schedule for shifts-based operation.
       * workdays * 8 / 7.5 e.g. 21*8/7.5 > nr. of shifts to get (round)
    * IF shift in 5 consecutive days THEN, one day FREE (recommended; if broke solution) ... almost good solution list
 
+---
+	 * Constraints:
+	 * <ul>
+	 *   <li>There MUST be at least one EDITOR in work week day.
+	 *   <li>There MUST be at least one SPORTAK in work week day.
+	 *   <li>Limit on number of shifts per employee ?.
+	 *   <li>There must be at least 4 hours between two shifts employee is assigned for morning/afternoon shift.
+	 *   <li>There must be at least 8 hours between two shifts employee is assigned for night shift.
+	 * </ul>
+	 * 
+
 ## Plan
 Implementation plan:
 

@@ -11,6 +11,15 @@ import com.mindforger.shiftsolver.shared.model.Team;
 
 public class Utils {
 
+	public static boolean isWeekend(int i, int startWeekDay) {
+		int sundayBeginningDayNumber=(i-1+startWeekDay-1)%7;
+		if(sundayBeginningDayNumber==0 || sundayBeginningDayNumber==6) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public static RiaState createBigFooState() {
 		RiaState state = new RiaState();
 

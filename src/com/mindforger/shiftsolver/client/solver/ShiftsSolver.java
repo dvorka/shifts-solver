@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
+import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.Job;
@@ -20,30 +21,22 @@ import com.mindforger.shiftsolver.shared.model.shifts.WorkdayAfternoonShift;
 import com.mindforger.shiftsolver.shared.model.shifts.WorkdayMorningShift;
 
 /**
- * Solver runs on the client side (browser) to off-load work from
- * the server (server is used for persistence only - team/preferences/solution).
+ * Solver runs on the client side (browser) to off-load work from the server (server is 
+ * used for persistence only - team/preferences/solution).
  * 
- * Solver is stateful i.e. after initialization caller gets solutions using
- * next() method.
+ * Solver is stateful i.e. after initialization caller may get other solutions using
+ * {@link ShiftsSolver#next()} method.
  */
 public class ShiftsSolver {
-
-	@Deprecated
-	private static final int LIMIT_EMPLOYEE_SHIFTS_PER_PERIOD=5;
-	@Deprecated
-	private static final int LIMIT_NORMAL_SHIFT_REST_GAP_HOURS=4;
-	@Deprecated
-	private static final int LIMIT_NIGHT_SHIFT_REST_GAP_HOURS=8;	
-	// shift = editor + sportak + drones
-	@Deprecated
-	private static final int NORMAL_SHIFT_DRONES=4;
 	
-	private long sequence;
+	private static long sequence=0;
 
 	private RiaContext ctx;
 	private RiaMessages i18n;
-	private Map<String,EmployeeAllocation> employeeAllocations;
+	
 	private PeriodPreferences preferences;
+	private Map<String,EmployeeAllocation> employeeAllocations;
+	private List<Employee> employees;
 
 	public ShiftsSolver() {
 	}
@@ -51,7 +44,6 @@ public class ShiftsSolver {
 	public ShiftsSolver(final RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
-		this.sequence=0;
 	}
 	
 	public PeriodSolution solve(Set<Employee> keySet, PeriodPreferences periodPreferences) {
@@ -59,37 +51,11 @@ public class ShiftsSolver {
   		team.addEmployees(periodPreferences.getEmployeeToPreferences().keySet());
 		return solve(team, periodPreferences);
 	}	
+
+	public Map<String, EmployeeAllocation> getEmployeeAllocations() {
+		return employeeAllocations;
+	}
 	
-	/**
-	 * Solver uses backtracking with a few heuristics and solutions pruning.
-	 * 
-	 * Constraints:
-	 * <ul>
-	 *   <li>There MUST be at least one EDITOR in work week day.
-	 *   <li>There MUST be at least one SPORTAK in work week day.
-	 *   <li>Limit on number of shifts per employee ?.
-	 *   <li>There must be at least 4 hours between two shifts employee is assigned for morning/afternoon shift.
-	 *   <li>There must be at least 8 hours between two shifts employee is assigned for night shift.
-	 * </ul>
-	 * 
-	 * Method:
-	 * <ul>
-	 *   <li>Iterate days 1st, ...
-	 *   <li>Is it working day? Is it weekend day?
-	 *   <li>Based on day type determine shift slots (e.g. 1x editor, 2x drones, ...) to be filled i.e. tuple.
-	 *   <li>Take shift's slot (e.g. editor) and iterate corresponding employees who WANT (if nobody, who CAN), ... 
-	 *   <li>Check whether employee can be allocated (constraints): Is fully busy for the month? Is there mandatory hour shift gap?
-	 *   <li>... until all slots, shifts and days are allocated.
-	 *   <li>If slot has NO SOLUTION, then BACKTRACK (requires FIXED order of employees, days and slots in days > enables backtrack).
-	 *   <li>... iterate other employees until the end of list
-	 *   <li>... if this slot doesn't have solution, try to iterate PREVIOUS slot - take employee that was chosen and iterate employees
-	 *           from there.
-	 *   <li>If slot still doesn't have SOLUTION, then report slot not filled e.g. Sunday morning editor slot (and show partial result).
-	 * </ul>
-	 * 
-	 * @param periodPreferences		preferences of employees for a given period.
-	 * @return	employees allocated to shifts.
-	 */
 	public PeriodSolution solve(Team team, PeriodPreferences periodPreferences) {
 		this.preferences=periodPreferences;
 		
@@ -97,362 +63,410 @@ public class ShiftsSolver {
 		result.setDlouhanKey(periodPreferences.getKey());
 		result.setKey(periodPreferences.getKey() + "/" + ++sequence);
 		
-		List<Employee> employees=team.getStableEmployeeList();
+		employees = team.getStableEmployeeList();
 		employeeAllocations = new HashMap<String,EmployeeAllocation>();
 		for(Employee e:employees) {
 			employeeAllocations.put(e.getKey(), new EmployeeAllocation(e, periodPreferences.getMonthWorkDays()));
 		}
 		
-		for(int d=1; d<=periodPreferences.getMonthDays(); d++) {
+		if(solveDay(1, result)) {
+			// NO SOLUTION exists for this team and requirements
+			DEBUG("NO SOLUTION EXISTS!");
+			return null;
+		} else {
+			for(String key:employeeAllocations.keySet()) {
+				result.addEmployeeJob(
+						key, 
+						new Job(employeeAllocations.get(key).shifts, employeeAllocations.get(key).shiftsToGet));
+			}	
+			return result;			
+		}
+	}
+
+	private boolean solveDay(int d, PeriodSolution result) {
+		DEBUG("Day "+d+":");
+
+		DaySolution daySolution = new DaySolution();
+		daySolution.setDay(d);
+		
+		if(Utils.isWeekend(d, preferences.getStartWeekDay())) {
+			daySolution.setWorkday(false);
 			
-			if(isWeekend(d, periodPreferences.getStartWeekDay())) {
-				DaySolution daySolution = new DaySolution();
-				daySolution.setWorkday(false);
-				daySolution.setDay(d);
-				
-				// morning
-				WeekendMorningShift weekendMorningShift = new WeekendMorningShift();
-				daySolution.setWeekendMorningShift(weekendMorningShift);
-				// TODO editor should be friday afternoon editor (verify on Friday that editor has capacity for 3 shifts)
-				// TODO PROBLEM if friday/saturday is in different month, there is no way to ensure editor continuity (Friday afternoon + Sat + Sun)
-				weekendMorningShift.editor=findEditorForWeekendMorning(employees, daySolution);
-				if(weekendMorningShift.editor==null) { 
-					reportSolutionDoesntExist(d, "MORNING", "EDITOR"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(weekendMorningShift.editor.getKey()).assign();					
-				}
-				weekendMorningShift.drone6am=findDroneForWeekendMorning(employees, daySolution);
-				if(weekendMorningShift.drone6am==null) {
-					reportSolutionDoesntExist(d, "MORNING", "STAFFER"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(weekendMorningShift.drone6am.getKey()).assign();					
-				}
-				weekendMorningShift.sportak=findSportakForWeekendMorning(employees, daySolution);
-				if(weekendMorningShift.sportak==null) {
-					reportSolutionDoesntExist(d, "MORNING", "SPORTAK"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(weekendMorningShift.sportak.getKey()).assign();					
-				}
-								
-				// afternoon
-				WeekendAfternoonShift weekendAfternoonShift=new WeekendAfternoonShift();
-				daySolution.setWeekendAfternoonShift(weekendAfternoonShift);
-				weekendAfternoonShift.editor=findEditorForWeekendAfternoon(weekendMorningShift.editor, daySolution);
-				if(weekendAfternoonShift.editor==null) {
-					reportSolutionDoesntExist(d, "AFTERNOON", "EDITOR"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(weekendAfternoonShift.editor.getKey()).assign();					
-				}
-				weekendAfternoonShift.drone=findDroneForWeekendAfternoon(employees, daySolution);
-				if(weekendAfternoonShift.drone==null) {
-					reportSolutionDoesntExist(d, "AFTERNOON", "STAFFER"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(weekendAfternoonShift.drone.getKey()).assign();					
-				}
-				weekendAfternoonShift.sportak=findSportakForWeekendAfternoon(employees, daySolution);
-				if(weekendAfternoonShift.sportak==null) {
-					reportSolutionDoesntExist(d, "AFTERNOON", "SPORTAK"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(weekendAfternoonShift.sportak.getKey()).assign();					
-				}
-				
-				// night
-				NightShift nightShift=new NightShift();
-				daySolution.setNightShift(nightShift);
-				nightShift.drone=findDroneForWeekendNight(employees, daySolution);
-				if(nightShift.drone==null) {
-					reportSolutionDoesntExist(d, "NIGHT", "STAFFER"); // TODO BACKTRACK;					
-				}  else {
-					employeeAllocations.get(nightShift.drone.getKey()).assign();					
-				}
-
-				result.addDaySolution(daySolution);
-			} else {
-				DaySolution daySolution = new DaySolution();
-				daySolution.setWorkday(true);
-				daySolution.setDay(d);
-
-				// morning
-				WorkdayMorningShift workdayMorningShift=new WorkdayMorningShift();
-				daySolution.setWorkdayMorningShift(workdayMorningShift);
-				workdayMorningShift.editor=findEditorForWorkdayMorning(employees, daySolution);
-				if(workdayMorningShift.editor==null) {
-					reportSolutionDoesntExist(d, "MORNING", "EDITOR"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(workdayMorningShift.editor.getKey()).assign();					
-				}
-				workdayMorningShift.drone6am=findDroneForWorkdayMorning(employees, daySolution);
-				if(workdayMorningShift.drone6am==null) {
-					reportSolutionDoesntExist(d, "MORNING", "STAFFER"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(workdayMorningShift.drone6am.getKey()).assign();					
-				}
-				workdayMorningShift.drone7am=findDroneForWorkdayMorning(employees, daySolution);
-				if(workdayMorningShift.drone7am==null) {
-					reportSolutionDoesntExist(d, "MORNING", "STAFFER"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(workdayMorningShift.drone7am.getKey()).assign();					
-				}
-				workdayMorningShift.drone8am=findDroneForWorkdayMorning(employees, daySolution);
-				if(workdayMorningShift.drone8am==null) {
-					reportSolutionDoesntExist(d, "MORNING", "STAFFER"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(workdayMorningShift.drone8am.getKey()).assign();					
-				}
-				workdayMorningShift.sportak=findSportakForWorkdayMorning(employees, daySolution);
-				if(workdayMorningShift.sportak==null) {
-					reportSolutionDoesntExist(d, "MORNING", "STAFFER"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(workdayMorningShift.sportak.getKey()).assign();					
-				}
-				
-				// afternoon
-				WorkdayAfternoonShift workdayAfternoonShift=new WorkdayAfternoonShift();
-				daySolution.setWorkdayAfternoonShift(workdayAfternoonShift);
-				workdayAfternoonShift.editor=findEditorForWorkdayAfternoon(employees, daySolution);
-				if(workdayAfternoonShift.editor==null) {
-					reportSolutionDoesntExist(d, "AFTERNOON", "EDITOR"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(workdayAfternoonShift.editor.getKey()).assign();					
-				}
-				workdayAfternoonShift.drones[0]=findDroneForWorkdayAfternoon(employees, daySolution);
-				if(workdayAfternoonShift.drones[0]==null) {
-					reportSolutionDoesntExist(d, "Afternoon", "STAFFER"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(workdayAfternoonShift.drones[0].getKey()).assign();					
-				}
-				workdayAfternoonShift.drones[1]=findDroneForWorkdayAfternoon(employees, daySolution);
-				if(workdayAfternoonShift.drones[1]==null) {
-					reportSolutionDoesntExist(d, "Afternoon", "STAFFER"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(workdayAfternoonShift.drones[1].getKey()).assign();					
-				}
-				workdayAfternoonShift.drones[2]=findDroneForWorkdayAfternoon(employees, daySolution);
-				if(workdayAfternoonShift.drones[2]==null) {
-					reportSolutionDoesntExist(d, "Afternoon", "STAFFER"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(workdayAfternoonShift.drones[2].getKey()).assign();					
-				}
-				workdayAfternoonShift.drones[3]=findDroneForWorkdayAfternoon(employees, daySolution);
-				if(workdayAfternoonShift.drones[3]==null) {
-					reportSolutionDoesntExist(d, "Afternoon", "STAFFER"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(workdayAfternoonShift.drones[3].getKey()).assign();					
-				}
-				workdayAfternoonShift.sportak=findSportakForWorkdayAfternoon(employees, daySolution);
-				if(workdayAfternoonShift.sportak==null) {
-					reportSolutionDoesntExist(d, "AFTERNOON", "STAFFER"); // TODO BACKTRACK;
-				} else {
-					employeeAllocations.get(workdayAfternoonShift.sportak.getKey()).assign();					
-				}
-				
-				// night
-				NightShift nightShift=new NightShift();
-				daySolution.setNightShift(nightShift);
-				nightShift.drone=findDroneForWorkdayNight(employees, daySolution);
-				if(nightShift.drone==null) {
-					reportSolutionDoesntExist(d, "NIGHT", "STAFFER"); // TODO BACKTRACK;					
-				}  else {
-					employeeAllocations.get(nightShift.drone.getKey()).assign();					
-				}
-								
-				result.addDaySolution(daySolution);
+			DEBUG(" Weekend Morning");
+			WeekendMorningShift weekendMorningShift = new WeekendMorningShift();
+			daySolution.setWeekendMorningShift(weekendMorningShift);
+			if(assignWeekendMorningEditor(d, daySolution, weekendMorningShift, null)) {
+				// BACKTRACK previous day / END if on the first day
+				return true;
 			}
+			assignWeekendMorningDrone6am(d, daySolution, weekendMorningShift, null);				
+			assignWeekendMorningSportak(d, daySolution, weekendMorningShift, null);
+							
+			DEBUG(" Weekend Afternoon");
+			WeekendAfternoonShift weekendAfternoonShift=new WeekendAfternoonShift();
+			daySolution.setWeekendAfternoonShift(weekendAfternoonShift);			
+			assignWeekendAfternoonEditor(d, daySolution, weekendAfternoonShift, weekendMorningShift, null);
+			assignWeekendAfternoonDrone(d, daySolution, weekendAfternoonShift, weekendMorningShift, null);
+			assignWeekendAfternoonSportak(d, daySolution, weekendAfternoonShift, weekendMorningShift, null);
 			
-			showProgress(preferences.getMonthDays(), d);
+			DEBUG(" Weekend Night");
+			NightShift nightShift=new NightShift();
+			daySolution.setNightShift(nightShift);
+			assignWeekendNightDrone(d, daySolution, nightShift, weekendAfternoonShift, weekendMorningShift, null);
+		} else {
+			daySolution.setWorkday(true);
+
+			DEBUG(" Morning");
+			WorkdayMorningShift workdayMorningShift=new WorkdayMorningShift();
+			daySolution.setWorkdayMorningShift(workdayMorningShift);
+			if(assignWorkdayMorningEditor(d, daySolution, workdayMorningShift, null)) {
+				// BACKTRACK previous day / END if on the first day
+				return true;
+			}
+			assignWorkdayMorningDrone6am(d, daySolution, workdayMorningShift, null);
+			assignWorkdayMorningDrone7am(d, daySolution, workdayMorningShift, null);
+			assignWorkdayMorningDrone8am(d, daySolution, workdayMorningShift, null);
+			assignWorkdayMorningSportak(d, daySolution, workdayMorningShift, null);
+			
+			DEBUG(" Afternoon");
+			WorkdayAfternoonShift workdayAfternoonShift=new WorkdayAfternoonShift();
+			daySolution.setWorkdayAfternoonShift(workdayAfternoonShift);
+			assignWorkdayAfternoonEditor(d, daySolution, workdayAfternoonShift, workdayMorningShift, null);
+			assignWorkdayAfternoonDrone1(d, daySolution, workdayAfternoonShift, workdayMorningShift, null);
+			assignWorkdayAfternoonDrone2(d, daySolution, workdayAfternoonShift, workdayMorningShift, null);
+			assignWorkdayAfternoonDrone3(d, daySolution, workdayAfternoonShift, workdayMorningShift, null);
+			assignWorkdayAfternoonDrone4(d, daySolution, workdayAfternoonShift, workdayMorningShift, null);
+			assignWorkdayAfternoonSportak(d, daySolution, workdayAfternoonShift, workdayMorningShift, null);
+			
+			DEBUG(" Night");
+			NightShift nightShift=new NightShift();
+			daySolution.setNightShift(nightShift);
+			assignWorkdayNightDrone(d, daySolution, nightShift, workdayAfternoonShift, workdayMorningShift, null);							
+		}
+		result.addDaySolution(daySolution);
+		
+		showProgress(preferences.getMonthDays(), d);
+		
+		if(d<preferences.getMonthDays()) {
+			if(solveDay(d+1, result)) {
+				// BACKTRACK this day
+				// TODO remove last solution from the result (and ensure it is returned > perhaps NIGHT handler should insert it
+				// TODO workday night
+			}
 		}
 		
-		for(String k:employeeAllocations.keySet()) {
-			result.addEmployeeJob(
-					k, 
-					new Job(employeeAllocations.get(k).shifts, employeeAllocations.get(k).shiftsToGet));
+		return false;
+	}
+
+	/*
+	 * assign a role to particular shift's slot
+	 */
+	
+	private void assignWorkdayNightDrone(
+			int d, 
+			DaySolution daySolution, 
+			NightShift nightShift, 
+			WorkdayAfternoonShift workdayAfternoonShift, 
+			WorkdayMorningShift workdayMorningShift, 
+			Employee lastAssignee) 
+	{
+		nightShift.drone=findDroneForWorkdayNight(employees, daySolution, lastAssignee);
+		if(nightShift.drone==null) {
+			DEBUG_BACKTRACK(d, "NIGHT", "STAFFER");			
+			// BACKTRACK
+			assignWorkdayAfternoonSportak(d, daySolution, workdayAfternoonShift, workdayMorningShift, lastAssignee);
+		}  else {
+			employeeAllocations.get(nightShift.drone.getKey()).assign();					
 		}
+	}
+
+	private void assignWorkdayAfternoonSportak(
+			int d, 
+			DaySolution daySolution, 
+			WorkdayAfternoonShift workdayAfternoonShift, 
+			WorkdayMorningShift workdayMorningShift, 
+			Employee lastAssignee) 
+	{
+		workdayAfternoonShift.sportak=findSportakForWorkdayAfternoon(employees, daySolution, lastAssignee);
+		if(workdayAfternoonShift.sportak==null) {
+			DEBUG_BACKTRACK(d, "AFTERNOON", "SPORTAK");
+			// BACKTRACK
+			assignWorkdayAfternoonDrone4(d, daySolution, workdayAfternoonShift, workdayMorningShift, lastAssignee);
+		} else {
+			employeeAllocations.get(workdayAfternoonShift.sportak.getKey()).assign();					
+		}
+	}
+
+	private void assignWorkdayAfternoonDrone4(
+			int d, 
+			DaySolution daySolution, 
+			WorkdayAfternoonShift workdayAfternoonShift, 
+			WorkdayMorningShift workdayMorningShift, 
+			Employee lastAssignee) 
+	{
+		workdayAfternoonShift.drones[3]=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee);
+		if(workdayAfternoonShift.drones[3]==null) {
+			DEBUG_BACKTRACK(d, "Afternoon", "STAFFER");
+			// BACKTRACK
+			assignWorkdayAfternoonDrone3(d, daySolution, workdayAfternoonShift, workdayMorningShift, lastAssignee);
+		} else {
+			employeeAllocations.get(workdayAfternoonShift.drones[3].getKey()).assign();					
+		}
+	}
+
+	private void assignWorkdayAfternoonDrone3(
+			int d, 
+			DaySolution daySolution, 
+			WorkdayAfternoonShift workdayAfternoonShift, 
+			WorkdayMorningShift workdayMorningShift, 
+			Employee lastAssignee) 
+	{
+		workdayAfternoonShift.drones[2]=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee);
+		if(workdayAfternoonShift.drones[2]==null) {
+			DEBUG_BACKTRACK(d, "Afternoon", "STAFFER");
+			// BACKTRACK
+			assignWorkdayAfternoonDrone2(d, daySolution, workdayAfternoonShift, workdayMorningShift, lastAssignee);
+		} else {
+			employeeAllocations.get(workdayAfternoonShift.drones[2].getKey()).assign();					
+		}
+	}
+
+	private void assignWorkdayAfternoonDrone2(
+			int d, DaySolution daySolution, 
+			WorkdayAfternoonShift workdayAfternoonShift, 
+			WorkdayMorningShift workdayMorningShift, 
+			Employee lastAssignee) 
+	{
+		workdayAfternoonShift.drones[1]=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee);
+		if(workdayAfternoonShift.drones[1]==null) {
+			DEBUG_BACKTRACK(d, "Afternoon", "STAFFER");
+			// BACKTRACK
+			assignWorkdayAfternoonDrone1(d, daySolution, workdayAfternoonShift, workdayMorningShift, lastAssignee);
+		} else {
+			employeeAllocations.get(workdayAfternoonShift.drones[1].getKey()).assign();					
+		}
+	}
+
+	private void assignWorkdayAfternoonDrone1(
+			int d, 
+			DaySolution daySolution, 
+			WorkdayAfternoonShift workdayAfternoonShift, 
+			WorkdayMorningShift workdayMorningShift, 
+			Employee lastAssignee) 
+	{
+		workdayAfternoonShift.drones[0]=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee);
+		if(workdayAfternoonShift.drones[0]==null) {
+			DEBUG_BACKTRACK(d, "Afternoon", "STAFFER");
+			// BACKTRACK
+			assignWorkdayAfternoonEditor(d, daySolution, workdayAfternoonShift, workdayMorningShift, lastAssignee);
+		} else {
+			employeeAllocations.get(workdayAfternoonShift.drones[0].getKey()).assign();					
+		}
+	}
+
+	private void assignWorkdayAfternoonEditor(
+			int d, 
+			DaySolution daySolution, 
+			WorkdayAfternoonShift workdayAfternoonShift, 
+			WorkdayMorningShift workdayMorningShift, 
+			Employee lastAssignee) 
+	{
+		workdayAfternoonShift.editor=findEditorForWorkdayAfternoon(employees, daySolution, lastAssignee);
+		if(workdayAfternoonShift.editor==null) {
+			DEBUG_BACKTRACK(d, "AFTERNOON", "EDITOR");
+			// BACKTRACK
+			assignWorkdayMorningSportak(d, daySolution, workdayMorningShift, lastAssignee);
+		} else {
+			employeeAllocations.get(workdayAfternoonShift.editor.getKey()).assign();					
+		}
+	}
+
+	private void assignWorkdayMorningSportak(int d, DaySolution daySolution, WorkdayMorningShift workdayMorningShift, Employee lastAssignee) {
+		workdayMorningShift.sportak=findSportakForWorkdayMorning(employees, daySolution, lastAssignee);
+		if(workdayMorningShift.sportak==null) {
+			DEBUG_BACKTRACK(d, "MORNING", "SPORTAK");
+			// BACKTRACK
+			assignWorkdayMorningDrone8am(d, daySolution, workdayMorningShift, lastAssignee);			
+		} else {
+			employeeAllocations.get(workdayMorningShift.sportak.getKey()).assign();					
+		}
+	}
+
+	private void assignWorkdayMorningDrone8am(int d, DaySolution daySolution, WorkdayMorningShift workdayMorningShift, Employee lastAssignee) {
+		workdayMorningShift.drone8am=findDroneForWorkdayMorning(employees, daySolution, lastAssignee);
+		if(workdayMorningShift.drone8am==null) {
+			DEBUG_BACKTRACK(d, "MORNING", "STAFFER 8am");;
+			// BACKTRACK
+			assignWorkdayMorningDrone7am(d, daySolution, workdayMorningShift, lastAssignee);			
+		} else {
+			employeeAllocations.get(workdayMorningShift.drone8am.getKey()).assign();					
+		}
+	}
+
+	private void assignWorkdayMorningDrone7am(int d, DaySolution daySolution, WorkdayMorningShift workdayMorningShift, Employee lastAssignee) {
+		workdayMorningShift.drone7am=findDroneForWorkdayMorning(employees, daySolution, lastAssignee);
+		if(workdayMorningShift.drone7am==null) {
+			DEBUG_BACKTRACK(d, "MORNING", "STAFFER");
+			// BACKTRACK
+			assignWorkdayMorningDrone6am(d, daySolution, workdayMorningShift, lastAssignee);			
+		} else {
+			employeeAllocations.get(workdayMorningShift.drone7am.getKey()).assign();					
+		}
+	}
+
+	private void assignWorkdayMorningDrone6am(int d, DaySolution daySolution, WorkdayMorningShift workdayMorningShift, Employee lastAssignee) {
+		workdayMorningShift.drone6am=findDroneForWorkdayMorning(employees, daySolution, lastAssignee);
+		if(workdayMorningShift.drone6am==null) {
+			DEBUG_BACKTRACK(d, "MORNING", "STAFFER");
+			// BACKTRACK
+			assignWorkdayMorningEditor(d, daySolution, workdayMorningShift, lastAssignee);			
+		} else {
+			employeeAllocations.get(workdayMorningShift.drone6am.getKey()).assign();					
+		}
+	}
+
+	private boolean assignWorkdayMorningEditor(int d, DaySolution daySolution, WorkdayMorningShift workdayMorningShift, Employee lastAssignee) {
+		workdayMorningShift.editor=findEditorForWorkdayMorning(employees, daySolution, lastAssignee);
+		if(workdayMorningShift.editor==null) {
+			DEBUG_BACKTRACK(d, "MORNING", "EDITOR");
+			// BACKTRACK to PREVIOUS DAY
+			return true;
+		} else {
+			employeeAllocations.get(workdayMorningShift.editor.getKey()).assign();					
+		}
+		return false;
+	}
+
+	private void assignWeekendNightDrone(
+			int d, 
+			DaySolution daySolution, 
+			NightShift nightShift, 
+			WeekendAfternoonShift weekendAfternoonShift, 
+			WeekendMorningShift weekendMorningShift, 
+			Employee lastAssignee) 
+	{
+		nightShift.drone=findDroneForWeekendNight(employees, daySolution, lastAssignee);
+		if(nightShift.drone==null) {
+			DEBUG_BACKTRACK(d, "NIGHT", "STAFFER");					
+			// BACKTRACK
+			assignWeekendAfternoonSportak(d, daySolution, weekendAfternoonShift, weekendMorningShift, lastAssignee);			
+		}  else {
+			employeeAllocations.get(nightShift.drone.getKey()).assign();					
+		}
+	}
+
+	private void assignWeekendAfternoonSportak(
+			int d, 
+			DaySolution daySolution, 
+			WeekendAfternoonShift weekendAfternoonShift, 
+			WeekendMorningShift weekendMorningShift, 
+			Employee lastAssignee) 
+	{
+		weekendAfternoonShift.sportak=findSportakForWeekendAfternoon(employees, daySolution, lastAssignee);
+		if(weekendAfternoonShift.sportak==null) {
+			DEBUG_BACKTRACK(d, "AFTERNOON", "SPORTAK");
+			// BACKTRACK
+			assignWeekendAfternoonDrone(d, daySolution, weekendAfternoonShift, weekendMorningShift, lastAssignee);			
+		} else {
+			employeeAllocations.get(weekendAfternoonShift.sportak.getKey()).assign();					
+		}
+	}
+
+	private void assignWeekendAfternoonDrone(
+			int d, 
+			DaySolution daySolution, 
+			WeekendAfternoonShift weekendAfternoonShift, 
+			WeekendMorningShift weekendMorningShift, 
+			Employee lastAssignee) 
+	{
+		weekendAfternoonShift.drone=findDroneForWeekendAfternoon(employees, daySolution, lastAssignee);
+		if(weekendAfternoonShift.drone==null) {
+			DEBUG_BACKTRACK(d, "AFTERNOON", "STAFFER");
+			// BACKTRACK
+			assignWeekendAfternoonEditor(d, daySolution, weekendAfternoonShift, weekendMorningShift, lastAssignee);			
+		} else {
+			employeeAllocations.get(weekendAfternoonShift.drone.getKey()).assign();
+		}
+	}
+
+	private void assignWeekendAfternoonEditor(
+			int d, 
+			DaySolution daySolution,
+			WeekendAfternoonShift weekendAfternoonShift,
+			WeekendMorningShift weekendMorningShift,
+			Employee lastAssignee) 
+	{
+		weekendAfternoonShift.editor=findEditorForWeekendAfternoon(weekendMorningShift.editor, daySolution, lastAssignee);
+		if(weekendAfternoonShift.editor==null) {
+			DEBUG_BACKTRACK(d, "AFTERNOON", "EDITOR");
+			// BACKTRACK
+			assignWeekendMorningSportak(d, daySolution, weekendMorningShift, lastAssignee);			
+		} else {
+			employeeAllocations.get(weekendAfternoonShift.editor.getKey()).assign();					
+		}
+	}
+
+	private boolean assignWeekendMorningEditor(int d, DaySolution daySolution, WeekendMorningShift shift, Employee lastAssignee) {
+		// TODO editor should be friday afternoon editor (verify on Friday that editor has capacity for 3 shifts)
+		// TODO PROBLEM if friday/saturday is in different month, there is no way to ensure editor continuity (Friday afternoon + Sat + Sun)
+		// TODO simply introduce a field like year/month where from dropbox you can choose friday editor
 		
-		return result;
+		shift.editor=findEditorForWeekendMorning(employees, daySolution, lastAssignee);
+		if(shift.editor==null) { 
+			DEBUG_BACKTRACK(d, "MORNING", "EDITOR"); 
+			// BACKTRACK to PREVIOUS DAY
+			return true;
+		} else {
+			employeeAllocations.get(shift.editor.getKey()).assign();					
+		}
+		return false;
 	}
 	
-	private Employee findSportakForWorkdayAfternoon(List<Employee> employees, DaySolution daySolution) {
+	private void assignWeekendMorningSportak(int d, DaySolution daySolution, WeekendMorningShift shift, Employee lastAssignee) {
+		shift.sportak=findSportakForWeekendMorning(employees, daySolution, lastAssignee);
+		if(shift.sportak==null) {
+			DEBUG_BACKTRACK(d, "MORNING", "SPORTAK");
+			// BACKTRACK
+			assignWeekendMorningDrone6am(d, daySolution, shift, shift.drone6am);
+		} else {
+			employeeAllocations.get(shift.sportak.getKey()).assign();					
+		}
+	}
+
+	private void assignWeekendMorningDrone6am(int d, DaySolution daySolution, WeekendMorningShift  shift, Employee lastAssignee) {
+		shift.drone6am=findDroneForWeekendMorning(employees, daySolution, lastAssignee);
+		if(shift.drone6am==null) {
+			DEBUG_BACKTRACK(d, "MORNING", "Editor");
+			// BACKTRACK
+			assignWeekendMorningEditor(d, daySolution, shift, shift.editor);
+		} else {
+			employeeAllocations.get(shift.drone6am.getKey()).assign();					
+		}		
+	}
+
+	private int getLastAssigneeIndex(Employee lastAssignee) {
+		int lastIndex=0;
+		if(lastAssignee!=null) {
+			EmployeeAllocation lastEmployeeAllocation = employeeAllocations.get(lastAssignee.getKey());
+			lastEmployeeAllocation.unassign();
+			lastIndex = lastEmployeeAllocation.stableArrayIndex;			
+		}
+		return lastIndex;
+	}
+	
+	/*
+	 * find a role for particular shift
+	 */
+	
+	private Employee findSportakForWorkdayAfternoon(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
 		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
-		for(Employee e:employees) {
+		int lastIndex = getLastAssigneeIndex(lastAssignee);
+		for(int i=lastIndex; i<employees.size(); i++) {
+			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-			if(e.isSportak() && !e.isMorningSportak()) {
-				if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-					showProgress("Assigning "+e.getFullName()+" as sportak");
-					return e;
-				}
-			}
-			}
-		}
-		return null;
-	}
-
-	private Employee findDroneForWorkdayAfternoon(List<Employee> employees, DaySolution daySolution) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
-		for(Employee e:employees) {
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-			if(!e.isEditor() && !e.isSportak()) {
-				if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-					showProgress("Assigning "+e.getFullName()+" as staff");
-					return e;
-				}
-			}
-			}
-		}
-		return null;
-	}
-
-	private Employee findEditorForWorkdayAfternoon(List<Employee> employees, DaySolution daySolution) {
-		// TODO employee preferences
-		for(Employee e:employees) {
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-			if(e.isEditor()) {
-				if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-					showProgress("Assigning "+e.getFullName()+" as editor");
-					return e;
-				}
-			}
-			}
-		}
-		return null;
-	}
-
-	private Employee findSportakForWorkdayMorning(List<Employee> employees, DaySolution daySolution) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
-		for(Employee e:employees) {
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-			if(e.isSportak() && !e.isMorningSportak()) {
-				if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-					showProgress("Assigning "+e.getFullName()+" as sportak");
-					return e;
-				}
-			}
-			}
-		}
-		return null;
-	}
-
-	private Employee findDroneForWorkdayMorning(List<Employee> employees, DaySolution daySolution) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
-		for(Employee e:employees) {
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-			if(!e.isEditor() && !e.isSportak()) {
-				if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-					showProgress("Assigning "+e.getFullName()+" as staff");
-					return e;
-				}
-			}
-			}
-		}
-		return null;
-	}
-
-	private Employee findEditorForWorkdayMorning(List<Employee> employees, DaySolution daySolution) {
-		// TODO employee preferences
-		for(Employee e:employees) {
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-			if(e.isEditor()) {
-				if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-					showProgress("Assigning "+e.getFullName()+" as editor");
-					return e;
-				}
-			}
-			}
-		}
-		return null;
-	}
-
-	private Employee findDroneForWorkdayNight(List<Employee> employees, DaySolution daySolution) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
-		 // anybody except sportak e.g. normal, editor, MorningSportak
-		for(Employee e:employees) {
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-			if(!e.isSportak()) {
-				if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-					showProgress("Assigning "+e.getFullName()+" as staff");
-					return e;
-				}
-			}
-			}
-		}
-		return null;
-	}
-
-	private Employee findSportakForWeekendAfternoon(List<Employee> employees, DaySolution daySolution) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
-		for(Employee e:employees) {
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-			if(e.isSportak() && !e.isMorningSportak()) {
-				if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-					showProgress("Assigning "+e.getFullName()+" as sportak");
-					return e;
-				}
-			}
-			}
-		}
-		return null;
-	}
-
-	private Employee findDroneForWeekendAfternoon(List<Employee> employees, DaySolution daySolution) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
-		for(Employee e:employees) {
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-			if(!e.isEditor() && !e.isSportak()) {
-				if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-					showProgress("Assigning "+e.getFullName()+" as staff");
-					return e;
-				}
-			}
-			}
-		}
-		return null;
-	}
-
-	private Employee findEditorForWeekendAfternoon(Employee e, DaySolution daySolution) {
-		if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-			showProgress("Assigning "+e.getFullName()+" as editor");
-			return e;
-		}
-		return null;
-	}
-
-	private Employee findDroneForWeekendNight(List<Employee> employees, DaySolution daySolution) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
-		 // anybody except sportak e.g. normal, editor, MorningSportak
-		for(Employee e:employees) {
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-			if(!e.isSportak()) {
-				if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-					showProgress("Assigning "+e.getFullName()+" as staff");
-					return e;
-				}
-			}
-			}
-		}
-		return null;
-	}
-
-	private Employee findSportakForWeekendMorning(List<Employee> employees, DaySolution daySolution) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
-		for(Employee e:employees) {
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-			if(e.isSportak() && !e.isMorningSportak()) {
-				if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-					showProgress("Assigning "+e.getFullName()+" as sportak");
-					return e;
-				}
-			}
-			}
-		}
-		return null;
-	}
-
-	private Employee findDroneForWeekendMorning(List<Employee> employees, DaySolution daySolution) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
-		for(Employee e:employees) {
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-				if(!e.isEditor() && !e.isSportak()) {
+				if(e.isSportak() && !e.isMorningSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						showProgress("Assigning "+e.getFullName()+" as staff");
+						DEBUG("  Assigning "+e.getFullName()+" as sportak");
 						return e;
 					}
 				}
@@ -461,13 +475,217 @@ public class ShiftsSolver {
 		return null;
 	}
 
-	private Employee findEditorForWeekendMorning(List<Employee> employees, DaySolution daySolution) {
-		// TODO employee preferences		
-		for(Employee e:employees) {
+	private Employee findDroneForWorkdayAfternoon(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
+		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
+		int lastIndex = getLastAssigneeIndex(lastAssignee);
+		for(int i=lastIndex; i<employees.size(); i++) {
+			Employee e=employees.get(i);
+			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+				if(!e.isEditor() && !e.isSportak()) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
+						DEBUG("  Assigning "+e.getFullName()+" as staff");
+						return e;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private Employee findEditorForWorkdayAfternoon(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
+		// TODO employee preferences
+		int lastIndex = getLastAssigneeIndex(lastAssignee);
+		for(int i=lastIndex; i<employees.size(); i++) {
+			Employee e=employees.get(i);
+			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+				if(e.isEditor()) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
+						DEBUG("  Assigning "+e.getFullName()+" as editor");
+						return e;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private Employee findSportakForWorkdayMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
+		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
+		int lastIndex = getLastAssigneeIndex(lastAssignee);
+		for(int i=lastIndex; i<employees.size(); i++) {
+			Employee e=employees.get(i);
+			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+				if(e.isSportak() && !e.isMorningSportak()) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
+						DEBUG("  Assigning "+e.getFullName()+" as sportak");
+						return e;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private Employee findDroneForWorkdayMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
+		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
+		int lastIndex = getLastAssigneeIndex(lastAssignee);
+		for(int i=lastIndex; i<employees.size(); i++) {
+			Employee e=employees.get(i);
+			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+				if(!e.isEditor() && !e.isSportak()) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
+						DEBUG("  Assigning "+e.getFullName()+" as staff");
+						return e;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private Employee findEditorForWorkdayMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
+		// TODO employee preferences
+		int lastIndex = getLastAssigneeIndex(lastAssignee);
+		for(int i=lastIndex; i<employees.size(); i++) {
+			Employee e=employees.get(i);
+			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+				if(e.isEditor()) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
+						DEBUG("  Assigning "+e.getFullName()+" as editor");
+						return e;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private Employee findDroneForWorkdayNight(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
+		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
+		 // anybody except sportak e.g. normal, editor, MorningSportak
+		int lastIndex = getLastAssigneeIndex(lastAssignee);
+		for(int i=lastIndex; i<employees.size(); i++) {
+			Employee e=employees.get(i);
+			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+				if(!e.isSportak()) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
+						DEBUG("  Assigning "+e.getFullName()+" as staff");
+						return e;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private Employee findSportakForWeekendAfternoon(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
+		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
+		int lastIndex = getLastAssigneeIndex(lastAssignee);
+		for(int i=lastIndex; i<employees.size(); i++) {
+			Employee e=employees.get(i);
+			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+				if(e.isSportak() && !e.isMorningSportak()) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
+						DEBUG("  Assigning "+e.getFullName()+" as sportak");
+						return e;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private Employee findDroneForWeekendAfternoon(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
+		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
+		int lastIndex = getLastAssigneeIndex(lastAssignee);
+		for(int i=lastIndex; i<employees.size(); i++) {
+			Employee e=employees.get(i);
+			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+				if(!e.isEditor() && !e.isSportak()) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
+						DEBUG("  Assigning "+e.getFullName()+" as staff");
+						return e;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private Employee findEditorForWeekendAfternoon(Employee e, DaySolution daySolution, Employee lastAssignee) {
+		if(lastAssignee==null) {
+			if(employeeAllocations.get(e.getKey()).hasCapacity()) {
+				DEBUG("  Assigning "+e.getFullName()+" as editor");
+				return e;
+			}
+			return null;			
+		} else {
+			// if BACKTRACK that fail to let editor be assigned on FRI and/or SUN
+			return null;
+		}
+	}
+
+	private Employee findDroneForWeekendNight(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
+		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
+		 // anybody except sportak e.g. normal, editor, MorningSportak
+		int lastIndex = getLastAssigneeIndex(lastAssignee);
+		for(int i=lastIndex; i<employees.size(); i++) {
+			Employee e=employees.get(i);
+			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+				if(!e.isSportak()) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
+						DEBUG("  Assigning "+e.getFullName()+" as staff");
+						return e;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private Employee findSportakForWeekendMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
+		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
+		int lastIndex = getLastAssigneeIndex(lastAssignee);
+		for(int i=lastIndex; i<employees.size(); i++) {
+			Employee e=employees.get(i);
+			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+				if(e.isSportak() && !e.isMorningSportak()) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
+						DEBUG("  Assigning "+e.getFullName()+" as sportak");
+						return e;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	private Employee findDroneForWeekendMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
+		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
+		int lastIndex = getLastAssigneeIndex(lastAssignee);
+		for(int i=lastIndex; i<employees.size(); i++) {
+			Employee e=employees.get(i);
+			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+				if(!e.isEditor() && !e.isSportak()) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
+						DEBUG("  Assigning "+e.getFullName()+" as staff");
+						return e;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private Employee findEditorForWeekendMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
+		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
+		int lastIndex = getLastAssigneeIndex(lastAssignee);
+		for(int i=lastIndex; i<employees.size(); i++) {
+			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(employeeAllocations.get(e.getKey()).hasCapacity()) {					
 					if(e.isEditor()) {
-						showProgress("Assigning "+e.getFullName()+" as editor");
+						DEBUG("  Assigning "+e.getFullName()+" as editor");
 						return e;
 					}					
 				}
@@ -476,40 +694,24 @@ public class ShiftsSolver {
 		return null;
 	}
 
-	private void reportSolutionDoesntExist(int d, String shiftType, String role) {
-		String message = "Solution doesn't exist for day "+d+", shift "+shiftType+" and role "+role+"!";
-		if(ctx!=null) {
-			ctx.getStatusLine().showError(message);			
-		} else {
-			System.err.println(message);
-		}
-		// TODO throw exception > throw it above to abort progress and report problem + keep error message
-	}
-	
-	private boolean isWeekend(int i, int startWeekDay) {
-		int sundayBeginningDayNumber=(i-1+startWeekDay-1)%7;
-		if(sundayBeginningDayNumber==0 || sundayBeginningDayNumber==6) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
 	private void showProgress(int days, int processedDays) {
 		int percent = Math.round(((float)processedDays) / (((float)days)/100f));
-		showProgress("Building shifts schedule: "+percent+"% ("+processedDays+"/"+days+")");
-		// TODO extra panel for progress ctx.getSolverProgressPanel().refresh(percent);
-	}
-	
-	private void showProgress(String message) {
+		String message="Building shifts schedule: "+percent+"% ("+processedDays+"/"+days+")";
 		if(ctx!=null) {
 			ctx.getStatusLine().showProgress(message);			
 		} else {
 			System.out.println(message);
 		}		
+		// TODO extra panel for progress ctx.getSolverProgressPanel().refresh(percent);
 	}
-
-	public Map<String, EmployeeAllocation> getEmployeeAllocations() {
-		return employeeAllocations;
+	
+	private void DEBUG_BACKTRACK(int d, String shiftType, String role) {
+		DEBUG("--> Solution doesn't exist for day "+d+", shift "+shiftType+" and role "+role+" --> BACKTRACK");
+	}
+	
+	private void DEBUG(String message) {
+		if(ctx!=null) {
+			ctx.getStatusLine().showProgress(message);			
+		}		
 	}
 }
