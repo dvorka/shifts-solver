@@ -38,6 +38,7 @@ Finds a solution to creation of a schedule for shifts-based operation.
    * 3 states N/A OK, WANT, IMPOSSIBLE
 
 * desired
+   * 2xweekend editor == 3 items in uvazek (not for)
    * normal night anybody
    * sunday night is fulltime employee
    * sunday night is editor (not required)

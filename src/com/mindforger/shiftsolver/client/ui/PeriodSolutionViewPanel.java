@@ -1,5 +1,8 @@
 package com.mindforger.shiftsolver.client.ui;
 
+import java.util.List;
+import java.util.Set;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -11,8 +14,10 @@ import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
+import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
+import com.mindforger.shiftsolver.shared.model.Job;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
@@ -236,6 +241,83 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		}		
 	}
 
+	public void refreshShiftsHtml(PeriodSolution solution) {
+		StringBuffer s=new StringBuffer();
+		s.append(
+				"Employee allocation ("+solution.getEmployeeJobs().size()+"):" +
+				"<ul>"
+				);
+		Set<String> keys = solution.getEmployeeJobs().keySet();
+		for(String key:keys) {
+			Job a = solution.getEmployeeJobs().get(key);
+			String prefix=a.shifts<a.shiftsLimit?"&lt;":(a.shifts==a.shiftsLimit?"=":"&gt;");
+			Employee employee=ctx.getState().getEmployee(key);
+			s.append("  <li>"+prefix+" "+employee.getFullName()+": "+a.shifts+"/"+a.shiftsLimit+" "+
+					(employee.isEditor()?"editor":"")+
+					(employee.isMorningSportak()?"morning-sportak":"")+
+					(employee.isSportak()?"sportak":"")+
+					" "+
+					(employee.isFulltime()?"FULL":"PART")+
+					"</li>");
+		}
+		s.append("<ul>");
+
+		s.append("<br>Shifts Schedule:<br>");
+		List<DaySolution> days = solution.getDays();
+		s.append("<ul>");
+		for(DaySolution ds:days) {
+			s.append("<li>");
+			s.append((ds.isWorkday()?"Work":"Weekend") + " Day "+ ds.getDay() +":");
+			s.append("<ul>");
+			if(ds.isWorkday()) {
+				s.append("<li>");
+				s.append("Morning:");
+				s.append("<ul>");
+				s.append("<li>    E "+ds.getWorkdayMorningShift().editor.getFullName());
+				s.append("<li>    D "+ds.getWorkdayMorningShift().drone6am.getFullName());
+				s.append("<li>    D "+ds.getWorkdayMorningShift().drone7am.getFullName());
+				s.append("<li>    D "+ds.getWorkdayMorningShift().drone8am.getFullName());
+				s.append("<li>    E "+ds.getWorkdayMorningShift().sportak.getFullName());
+				s.append("</ul>");
+				s.append("</li>");
+
+				s.append("<li>");
+				s.append("  Afternoon:");
+				s.append("<ul>");
+				s.append("<li>    E "+ds.getWorkdayAfternoonShift().editor.getFullName());
+				s.append("<li>    D "+ds.getWorkdayAfternoonShift().drones[0].getFullName());
+				s.append("<li>    D "+ds.getWorkdayAfternoonShift().drones[1].getFullName());
+				s.append("<li>    D "+ds.getWorkdayAfternoonShift().drones[2].getFullName());
+				s.append("<li>    D "+ds.getWorkdayAfternoonShift().drones[3].getFullName());
+				s.append("<li>    S "+ds.getWorkdayAfternoonShift().sportak.getFullName());
+				s.append("</ul>");
+				s.append("</li>");
+
+				s.append("<li>");
+				s.append("  Night:");
+				s.append("<ul>");
+				s.append("    D "+ds.getNightShift().drone.getFullName());
+				s.append("</ul>");
+				s.append("</li>");
+			} else {		
+				s.append("  Morning:");
+				s.append("    E "+ds.getWeekendMorningShift().editor.getFullName());
+				s.append("    D "+ds.getWeekendMorningShift().drone6am.getFullName());
+				s.append("    E "+ds.getWeekendMorningShift().sportak.getFullName());
+
+				s.append("  Afternoon:");
+				s.append("    E "+ds.getWeekendAfternoonShift().editor.getFullName());
+				s.append("    D "+ds.getWeekendAfternoonShift().drone.getFullName());
+				s.append("    S "+ds.getWeekendAfternoonShift().sportak.getFullName());
+
+				s.append("  Night:");
+				s.append("    D "+ds.getNightShift().drone.getFullName());
+			}
+			s.append("<ul>");
+		}
+		s.append("</ul>");
+	}
+	
 	public void refresh(PeriodSolution result) {
 		if(result==null) {
 			setVisible(false);
@@ -265,6 +347,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		monthListBox.setText(""+periodSolution.getMonth());
 		
 		refreshPreferencesTable(preferencesTable, periodSolution);
+		refreshShiftsHtml(periodSolution);
 	}
 
 	private void riaToObject() {

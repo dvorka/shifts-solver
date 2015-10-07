@@ -19,6 +19,7 @@ public class ShiftsSolverTest {
 	public void testRiaDataSolution() {		
 		ShiftsSolver solver=new ShiftsSolver();
 		RiaState state = Utils.createBigFooState();
+		//RiaState state = Utils.createSmallFooState();
 		PeriodPreferences preferences = state.getPeriodPreferencesList()[0];
 		PeriodSolution solution = solver.solve(preferences.getEmployeeToPreferences().keySet(), preferences);
 		
@@ -32,7 +33,8 @@ public class ShiftsSolverTest {
 			Set<String> keys = solver.getEmployeeAllocations().keySet();
 			for(String key:keys) {
 				EmployeeAllocation a = solver.getEmployeeAllocations().get(key);
-				System.out.println("  "+a.employee.getFullName()+": "+a.shifts+"/"+a.shiftsToGet+" "+
+				String prefix=a.shifts<a.shiftsToGet?"<":(a.shifts==a.shiftsToGet?"=":">");
+				System.out.println("  "+prefix+" "+a.employee.getFullName()+": "+a.shifts+"/"+a.shiftsToGet+" "+
 						(a.employee.isEditor()?"editor":"")+
 						(a.employee.isMorningSportak()?"morning-sportak":"")+
 						(a.employee.isSportak()?"sportak":"")+
