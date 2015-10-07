@@ -62,54 +62,6 @@ h1 {
   text-align: center;
 }
 
-/* S2 */
-
-.s2-fulltimeNotFull {
-	color: #FF0000;
-	font-weight: bold;	
-}
-
-.s2-partimeNotFull {
-	color: #FF6600;
-}
-
-.s2-weekendDay {
-	color: #FF0000;
-}
-
-.s2-shiftFree {
-	background-color: #FFF 
-	color: #FFF; 
-	font-weight: normal;
-}
-.s2-shiftNa {
-	background-color: #CC0000 
-	color: #FFF; 
-	font-weight: normal;
-}
-.s2-shiftVacations {
-	background-color: #FFFF88; 
-	color: black; 
-	font-weight: normal;
-}
-.s2-shiftMorning {
-	background-color: #356AA0; 
-	color: #FFF; 
-	font-weight: normal;
-}
-.s2-shiftAfternoon {
-	background-color: #008C00; 
-	color: #FFF; 
-	font-weight: normal;
-}
-.s2-shiftNight {
-	background-color: #000; 
-	color: #FFF;
-	font-weight: normal;
-}
-
-
-
 
 
 /** Most GWT widgets already have a style name defined */
@@ -2679,6 +2631,73 @@ html>body .gwt-MenuBarPopup {
 	border: 1px solid #000;
 	margin-top: 3px; 
 	padding: 3px;
+}
+
+
+
+/* S2 > latest style overrides */
+
+.s2-fulltimeNotFull {
+	color: #FF0000;
+	font-weight: bold;	
+}
+
+.s2-partimeNotFull {
+	color: #FF6600;
+}
+
+.s2-weekendDay {
+	color: #FF0000;
+}
+
+.s2-male {
+	color: #000;
+}
+.s2-female {
+	color: #330000;	
+}
+.s2-fulltime {
+	color: #000;
+}
+.s2-parttime {
+	font-weight: normal;	
+}
+.s2-editor {
+	background-color: #CCC
+}
+.s2-sportak {
+	background-color: #EE0 	
+}
+
+.s2-shiftFree {
+	background-color: #FFF 
+	color: #FFF; 
+	font-weight: normal;
+}
+.s2-shiftNa {
+	background-color: #CC0000 
+	color: #FFF; 
+	font-weight: normal;
+}
+.s2-shiftVacations {
+	background-color: #FFFF88; 
+	color: black; 
+	font-weight: normal;
+}
+.s2-shiftMorning {
+	background-color: #356AA0; 
+	color: #FFF; 
+	font-weight: normal;
+}
+.s2-shiftAfternoon {
+	background-color: #008C00; 
+	color: #FFF; 
+	font-weight: normal;
+}
+.s2-shiftNight {
+	background-color: #000; 
+	color: #FFF;
+	font-weight: normal;
 }
 
 /** EOF **/

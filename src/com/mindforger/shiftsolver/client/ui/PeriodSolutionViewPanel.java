@@ -1,7 +1,6 @@
 package com.mindforger.shiftsolver.client.ui;
 
 import java.util.List;
-import java.util.Set;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -17,7 +16,6 @@ import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
-import com.mindforger.shiftsolver.shared.model.Job;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
@@ -155,10 +153,30 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		int numRows = table.getRowCount();		
 		EmployeesTableToEmployeeButton button = new EmployeesTableToEmployeeButton(
 				employee.getKey(),
-				employee.getFullName()+" ("+(employee.isFulltime()?"F":"")+(employee.isSportak()?"S":"")+(employee.isEditor()?"E":"")+")",
+				employee.getFullName()
+				  // +" ("+(employee.isFulltime()?"F":"")+(employee.isSportak()?"S":"")+(employee.isEditor()?"E":"")+")",
+				  +(employee.isFulltime()?"*":""),
 				// TODO css
 				"mf-growsTableGoalButton", 
 				ctx);
+		if(employee.isFemale()) {
+			button.addStyleName("s2-female");			
+		} else {
+			button.addStyleName("s2-male");						
+		}
+		if(employee.isFulltime()) {
+			button.addStyleName("s2-fulltime");			
+		} else {
+			button.addStyleName("s2-parttime");						
+		}
+		if(employee.isEditor()) {
+			button.setTitle(employee.getFullName()+" - Editor");
+			button.addStyleName("s2-editor");			
+		}
+		if(employee.isSportak()) {
+			button.setTitle(employee.getFullName()+" - Sportak");
+			button.addStyleName("s2-sportak");			
+		}
 		table.setWidget(numRows, 0, button);
 
 		
@@ -252,25 +270,6 @@ public class PeriodSolutionViewPanel extends FlexTable {
 
 	public void refreshShiftsHtml(PeriodSolution solution) {
 		StringBuffer s=new StringBuffer();
-		s.append(
-				"<br>" +
-				"<b>Employee allocation ("+solution.getEmployeeJobs().size()+"):</b>" +
-				"<ul>"
-				);
-		Set<String> keys = solution.getEmployeeJobs().keySet();
-		for(String key:keys) {
-			Job a = solution.getEmployeeJobs().get(key);
-			String prefix=a.shifts<a.shiftsLimit?"&lt;":(a.shifts==a.shiftsLimit?"=":"&gt;");
-			Employee employee=ctx.getState().getEmployee(key);
-			s.append("  <li>"+prefix+" "+employee.getFullName()+": "+a.shifts+"/"+a.shiftsLimit+" "+
-					(employee.isEditor()?"editor":"")+
-					(employee.isMorningSportak()?"morning-sportak":"")+
-					(employee.isSportak()?"sportak":"")+
-					" "+
-					(employee.isFulltime()?"FULL":"PART")+
-					"</li>");
-		}
-		s.append("<ul>");
 
 		s.append("<br><b>Shifts Schedule:</b><br>");
 		List<DaySolution> days = solution.getDays();
