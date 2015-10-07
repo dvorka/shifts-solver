@@ -1,6 +1,8 @@
 # Shifts Solver
 Finds a solution to creation of a schedule for shifts-based operation.
 
+TODO this readme to be polished: S2 description, screenshots (per panel), rules, plans, link to live version.
+
 ## Feedback
 
 * solving
