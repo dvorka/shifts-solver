@@ -33,6 +33,10 @@ public class YesNoDontcareButton extends Button {
 		});
 	}
 
+	public void setYesNoValue(int value) {
+		this.value=value;
+	}
+	
 	public int getYesNoValue() {
 		return value%3;
 	}

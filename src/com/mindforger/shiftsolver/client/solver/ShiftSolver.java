@@ -519,7 +519,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e, daySolution.getDay()).isNoAfternoon()) {
+						if(!getDayPreference(e, daySolution.getDay()).isNoAfternoon() && !getDayPreference(e, daySolution.getDay()).isNoDay()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
 							return e;
 						}

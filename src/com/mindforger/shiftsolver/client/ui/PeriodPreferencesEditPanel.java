@@ -224,49 +224,61 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 					switch(r) {
 					case CHECK_DAY:
 						if(dayPreference.isNoDay()) {
+							yesNoDontcare.setYesNoValue(2);
 							yesNoDontcare.setStylePrimaryName("s2-3stateNo");
 						}
 						if(dayPreference.isYesDay()) {
+							yesNoDontcare.setYesNoValue(1);
 							yesNoDontcare.setStylePrimaryName("s2-3stateYes");
 						}
 						break;
 					case CHECK_MORNING_6:
 						if(dayPreference.isNoMorning6()) {
+							yesNoDontcare.setYesNoValue(2);
 							yesNoDontcare.setStylePrimaryName("s2-3stateNo");
 						}
 						if(dayPreference.isYesMorning6()) {
+							yesNoDontcare.setYesNoValue(1);
 							yesNoDontcare.setStylePrimaryName("s2-3stateYes");
 						}
 						break;
 					case CHECK_MORNING_7:
 						if(dayPreference.isNoMorning7()) {
+							yesNoDontcare.setYesNoValue(2);
 							yesNoDontcare.setStylePrimaryName("s2-3stateNo");
 						}
 						if(dayPreference.isYesMorning7()) {
+							yesNoDontcare.setYesNoValue(1);
 							yesNoDontcare.setStylePrimaryName("s2-3stateYes");
 						}
 						break;
 					case CHECK_MORNING_8:
 						if(dayPreference.isNoMorning8()) {
+							yesNoDontcare.setYesNoValue(2);
 							yesNoDontcare.setStylePrimaryName("s2-3stateNo");
 						}
 						if(dayPreference.isYesMorning8()) {
+							yesNoDontcare.setYesNoValue(1);
 							yesNoDontcare.setStylePrimaryName("s2-3stateYes");
 						}
 						break;
 					case CHECK_AFTERNOON:
 						if(dayPreference.isNoAfternoon()) {
+							yesNoDontcare.setYesNoValue(2);
 							yesNoDontcare.setStylePrimaryName("s2-3stateNo");
 						}
 						if(dayPreference.isYesAfternoon()) {
+							yesNoDontcare.setYesNoValue(1);
 							yesNoDontcare.setStylePrimaryName("s2-3stateYes");
 						}
 						break;
 					case CHECK_NIGHT:
 						if(dayPreference.isNoNight()) {
+							yesNoDontcare.setYesNoValue(2);
 							yesNoDontcare.setStylePrimaryName("s2-3stateNo");
 						}
 						if(dayPreference.isYesNight()) {
+							yesNoDontcare.setYesNoValue(1);
 							yesNoDontcare.setStylePrimaryName("s2-3stateYes");
 						}
 						break;
@@ -368,7 +380,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 						case CHECK_MORNING_6:
 							switch(yesNoDontcareButton.getYesNoValue()) {
 							case 1:
-								dayPreference.setNoMorning6(true);
+								dayPreference.setYesMorning6(true);
 								break;
 							case 2:
 								dayPreference.setNoMorning6(true);
@@ -380,7 +392,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 						case CHECK_MORNING_7:
 							switch(yesNoDontcareButton.getYesNoValue()) {
 							case 1:
-								dayPreference.setNoMorning7(true);
+								dayPreference.setYesMorning7(true);
 								break;
 							case 2:
 								dayPreference.setNoMorning7(true);
@@ -392,7 +404,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 						case CHECK_MORNING_8:
 							switch(yesNoDontcareButton.getYesNoValue()) {
 							case 1:
-								dayPreference.setNoMorning8(true);
+								dayPreference.setYesMorning8(true);
 								break;
 							case 2:
 								dayPreference.setNoMorning8(true);
