@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
-import com.mindforger.shiftsolver.client.solver.ShiftsSolver;
+import com.mindforger.shiftsolver.client.solver.ShiftSolver;
 import com.mindforger.shiftsolver.client.ui.EmployeeEditPanel;
 import com.mindforger.shiftsolver.client.ui.EmployeesTable;
 import com.mindforger.shiftsolver.client.ui.HomePanel;
@@ -42,7 +42,7 @@ public class RiaContext implements ShiftSolverConstants {
 	private GreetingServiceAsync service;
 	
 	// solver
-	private ShiftsSolver solver;
+	private ShiftSolver solver;
 	
 	// validation
 	private FieldVerifier fieldVerifier;
@@ -72,7 +72,7 @@ public class RiaContext implements ShiftSolverConstants {
 		service=GWT.create(GreetingService.class);		
 		fieldVerifier=new FieldVerifier();
 		state=new RiaState();
-		solver=new ShiftsSolver(this);
+		solver=new ShiftSolver(this);
 		
 		// UI
 		statusLine=new StatusLine(this);
@@ -177,7 +177,7 @@ public class RiaContext implements ShiftSolverConstants {
 		return homePanel;
 	}
 
-	public ShiftsSolver getSolver() {
+	public ShiftSolver getSolver() {
 		return solver;
 	}
 }

@@ -45,6 +45,8 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		
 		preferencesTable = newPreferencesTable();
 		setWidget(2, 0, preferencesTable);
+		
+		// HTML 3 # 0
 	}
 
 	private FlowPanel newButtonPanel(final RiaContext ctx) {
@@ -153,7 +155,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		int numRows = table.getRowCount();		
 		EmployeesTableToEmployeeButton button = new EmployeesTableToEmployeeButton(
 				employee.getKey(),
-				employee.getFullName(),
+				employee.getFullName()+" ("+(employee.isFulltime()?"F":"")+(employee.isSportak()?"S":"")+(employee.isEditor()?"E":"")+")",
 				// TODO css
 				"mf-growsTableGoalButton", 
 				ctx);
@@ -161,17 +163,24 @@ public class PeriodSolutionViewPanel extends FlexTable {
 
 		
 		
-		table.setWidget(
-				numRows, 
-				1, 
-				new HTML(
-						solution.getEmployeeJobs().get(employee.getKey()).shifts+"/"+
-						solution.getEmployeeJobs().get(employee.getKey()).shiftsLimit)); 
+		int shiftsAssigned = solution.getEmployeeJobs().get(employee.getKey()).shifts;
+		int shiftsLimit = solution.getEmployeeJobs().get(employee.getKey()).shiftsLimit;
+		HTML jobHtml = new HTML(shiftsAssigned+"/"+shiftsLimit);
+		if(shiftsAssigned<shiftsLimit) {
+			if(employee.isFulltime()) {
+				jobHtml.addStyleName("s2-fulltimeNotFull");				
+			} else {
+				jobHtml.addStyleName("s2-partimeNotFull");								
+			}
+		}
+		table.setWidget(numRows, 1, jobHtml); 
+		
+		
 		
 		for (int i = 0; i<monthDays; i++) {
 			// TODO append Mon...Sun to the number; weekend to have different color
 			HTML html = new HTML(""+(i+1)+PeriodPreferencesEditPanel.getDayLetter(i+1, preferences));
-			if(PeriodPreferencesEditPanel.isWeekend(i,preferences)) {
+			if(PeriodPreferencesEditPanel.isWeekend(i+1,preferences)) {
 				html.addStyleName("s2-weekendDay");
 			}
 			table.setWidget(0, i+2, html);
@@ -182,37 +191,37 @@ public class PeriodSolutionViewPanel extends FlexTable {
 			if(solution.getDays().get(c).isEmployeeAllocated(employee.getKey())) {
 				switch(solution.getDays().get(c).getShiftTypeForEmployee(employee.getKey())) {
 				case ShiftSolverConstants.SHIFT_MORNING:
-					html = new HTML("M");
+					html = new HTML("&nbsp;M");
 					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
 					html.setTitle("Morning shift");
 					table.setWidget(numRows, c+2, html);
 					break;
 				case ShiftSolverConstants.SHIFT_MORNING_6:
-					html = new HTML("6");
+					html = new HTML("&nbsp;6");
 					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
 					html.setTitle("Morning shift 6am");
 					table.setWidget(numRows, c+2, html);
 					break;
 				case ShiftSolverConstants.SHIFT_MORNING_7:
-					html = new HTML("7");
+					html = new HTML("&nbsp;7");
 					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
 					html.setTitle("Morning shift 7am");
 					table.setWidget(numRows, c+2, html);
 					break;
 				case ShiftSolverConstants.SHIFT_MORNING_8:
-					html = new HTML("8");
+					html = new HTML("&nbsp;8");
 					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
 					html.setTitle("Morning shift 8am");
 					table.setWidget(numRows, c+2, html);
 					break;
 				case ShiftSolverConstants.SHIFT_AFTERNOON:
-					html = new HTML("A");
+					html = new HTML("&nbsp;A");
 					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_AFTERNOON);
 					html.setTitle("Afternoon shift");
 					table.setWidget(numRows, c+2, html);
 					break;
 				case ShiftSolverConstants.SHIFT_NIGHT:
-					html = new HTML("N");
+					html = new HTML("&nbsp;N");
 					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_NIGHT);
 					html.setTitle("Night shift");
 					table.setWidget(numRows, c+2, html);
@@ -233,7 +242,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 //				table.setWidget(numRows, c+2, html);
 //				break;
 				
-				html = new HTML("F");
+				html = new HTML(" "); // F
 				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_FREE);
 				html.setTitle("Free day");
 				table.setWidget(numRows, c+2, html);				
@@ -244,7 +253,8 @@ public class PeriodSolutionViewPanel extends FlexTable {
 	public void refreshShiftsHtml(PeriodSolution solution) {
 		StringBuffer s=new StringBuffer();
 		s.append(
-				"Employee allocation ("+solution.getEmployeeJobs().size()+"):" +
+				"<br>" +
+				"<b>Employee allocation ("+solution.getEmployeeJobs().size()+"):</b>" +
 				"<ul>"
 				);
 		Set<String> keys = solution.getEmployeeJobs().keySet();
@@ -262,7 +272,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		}
 		s.append("<ul>");
 
-		s.append("<br>Shifts Schedule:<br>");
+		s.append("<br><b>Shifts Schedule:</b><br>");
 		List<DaySolution> days = solution.getDays();
 		s.append("<ul>");
 		for(DaySolution ds:days) {
@@ -270,7 +280,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 			s.append((ds.isWorkday()?"Work":"Weekend") + " Day "+ ds.getDay() +":");
 			s.append("<ul>");
 			if(ds.isWorkday()) {
-				s.append("<li>");
+				s.append("<li>");				
 				s.append("Morning:");
 				s.append("<ul>");
 				s.append("<li>    E "+ds.getWorkdayMorningShift().editor.getFullName());
@@ -296,26 +306,42 @@ public class PeriodSolutionViewPanel extends FlexTable {
 				s.append("<li>");
 				s.append("  Night:");
 				s.append("<ul>");
-				s.append("    D "+ds.getNightShift().drone.getFullName());
+				s.append("    <li>D "+ds.getNightShift().drone.getFullName());
 				s.append("</ul>");
 				s.append("</li>");
 			} else {		
+				s.append("<li>");
 				s.append("  Morning:");
-				s.append("    E "+ds.getWeekendMorningShift().editor.getFullName());
-				s.append("    D "+ds.getWeekendMorningShift().drone6am.getFullName());
-				s.append("    E "+ds.getWeekendMorningShift().sportak.getFullName());
+				s.append("<ul>");
+				s.append("<li>    E "+ds.getWeekendMorningShift().editor.getFullName());
+				s.append("<li>    D "+ds.getWeekendMorningShift().drone6am.getFullName());
+				s.append("<li>    E "+ds.getWeekendMorningShift().sportak.getFullName());
+				s.append("</ul>");
+				s.append("</li>");
 
+				s.append("<li>");				
 				s.append("  Afternoon:");
-				s.append("    E "+ds.getWeekendAfternoonShift().editor.getFullName());
-				s.append("    D "+ds.getWeekendAfternoonShift().drone.getFullName());
-				s.append("    S "+ds.getWeekendAfternoonShift().sportak.getFullName());
+				s.append("<ul>");
+				s.append("<li>    E "+ds.getWeekendAfternoonShift().editor.getFullName());
+				s.append("<li>    D "+ds.getWeekendAfternoonShift().drone.getFullName());
+				s.append("<li>    S "+ds.getWeekendAfternoonShift().sportak.getFullName());
+				s.append("</ul>");
+				s.append("</li>");
 
+				s.append("<li>");				
 				s.append("  Night:");
-				s.append("    D "+ds.getNightShift().drone.getFullName());
+				s.append("<ul>");
+				s.append("<li>    D "+ds.getNightShift().drone.getFullName());
+				s.append("</ul>");
+				s.append("</li>");
 			}
-			s.append("<ul>");
+			s.append("</ul>");
 		}
 		s.append("</ul>");
+		
+		HTML html = new HTML(s.toString());
+		//html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
+		setWidget(3, 0, html);
 	}
 	
 	public void refresh(PeriodSolution result) {

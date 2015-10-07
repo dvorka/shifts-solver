@@ -64,8 +64,16 @@ h1 {
 
 /* S2 */
 
+.s2-fulltimeNotFull {
+	color: #FF0000;
+	font-weight: bold;	
+}
+
+.s2-partimeNotFull {
+	color: #FF6600;
+}
+
 .s2-weekendDay {
-	font-weight: bolder;
 	color: #FF0000;
 }
 

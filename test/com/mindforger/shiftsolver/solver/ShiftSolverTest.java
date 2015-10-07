@@ -6,18 +6,18 @@ import java.util.Set;
 import com.mindforger.shiftsolver.client.RiaState;
 import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
-import com.mindforger.shiftsolver.client.solver.ShiftsSolver;
+import com.mindforger.shiftsolver.client.solver.ShiftSolver;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
-public class ShiftsSolverTest {
+public class ShiftSolverTest {
 
-	public ShiftsSolverTest() {		
+	public ShiftSolverTest() {		
 	}
 	
 	public void testRiaDataSolution() {		
-		ShiftsSolver solver=new ShiftsSolver();
+		ShiftSolver solver=new ShiftSolver();
 		RiaState state = Utils.createBigFooState();
 		//RiaState state = Utils.createSmallFooState();
 		PeriodPreferences preferences = state.getPeriodPreferencesList()[0];
@@ -84,7 +84,7 @@ public class ShiftsSolverTest {
 	}
 	
 	public static void main(String[] args) {
-		ShiftsSolverTest shiftSolverRiaTest = new ShiftsSolverTest();
+		ShiftSolverTest shiftSolverRiaTest = new ShiftSolverTest();
 		shiftSolverRiaTest.testRiaDataSolution();
 	}
 }
