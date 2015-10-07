@@ -240,15 +240,47 @@ public class Utils {
 		
 		state.setEmployees(team.getStableEmployeeList().toArray(new Employee[team.getStableEmployeeList().size()]));
 		
-		PeriodPreferences periodPreferences = new PeriodPreferences(2015, 10);
+		int year=2015;
+		int month=10;
+		PeriodPreferences periodPreferences = new PeriodPreferences(year, month);
 		periodPreferences.setKey("2");
 		periodPreferences.setMonthDays(31);
 		periodPreferences.setMonthWorkDays(22);
 		periodPreferences.setStartWeekDay(5);
 		
 		EmployeePreferences employeePreferences = new EmployeePreferences();
-		employeePreferences.setPreferences(new ArrayList<DayPreference>());
 		for(Employee ee:state.getEmployees()) {
+			ArrayList<DayPreference> dayPreferencesList = new ArrayList<DayPreference>();
+			employeePreferences.setPreferences(dayPreferencesList);
+			if(ee.getFirstname().equals("Igor")) {
+				DayPreference dayPreference = new DayPreference();
+				dayPreference.setYear(year);
+				dayPreference.setMonth(month);
+				dayPreference.setDay(1);
+				dayPreference.setNoDay(true);
+				dayPreferencesList.add(dayPreference);
+
+				dayPreference = new DayPreference();
+				dayPreference.setYear(year);
+				dayPreference.setMonth(month);
+				dayPreference.setDay(2);
+				dayPreference.setNoMorning6(true);
+				dayPreferencesList.add(dayPreference);
+				
+				dayPreference = new DayPreference();
+				dayPreference.setYear(year);
+				dayPreference.setMonth(month);
+				dayPreference.setDay(3);
+				dayPreference.setNoAfternoon(true);
+				dayPreferencesList.add(dayPreference);
+				
+				dayPreference = new DayPreference();
+				dayPreference.setYear(year);
+				dayPreference.setMonth(month);
+				dayPreference.setDay(2);
+				dayPreference.setNoNight(true);
+				dayPreferencesList.add(dayPreference);
+			}
 			periodPreferences.addEmployeePreferences(ee, employeePreferences);			
 		}
 		

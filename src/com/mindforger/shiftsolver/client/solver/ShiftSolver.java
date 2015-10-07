@@ -8,6 +8,7 @@ import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
+import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.Job;
@@ -488,32 +489,40 @@ public class ShiftSolver {
 	}
 	
 	private int getLastAssigneeIndexWithSkip(Employee lastAssignee) {
-//		ShiftSolverLogger.debug("Stable array:");
-//		for(int i=0; i<employees.size(); i++) {
-//			ShiftSolverLogger.debug("  #"+i+" "+employees.get(i).getFullName()+" vs. allocations #"+employeeAllocations.get(employees.get(i).getKey()).stableArrayIndex);
-//		}
-		
 		if(lastAssignee==null) {
 			return 0;
 		} else {
 			return 1+employeeAllocations.get(lastAssignee.getKey()).stableArrayIndex;			
 		}
 	}
-	
+
+	private static final DayPreference NO_PREFERENCE=new DayPreference();
+	private DayPreference getDayPreference(Employee employee, int day) {
+		DayPreference preferencesForDay = preferences.getEmployeeToPreferences().get(employee).getPreferencesForDay(day);
+		if(preferencesForDay!=null) {
+			return preferencesForDay;
+		} else {
+			return NO_PREFERENCE;
+		}
+	}
+		
 	/*
 	 * find a role for particular shift
+	 * 
+	 * TODO want - basically do 3 iterations, first iterate green, then don't care, finally NOT
 	 */
 	
 	private Employee findSportakForWorkdayAfternoon(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
-						return e;
+						if(!getDayPreference(e, daySolution.getDay()).isNoAfternoon()) {
+							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
+							return e;
+						}
 					}
 				}
 			}
@@ -522,15 +531,16 @@ public class ShiftSolver {
 	}
 
 	private Employee findDroneForWorkdayAfternoon(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
-						return e;
+						if(!getDayPreference(e, daySolution.getDay()).isNoAfternoon()) {
+							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
+							return e;
+						}
 					}
 				}
 			}
@@ -539,15 +549,16 @@ public class ShiftSolver {
 	}
 
 	private Employee findEditorForWorkdayAfternoon(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		// TODO employee preferences
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isEditor()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
-						return e;
+						if(!getDayPreference(e, daySolution.getDay()).isNoAfternoon()) {
+							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
+							return e;
+						}
 					}
 				}
 			}
@@ -556,15 +567,16 @@ public class ShiftSolver {
 	}
 
 	private Employee findSportakForWorkdayMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isSportak() || e.isMorningSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
-						return e;
+						if(!getDayPreference(e, daySolution.getDay()).isNoMorning6()) {
+							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
+							return e;
+						}
 					}
 				}
 			}
@@ -573,15 +585,16 @@ public class ShiftSolver {
 	}
 
 	private Employee findDroneForWorkdayMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
-						return e;
+						if(!getDayPreference(e, daySolution.getDay()).isNoMorning6()) {
+							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
+							return e;
+						}
 					}
 				}
 			}
@@ -590,15 +603,16 @@ public class ShiftSolver {
 	}
 
 	private Employee findEditorForWorkdayMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		// TODO employee preferences
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isEditor()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
-						return e;
+						if(!getDayPreference(e, daySolution.getDay()).isNoMorning6()) {
+							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
+							return e;							
+						}
 					}
 				}
 			}
@@ -607,16 +621,16 @@ public class ShiftSolver {
 	}
 
 	private Employee findDroneForWorkdayNight(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
-		 // anybody except sportak e.g. normal, editor, MorningSportak
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
-						return e;
+						if(!getDayPreference(e, daySolution.getDay()).isNoNight()) {
+							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
+							return e;
+						}
 					}
 				}
 			}
@@ -625,15 +639,16 @@ public class ShiftSolver {
 	}
 
 	private Employee findSportakForWeekendAfternoon(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
-						return e;
+						if(!getDayPreference(e, daySolution.getDay()).isNoAfternoon()) {
+							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
+							return e;
+						}
 					}
 				}
 			}
@@ -642,15 +657,16 @@ public class ShiftSolver {
 	}
 
 	private Employee findDroneForWeekendAfternoon(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
-						return e;
+						if(!getDayPreference(e, daySolution.getDay()).isNoAfternoon()) {
+							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
+							return e;
+						}
 					}
 				}
 			}
@@ -660,24 +676,26 @@ public class ShiftSolver {
 
 	private Employee findEditorForWeekendAfternoon(Employee e, DaySolution daySolution, Employee lastAssignee) {
 		if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-			ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
-			return e;
+			if(!getDayPreference(e, daySolution.getDay()).isNoAfternoon()) {
+				ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
+				return e;
+			}
 		}
 		// if BACKTRACK that fail to let editor be assigned on FRI and/or SUN
 		return null;			
 	}
 
 	private Employee findDroneForWeekendNight(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
-		 // anybody except sportak e.g. normal, editor, MorningSportak
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
-						return e;
+						if(!getDayPreference(e, daySolution.getDay()).isNoNight()) {
+							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
+							return e;
+						}
 					}
 				}
 			}
@@ -686,15 +704,16 @@ public class ShiftSolver {
 	}
 
 	private Employee findSportakForWeekendMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
-						return e;
+						if(!getDayPreference(e, daySolution.getDay()).isNoMorning6()) {
+							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
+							return e;
+						}
 					}
 				}
 			}
@@ -703,15 +722,16 @@ public class ShiftSolver {
 	}
 	
 	private Employee findDroneForWeekendMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
-						return e;
+						if(!getDayPreference(e, daySolution.getDay()).isNoMorning6()) {
+							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
+							return e;
+						}
 					}
 				}
 			}
@@ -720,15 +740,16 @@ public class ShiftSolver {
 	}
 
 	private Employee findEditorForWeekendMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		// TODO employee preferences > find the one who WANTS this first, SKIP who cannot
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(employeeAllocations.get(e.getKey()).hasCapacity()) {					
 					if(e.isEditor()) {
-						ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
-						return e;
+						if(!getDayPreference(e, daySolution.getDay()).isNoMorning6()) {
+							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
+							return e;
+						}
 					}					
 				}
 			}

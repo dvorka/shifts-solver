@@ -24,7 +24,7 @@ public class StatusLine extends FlexTable implements ShiftSolverConstants {
 	}
 
 	private void setHtml(String text) {
-		setWidget(row++%3, 0, new HTML(row+" "+text));
+		setWidget(row++%1, 0, new HTML(text));
 	}
 	
 	public void showInfo(String text) {

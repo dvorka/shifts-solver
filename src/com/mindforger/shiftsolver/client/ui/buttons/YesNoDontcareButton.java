@@ -34,6 +34,6 @@ public class YesNoDontcareButton extends Button {
 	}
 
 	public int getYesNoValue() {
-		return value;
+		return value%3;
 	}
 }

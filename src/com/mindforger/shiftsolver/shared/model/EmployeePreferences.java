@@ -24,4 +24,13 @@ public class EmployeePreferences implements Serializable  {
 	public void setPreferences(List<DayPreference> preferences) {
 		this.preferences = preferences;
 	}
+
+	public DayPreference getPreferencesForDay(int day) {
+		for(DayPreference dayPreference:preferences) {
+			if(day == dayPreference.getDay()) {
+				return dayPreference;
+			}
+		}
+		return null;
+	}
 }
