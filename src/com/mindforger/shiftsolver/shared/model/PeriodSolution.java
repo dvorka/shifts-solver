@@ -15,6 +15,7 @@ public class PeriodSolution implements Serializable {
 	private int month;
 	private Map<String, Job> employeeJobs;
 	private List<DaySolution> days;
+	private int solutionNumber;
 	
 	public PeriodSolution() {
 		this.days=new ArrayList<DaySolution>();
@@ -89,5 +90,13 @@ public class PeriodSolution implements Serializable {
 
 	public void addEmployeeJob(String employeeKey, Job job) {
 		this.employeeJobs.put(employeeKey, job);
+	}
+
+	public void setSolutionNumber(int solutionNumber) {
+		this.solutionNumber=solutionNumber;
+	}
+
+	public int getSolutionNumber() {
+		return solutionNumber;
 	}
 }

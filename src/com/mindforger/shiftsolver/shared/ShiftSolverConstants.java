@@ -31,6 +31,7 @@ public interface ShiftSolverConstants {
 	String CONTAINER_SOLVER_PROGRESS="solverProgressContainer";	
 	
 	// CSS
+	String CSS_NOTHING_STYLE="s2-statusNothing";
 	String CSS_HELP_STYLE="s2-statusHelp";
 	String CSS_INFO_STYLE="s2-statusInfo";
 	String CSS_PROGRESS_STYLE="s2-statusProgress";

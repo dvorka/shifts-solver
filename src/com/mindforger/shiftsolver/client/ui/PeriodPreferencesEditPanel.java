@@ -1,12 +1,14 @@
 package com.mindforger.shiftsolver.client.ui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -14,6 +16,8 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
+import com.mindforger.shiftsolver.client.ui.buttons.YesNoDontcareButton;
+import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
@@ -32,22 +36,21 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 	private ListBox yearListBox;
 	private ListBox monthListBox;
 	private FlexTable preferencesTable;
-	private Map<String,CheckBox> checkboxes;
+	private Map<String,List<YesNoDontcareButton>> preferenceButtons;
 	
 	private PeriodPreferences periodPreferences;
 
-	private static final int CHECK_NA=1;
-	private static final int CHECK_VACATIONS=2;
-	private static final int CHECK_MORNING_6=3;
-	private static final int CHECK_MORNING_7=4;
-	private static final int CHECK_MORNING_8=5;
-	private static final int CHECK_AFTERNOON=6;
-	private static final int CHECK_NIGHT=7;
+	private static final int CHECK_DAY=1;
+	private static final int CHECK_MORNING_6=2;
+	private static final int CHECK_MORNING_7=3;
+	private static final int CHECK_MORNING_8=4;
+	private static final int CHECK_AFTERNOON=5;
+	private static final int CHECK_NIGHT=6;
 	
 	public PeriodPreferencesEditPanel(final RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
-		this.checkboxes=new HashMap<String,CheckBox>();
+		this.preferenceButtons=new HashMap<String,List<YesNoDontcareButton>>();
 		
 		FlowPanel buttonPanel = newButtonPanel(ctx);
 		setWidget(0, 0, buttonPanel);
@@ -68,9 +71,14 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			public void onClick(ClickEvent event) {
 				if(periodPreferences!=null) {		      		
 		    		ctx.getStatusLine().showProgress(ctx.getI18n().solvingShifts());
-		      		PeriodSolution solution = ctx.getSolver().solve(periodPreferences.getEmployeeToPreferences().keySet(), periodPreferences);		      		
-		      		ctx.getSolutionViewPanel().refresh(solution);
-		      		ctx.getRia().showSolutionViewPanel();
+		      		PeriodSolution solution = ctx.getSolver().solve(Arrays.asList(ctx.getState().getEmployees()), periodPreferences, 0);
+		      		if(solution!=null) {
+			    		ctx.getStatusLine().showInfo("Solution found!");		      			
+			      		ctx.getSolutionViewPanel().refresh(solution);
+			      		ctx.getRia().showSolutionViewPanel();		      			
+		      		} else {
+			    		ctx.getStatusLine().showError("No solution exists for this employees and their preferences!");
+		      		}
 				}
 			}
 		});		
@@ -84,7 +92,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		    		ctx.getStatusLine().showProgress(ctx.getI18n().savingEmployee());
 		    		riaToObject();
 		      		ctx.getRia().savePeriodPreferences(periodPreferences);
-		      		ctx.getStatusLine().hideStatus();					
+		      		ctx.getStatusLine().showInfo("Period preferences successufly saved");
 				}
 			}
 		});		
@@ -107,7 +115,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 				if(periodPreferences!=null) {
 		    		ctx.getStatusLine().showProgress(ctx.getI18n().deletingEmployee());
 		      		ctx.getRia().deleteOrUpdatePeriodPreferences(periodPreferences, true);
-		      		ctx.getStatusLine().hideStatus();					
+		      		ctx.getStatusLine().showInfo("Period preferences deleted");
 				}
 			}
 		});		
@@ -149,7 +157,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		ctx.getStatusLine().showInfo(i18n.buildingPeriodPreferences());
 
 		table.removeAllRows();
-		checkboxes.clear();
+		preferenceButtons.clear();
 		
 		if(result!=null && result.getEmployeeToPreferences()!=null && result.getEmployeeToPreferences().size()>0) {
 			HTML html = new HTML("Employee"); // TODO i18n
@@ -168,7 +176,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			}						
 		}		
 		
-		ctx.getStatusLine().hideStatus();		
+		ctx.getStatusLine().showInfo("Period preferences built!");
 	}
 		
 	public void addEmployeeRow(
@@ -199,22 +207,22 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		}
 
 		// TODO consider encoding this as bits in int/long
-		employeePrefsTable.setWidget(CHECK_NA, 0, new HTML("N/A"));
-		employeePrefsTable.setWidget(CHECK_VACATIONS, 0, new HTML("Vacations"));
-		employeePrefsTable.setWidget(CHECK_MORNING_6, 0, new HTML("Morning&nbsp;6"));
-		employeePrefsTable.setWidget(CHECK_MORNING_7, 0, new HTML("Morning&nbsp;7"));
-		employeePrefsTable.setWidget(CHECK_MORNING_8, 0, new HTML("Morning&nbsp;8"));
+		employeePrefsTable.setWidget(CHECK_DAY, 0, new HTML("Day"));
+		employeePrefsTable.setWidget(CHECK_MORNING_6, 0, new HTML("Morning&nbsp;6am"));
+		employeePrefsTable.setWidget(CHECK_MORNING_7, 0, new HTML("Morning&nbsp;7am"));
+		employeePrefsTable.setWidget(CHECK_MORNING_8, 0, new HTML("Morning&nbsp;8am"));
 		employeePrefsTable.setWidget(CHECK_AFTERNOON, 0, new HTML("Afternoon"));
 		employeePrefsTable.setWidget(CHECK_NIGHT, 0, new HTML("Night"));
 		
+		List<YesNoDontcareButton> employeeButtons=new ArrayList<YesNoDontcareButton>();
 		for(int c=1; c<=monthDays; c++) {
-			for(int r=1; r<=7; r++) {
-				CheckBox checkbox = new CheckBox();
-				employeePrefsTable.setWidget(r, c, checkbox);
-				// TODO make this composite key
-				checkboxes.put(employee.getKey()+"#"+c+"#"+r,checkbox);
+			for(int r=1; r<=6; r++) {
+				YesNoDontcareButton yesNoDontcare = new YesNoDontcareButton();
+				employeePrefsTable.setWidget(r, c, yesNoDontcare);				
+				employeeButtons.add(yesNoDontcare);
 			}
 		}
+		preferenceButtons.put(employee.getKey(), employeeButtons);
 		
 		table.setWidget(numRows, 1, employeePrefsTable);		
 	}
@@ -271,35 +279,104 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			periodPreferences.setYear(Integer.parseInt(yearListBox.getValue(yearListBox.getSelectedIndex())));
 			periodPreferences.setMonth(Integer.parseInt(monthListBox.getValue(monthListBox.getSelectedIndex())));
 		}
-		
-		// TODO preferences
-//		for(String key:checkboxes.keySet()) {
-//			if(checkboxes.get(key).getValue()) {
-//				DayPreference dayPreference = new DayPreference();
-//				dayPreference.setYear(year);
-//				dayPreference.setMonth(month);
-//				dayPreference.setDay(day);
-//				
-//				int preferenceType=0;
-//				switch(preferenceType) {
-//				case CHECK_NA:
-//					dayPreference.setNoDay(true);
-//					break;
-//				case CHECK_VACATIONS:
-//					dayPreference.setNoDay(true);
-//					break;
-//				case CHECK_MORNING:
-//					dayPreference.setNoMorning(true);
-//					break;
-//				case CHECK_AFTERNOON:
-//					dayPreference.setNoAfternoon(true);
-//					break;
-//				case CHECK_NIGHT:
-//					dayPreference.setNoNight(true);
-//				default:
-//					break;
-//				}
-//			}
-//		}
+
+		List<Employee> es=new ArrayList<Employee>(periodPreferences.getEmployeeToPreferences().keySet());
+		periodPreferences.getEmployeeToPreferences().clear();
+		for(Employee e:es) {
+			EmployeePreferences ep=new EmployeePreferences();
+			List<DayPreference> dps=new ArrayList<DayPreference>();
+			ep.setPreferences(dps);
+			
+			List<YesNoDontcareButton> employeeButtons=preferenceButtons.get(e.getKey());
+			for(int c=1; c<=periodPreferences.getMonthDays(); c++) {
+				DayPreference dayPreference=null;
+				for(int r=1; r<=7; r++) {
+					YesNoDontcareButton yesNoDontcareButton = employeeButtons.get((c-1)*7+(r-1));
+					if(yesNoDontcareButton.getYesNoValue()>0) {
+						if(dayPreference==null) {
+							dayPreference=new DayPreference();
+						}
+						switch(r) {
+						case CHECK_DAY:
+							switch(yesNoDontcareButton.getYesNoValue()) {
+							case 1:
+								dayPreference.setYesDay(true);
+								break;
+							case 2:
+								dayPreference.setNoDay(true);
+								break;
+							default:
+								break;
+							}
+							break;
+						case CHECK_MORNING_6:
+							switch(yesNoDontcareButton.getYesNoValue()) {
+							case 1:
+								dayPreference.setNoMorning6(true);
+								break;
+							case 2:
+								dayPreference.setNoMorning6(true);
+								break;
+							default:
+								break;
+							}
+							break;
+						case CHECK_MORNING_7:
+							switch(yesNoDontcareButton.getYesNoValue()) {
+							case 1:
+								dayPreference.setNoMorning7(true);
+								break;
+							case 2:
+								dayPreference.setNoMorning7(true);
+								break;
+							default:
+								break;
+							}
+							break;
+						case CHECK_MORNING_8:
+							switch(yesNoDontcareButton.getYesNoValue()) {
+							case 1:
+								dayPreference.setNoMorning8(true);
+								break;
+							case 2:
+								dayPreference.setNoMorning8(true);
+								break;
+							default:
+								break;
+							}
+							break;
+						case CHECK_AFTERNOON:
+							switch(yesNoDontcareButton.getYesNoValue()) {
+							case 1:
+								dayPreference.setYesAfternoon(true);
+								break;
+							case 2:
+								dayPreference.setNoAfternoon(true);
+								break;
+							default:
+								break;
+							}
+							break;
+						case CHECK_NIGHT:
+							switch(yesNoDontcareButton.getYesNoValue()) {
+							case 1:
+								dayPreference.setYesNight(true);
+								break;
+							case 2:
+								dayPreference.setNoNight(true);
+								break;
+							default:
+								break;
+							}
+							break;
+						}
+					}
+				}
+				if(dayPreference!=null) {
+					dps.add(dayPreference);
+				}
+			}			
+			periodPreferences.getEmployeeToPreferences().put(e, ep);			
+		}
 	}	
 }

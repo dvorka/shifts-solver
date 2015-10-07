@@ -5,12 +5,9 @@ import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.thirdparty.guava.common.util.concurrent.UncaughtExceptionHandlers;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
-import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.Employee;
-import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
 /**
@@ -42,6 +39,9 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 	}
 		
 	public void onModuleLoad() {
+		RootPanel statusPanel = RootPanel.get(CONTAINER_STATUS_LINE);
+		statusPanel.add(ctx.getStatusLine());
+
 		// debugging in GWT super dev mode ensuring that exception is thrown on consoel
 		//GWT.setUncaughtExceptionHandler(new GwtJavascriptClientExceptionHander());	
 		
@@ -52,10 +52,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 //				ctx.getStatusLine().showProgress(i18n.initializingMf());
 		
 		ctx.setState(Utils.createBigFooState());
-		
-		ctx.getStatusLine().hideStatus();
-		
-		RootPanel statusPanel = RootPanel.get(CONTAINER_STATUS_LINE);
+				
 		RootPanel pageTitlePanel = RootPanel.get(CONTAINER_PAGE_TITLE);
 		RootPanel menuPanel = RootPanel.get(CONTAINER_MENU);
 		RootPanel homePanel = RootPanel.get(CONTAINER_HOME);
@@ -67,7 +64,6 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		RootPanel solutionViewPanel = RootPanel.get(CONTAINER_SOLUTION_VIEW);
 		RootPanel solverProgressPanel = RootPanel.get(CONTAINER_SOLVER_PROGRESS);
 				
-		statusPanel.add(ctx.getStatusLine());
 		pageTitlePanel.add(ctx.getPageTitlePanel());
 		menuPanel.add(ctx.getMenu());
 		homePanel.add(ctx.getHomePanel());
@@ -79,7 +75,9 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		solutionViewPanel.add(ctx.getSolutionViewPanel());
 		solverProgressPanel.add(ctx.getSolverProgressPanel());
 
-		showHome();		
+		showHome();
+		
+		ctx.getStatusLine().clear();
 //      }		
 	}
 

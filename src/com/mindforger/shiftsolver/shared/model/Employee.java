@@ -45,7 +45,7 @@ public class Employee implements Serializable  {
 	}
 
 	public String getFullName() {
-		return getFirstname()+" "+getFamilyname();
+		return (getFirstname()!=null?getFirstname():"")+" "+(getFamilyname()!=null?getFamilyname():"");
 	}
 	
 	public boolean isFemale() {

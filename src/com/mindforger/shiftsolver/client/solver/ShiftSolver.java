@@ -3,7 +3,6 @@ package com.mindforger.shiftsolver.client.solver;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
@@ -47,22 +46,25 @@ public class ShiftSolver {
 		this.i18n=ctx.getI18n();
 	}
 	
-	public PeriodSolution solve(Set<Employee> keySet, PeriodPreferences periodPreferences) {
+	public PeriodSolution solve(List<Employee> keySet, PeriodPreferences periodPreferences, int solutionNumber) {
   		Team team=new Team();
   		team.addEmployees(periodPreferences.getEmployeeToPreferences().keySet());
-		return solve(team, periodPreferences);
+		return solve(team, periodPreferences, solutionNumber);
 	}	
 
 	public Map<String, EmployeeAllocation> getEmployeeAllocations() {
 		return employeeAllocations;
 	}
 	
-	public PeriodSolution solve(Team team, PeriodPreferences periodPreferences) {
+	public PeriodSolution solve(Team team, PeriodPreferences periodPreferences, int solutionNumber) {
+		ctx.getStatusLine().showProgress("Calculating shifts schedule solution...");
+
 		this.preferences=periodPreferences;
 		
 		PeriodSolution result = new PeriodSolution(periodPreferences.getYear(), periodPreferences.getMonth());
 		result.setDlouhanKey(periodPreferences.getKey());
 		result.setKey(periodPreferences.getKey() + "/" + ++sequence);
+		result.setSolutionNumber(solutionNumber);
 		
 		employees = team.getStableEmployeeList();
 		employeeAllocations = new HashMap<String,EmployeeAllocation>();
@@ -82,6 +84,7 @@ public class ShiftSolver {
 				result.addEmployeeJob(
 						key, 
 						new Job(employeeAllocations.get(key).shifts, employeeAllocations.get(key).shiftsToGet));
+				ctx.getStatusLine().showInfo("Solution #"+solutionNumber+" found!");
 			}	
 			return result;			
 		}
@@ -92,8 +95,16 @@ public class ShiftSolver {
 		showProgress(preferences.getMonthDays(), d-1);
 		
 		if(d>preferences.getMonthDays()) {
-			ShiftSolverLogger.debug("SOLUTION FOUND");
-			return true; // solution DONE ;)
+			if(result.getSolutionNumber()>0) {
+				ShiftSolverLogger.debug("SOLUTION FOUND >>> GOING FOR NEXT "+result.getSolutionNumber());
+				result.setSolutionNumber(result.getSolutionNumber()-1);
+				// going for another solution
+				return false;
+			} else {
+				ShiftSolverLogger.debug("SOLUTION FOUND");
+				// solution DONE ;)				
+				return true; 
+			}
 		}
 		
 		ShiftSolverLogger.debug("Day "+d+":");
@@ -728,9 +739,6 @@ public class ShiftSolver {
 	private void showProgress(int days, int processedDays) {
 		int percent = processedDays==0?0:Math.round(((float)processedDays) / (((float)days)/100f));
 		String message="Building shifts schedule: "+percent+"% ("+processedDays+"/"+days+")";
-		if(ctx!=null) {
-			ctx.getStatusLine().showProgress(message);			
-		}
 		// TODO extra panel for progress ctx.getSolverProgressPanel().refresh(percent);
 	}
 	

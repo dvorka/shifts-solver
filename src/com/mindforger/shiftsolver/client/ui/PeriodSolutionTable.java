@@ -84,7 +84,7 @@ public class PeriodSolutionTable extends FlexTable implements SortableTable {
 			public void onClick(ClickEvent event) {
 	    		ctx.getStatusLine().showProgress(ctx.getI18n().creatingNewPeriodPreferences());
 	    		// TODO
-	      		ctx.getStatusLine().hideStatus();
+	      		ctx.getStatusLine().showInfo("New period preferences created");
 			}
 		});
 

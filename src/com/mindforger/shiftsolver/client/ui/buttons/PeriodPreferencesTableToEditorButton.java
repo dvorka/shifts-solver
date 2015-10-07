@@ -22,7 +22,7 @@ public class PeriodPreferencesTableToEditorButton extends Button {
 			public void onClick(ClickEvent event) {								
 	    		ctx.getStatusLine().showProgress(ctx.getI18n().loadingPeriodPreferences());
 	      		ctx.getRia().loadPeriodPreferences(periodPreferencesId);
-	      		ctx.getStatusLine().hideStatus();
+	      		ctx.getStatusLine().showInfo("Period preferences loaded");
 			}
 		});
 	}

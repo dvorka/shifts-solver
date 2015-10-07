@@ -172,7 +172,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 				GWT.log("RIA - new employee succesfuly created! "+result);
 				ctx.getEmployeesEditPanel().refresh(result);
 				ria.showEmployeeEditPanel();
-				ctx.getStatusLine().hideStatus();
+				ctx.getStatusLine().showInfo("New employee created");
 			}
 		});
 	}
@@ -194,7 +194,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 				
 				ctx.getPeriodPreferencesEditPanel().refresh(result);
 				ria.showPeriodPreferencesEditPanel();
-				ctx.getStatusLine().hideStatus();
+				ctx.getStatusLine().showInfo("New period preferences created");
 			}
 		});
 	}

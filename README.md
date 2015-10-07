@@ -56,7 +56,7 @@ Finds a solution to creation of a schedule for shifts-based operation.
       * workdays * 8 / 7.5 e.g. 21*8/7.5 > nr. of shifts to get (round)
    * IF shift in 5 consecutive days THEN, one day FREE (recommended; if broke solution) ... almost good solution list
 
----
+```
 	 * Constraints:
 	 * <ul>
 	 *   <li>There MUST be at least one EDITOR in work week day.
@@ -66,12 +66,15 @@ Finds a solution to creation of a schedule for shifts-based operation.
 	 *   <li>There must be at least 8 hours between two shifts employee is assigned for night shift.
 	 * </ul>
 	 * 
+```
 
 ## Plan
 Implementation plan:
 
-* Purely client side CRUD for Employees
-* ... for Preferences
-* ... for Solutions - RD_ONLY calendar for now
-* Solver incorporation via buttons on right panels
+* Debug next solution bug
+* Deploy to AppEngine
+* Employee preferences:
+   * CRUD (edit and load in panels + store to RIA state)
+* Solver
+   * Incorporate preferences conditions to solver as additional constraints.
 * Server side persistence

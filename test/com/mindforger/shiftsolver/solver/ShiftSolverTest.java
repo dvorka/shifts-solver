@@ -1,5 +1,6 @@
 package com.mindforger.shiftsolver.solver;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -21,7 +22,7 @@ public class ShiftSolverTest {
 		RiaState state = Utils.createBigFooState();
 		//RiaState state = Utils.createSmallFooState();
 		PeriodPreferences preferences = state.getPeriodPreferencesList()[0];
-		PeriodSolution solution = solver.solve(preferences.getEmployeeToPreferences().keySet(), preferences);
+		PeriodSolution solution = solver.solve(new ArrayList(preferences.getEmployeeToPreferences().keySet()), preferences, 1);
 		
 		if(solution==null) {
 			System.out.println("Solution doesn't exist for this team and employee preferences!");

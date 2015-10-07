@@ -8,10 +8,10 @@ public class ShiftSolverLogger {
 	
 	static {
 		// nop
-		//out=null;
+		out=null;
 		
 		// stdout
-		out=System.out;
+		//out=System.out;
 		
 		// file
 //		try {

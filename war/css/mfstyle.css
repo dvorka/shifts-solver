@@ -358,8 +358,22 @@ table.mf-questionTextPanel > tbody > tr > td+td+td {
 }
 
 /* TODO make this aditive - base + add on styles */
+.s2-statusNothing {
+	background-color: #FFF; 
+	color: #FFF; 
+	font-weight: bolder;
+	padding-top: 3px; 
+	padding-bottom: 2px; 
+	padding-left: 10px; 
+	padding-right: 10px;
+	margin-bottom: 10px; 
+	float: left; 
+	position: fixed;
+	top: 0.3em;	
+	left: 0.3em;	
+}
 .s2-statusInfo {
-	background-color: #F0F0F0; 
+	background-color: #FFFF88; 
 	color: black; 
 	font-weight: bolder;
 	padding-top: 3px; 
@@ -373,7 +387,7 @@ table.mf-questionTextPanel > tbody > tr > td+td+td {
 	left: 0.3em;	
 }
 .s2-statusProgress {
-	background-color: #FFFF88; 
+	background-color: #F0F0F0; 
 	color: black; 
 	font-weight: bolder;
 	padding-top: 3px; 
@@ -2666,7 +2680,7 @@ html>body .gwt-MenuBarPopup {
 	background-color: #CCC
 }
 .s2-sportak {
-	background-color: #EE0 	
+	background-color: #FF8; 	
 }
 
 .s2-shiftFree {
@@ -2698,6 +2712,16 @@ html>body .gwt-MenuBarPopup {
 	background-color: #000; 
 	color: #FFF;
 	font-weight: normal;
+}
+
+.s2-3stateYes {
+	background-color: #4e9a06; 
+}
+.s2-3stateNo {
+	background-color: #a40000;
+}
+.s2-3stateDontcare {
+	background-color: #FFF;	
 }
 
 /** EOF **/

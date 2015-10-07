@@ -1,5 +1,6 @@
 package com.mindforger.shiftsolver.client.ui;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,6 +32,10 @@ public class PeriodSolutionViewPanel extends FlexTable {
 	private TextBox monthListBox;
 	private FlexTable preferencesTable;
 	
+	private PeriodSolution solution;
+	private int solutionNumber;
+	private HTML shiftsScheduleHtml;
+	
 	public PeriodSolutionViewPanel(final RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
@@ -44,7 +49,8 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		preferencesTable = newPreferencesTable();
 		setWidget(2, 0, preferencesTable);
 		
-		// HTML 3 # 0
+		shiftsScheduleHtml=new HTML("");
+		setWidget(3, 0, shiftsScheduleHtml);
 	}
 
 	private FlowPanel newButtonPanel(final RiaContext ctx) {
@@ -54,7 +60,16 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		solveButton.setStyleName("mf-button");
 		solveButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				// TODO count next solution
+				ctx.getStatusLine().showInfo("Building solution #"+(solutionNumber+1));
+				PeriodPreferences preferences = ctx.getState().getPeriodPreferences(solution.getDlouhanKey());				
+				solution = ctx.getSolver().solve(Arrays.asList(ctx.getState().getEmployees()), preferences, ++solutionNumber);
+				if(solution!=null) {
+		    		ctx.getStatusLine().showInfo("Found solution #"+(solutionNumber+1));
+					objectToRia(solution);
+	      		} else {
+		    		ctx.getStatusLine().showError("No other solution exists!");
+		    		objectToRia(null);
+	      		}
 			}
 		});		
 		buttonPanel.add(solveButton);
@@ -64,12 +79,6 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		saveButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				// TODO save solution
-//				if(periodPreferences!=null) {
-//		    		ctx.getStatusLine().showProgress(ctx.getI18n().savingEmployee());
-//		    		riaToObject();
-//		      		ctx.getRia().savePeriodPreferences(periodPreferences);
-//		      		ctx.getStatusLine().hideStatus();					
-//				}
 			}
 		});		
 		buttonPanel.add(saveButton);
@@ -111,9 +120,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		return table;		
 	}
 
-	private void refreshPreferencesTable(FlexTable table, PeriodSolution solution) {
-		ctx.getStatusLine().showInfo(i18n.buildingPeriodPreferences());
-
+	private void refreshPreferencesTable(FlexTable table, PeriodSolution solution) {		
 		table.removeAllRows();
 		
 		if(solution!=null && solution.getDays()!=null && solution.getDays().size()>0) {
@@ -138,8 +145,6 @@ public class PeriodSolutionViewPanel extends FlexTable {
 						preferences.getMonthDays());
 			}						
 		}		
-		
-		ctx.getStatusLine().hideStatus();		
 	}
 		
 	public void addEmployeeRow(
@@ -338,20 +343,21 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		}
 		s.append("</ul>");
 		
-		HTML html = new HTML(s.toString());
-		//html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
-		setWidget(3, 0, html);
+		shiftsScheduleHtml.setHTML(s.toString());
 	}
 	
-	public void refresh(PeriodSolution result) {
-		if(result==null) {
+	public void refresh(PeriodSolution solution) {
+		if(solution==null) {
 			setVisible(false);
 			return;
 		} else {
 			setVisible(true);
 		}
+
+		this.solution=solution;
+		this.solutionNumber=0;
 		
-		objectToRia(result);
+		objectToRia(solution);
 	}
 	
 	public void setSortingCriteria(TableSortCriteria criteria, boolean sortIsAscending) {
@@ -367,12 +373,23 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		return sortIsAscending;
 	}
 	
-	private void objectToRia(PeriodSolution periodSolution) {		
-		yearListBox.setText(""+periodSolution.getYear());
-		monthListBox.setText(""+periodSolution.getMonth());
-		
-		refreshPreferencesTable(preferencesTable, periodSolution);
-		refreshShiftsHtml(periodSolution);
+	private void objectToRia(PeriodSolution periodSolution) {
+		if(periodSolution!=null) {
+			yearListBox.setVisible(true);
+			monthListBox.setVisible(true);
+			preferencesTable.setVisible(true);
+			shiftsScheduleHtml.setVisible(true);
+			
+			yearListBox.setText(""+periodSolution.getYear());
+			monthListBox.setText(""+periodSolution.getMonth());			
+			refreshPreferencesTable(preferencesTable, periodSolution);
+			refreshShiftsHtml(periodSolution);			
+		} else {
+			yearListBox.setVisible(false);
+			monthListBox.setVisible(false);
+			preferencesTable.setVisible(false);
+			shiftsScheduleHtml.setVisible(false);
+		}
 	}
 
 	private void riaToObject() {
