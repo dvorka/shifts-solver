@@ -1,6 +1,5 @@
 package com.mindforger.shiftsolver.solver;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -121,8 +120,8 @@ public class ShiftSolverTest {
 	
 	public static void main(String[] args) {
 		ShiftSolverTest shiftSolverRiaTest = new ShiftSolverTest();
-		//shiftSolverRiaTest.testRiaBigDataSolutionAll();
-		shiftSolverRiaTest.testRiaBigDataSolutionFirst();
+		shiftSolverRiaTest.testRiaBigDataSolutionAll();
+		//shiftSolverRiaTest.testRiaBigDataSolutionFirst();
 		//shiftSolverRiaTest.testRiaSmallDataSolutionFirst();
 		System.out.println("Test done!");
 	}
