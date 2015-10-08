@@ -186,9 +186,9 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 				GWT.log("RIA - new preferences succesfuly created! "+result);
 				
 				Employee[] employees = ctx.getState().getEmployees();
-				Map<Employee,EmployeePreferences> prefs=new HashMap<Employee,EmployeePreferences>();
+				Map<String,EmployeePreferences> prefs=new HashMap<String,EmployeePreferences>();
 				for(Employee e:employees) {
-					prefs.put(e, new EmployeePreferences());
+					prefs.put(e.getKey(), new EmployeePreferences());
 				}
 				result.setEmployeeToPreferences(prefs);
 				

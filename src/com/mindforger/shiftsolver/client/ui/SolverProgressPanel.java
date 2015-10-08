@@ -6,32 +6,52 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 
-public class SolverProgressPanel extends FlexTable {
+public class SolverProgressPanel extends FlexTable implements SolverProgressPanels {
 
 	private RiaMessages i18n;
 	private RiaContext ctx;
 	
-	private TextBox progressPercentTextBox;
-
+	private TextBox currentSolutionPercentProgressTextBox;
+	private TextBox solutionsCount;
+	private TextBox bestSolutionScore;
+	
 	public SolverProgressPanel(final RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
 						
-		// TODO i18n
-		HTML html = new HTML("Progress");
-		// TODO css
-		html.setStyleName("mf-progressHtml");
+		HTML html;
+		
+		html = new HTML("Current solution progress");
 		setWidget(0, 0, html);
-		progressPercentTextBox = new TextBox();
-		setWidget(0, 1, progressPercentTextBox);
-		refresh(0);
+		currentSolutionPercentProgressTextBox = new TextBox();
+		setWidget(0, 1, currentSolutionPercentProgressTextBox);
+		
+		html = new HTML("Solution count");
+		setWidget(1, 0, html);
+		solutionsCount = new TextBox();
+		setWidget(1, 1, solutionsCount);
+
+		html = new HTML("Best solution score");
+		setWidget(2, 0, html);
+		bestSolutionScore = new TextBox();
+		setWidget(2, 1, bestSolutionScore);
+		
+		refresh("0", "0", "0");
 	}
 	
-	public void refresh(int percent) {
-		objectToRia(percent);
+	public void refresh(String progress, String count, String score) {
+		objectToRia(progress, count, score);
 	}
 
-	private void objectToRia(int percent) {
-	    progressPercentTextBox.setText(percent+"%");
+	private void objectToRia(String progress, String count, String score) {
+		if(progress!=null) {
+		    currentSolutionPercentProgressTextBox.setText(progress+"%");			
+		}
+	    if(count!=null) {
+		    solutionsCount.setText(count);	    	
+	    }
+	    if(progress!=null) {
+		    bestSolutionScore.setText(score);	    	
+	    }
 	}
 }

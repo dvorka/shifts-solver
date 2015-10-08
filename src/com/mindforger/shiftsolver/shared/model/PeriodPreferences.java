@@ -16,13 +16,13 @@ public class PeriodPreferences implements Serializable  {
 	int monthWorkDays;
 	int year;
 	int month;
-	private Map<Employee,EmployeePreferences> employeeToPreferences;
+	private Map<String,EmployeePreferences> employeeToPreferences;
 
 	public PeriodPreferences() {		
 	}
 	
 	public PeriodPreferences(int year, int month) {
-		employeeToPreferences=new HashMap<Employee,EmployeePreferences>();
+		employeeToPreferences=new HashMap<String,EmployeePreferences>();
 		this.year=year;
 		this.month=month;
 	}
@@ -67,16 +67,15 @@ public class PeriodPreferences implements Serializable  {
 		this.monthDays = monthDays;
 	}
 
-	public void addEmployeePreferences(Employee employee, EmployeePreferences preferences) {
-		employeeToPreferences.put(employee, preferences);
+	public void addEmployeePreferences(String employeeKey, EmployeePreferences preferences) {
+		employeeToPreferences.put(employeeKey, preferences);
 	}
 	
-	public Map<Employee, EmployeePreferences> getEmployeeToPreferences() {
+	public Map<String, EmployeePreferences> getEmployeeToPreferences() {
 		return employeeToPreferences;
 	}
 
-	public void setEmployeeToPreferences(
-			Map<Employee, EmployeePreferences> employeeToPreferences) {
+	public void setEmployeeToPreferences(Map<String, EmployeePreferences> employeeToPreferences) {
 		this.employeeToPreferences = employeeToPreferences;
 	}
 

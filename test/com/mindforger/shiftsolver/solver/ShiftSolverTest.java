@@ -1,6 +1,7 @@
 package com.mindforger.shiftsolver.solver;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -14,16 +15,50 @@ import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
 public class ShiftSolverTest {
 
+	private ShiftSolver solver;
+	private RiaState state;
+
 	public ShiftSolverTest() {		
+		solver = new ShiftSolver();
+	}
+
+	public void testRiaBigDataSolutionAll() {
+		state = Utils.createBigFooState();
+		PeriodPreferences preferences = state.getPeriodPreferencesList()[0];
+		
+		PeriodSolution solution = solver.solve(
+				Arrays.asList(state.getEmployees()),
+				preferences, 
+				Integer.MAX_VALUE);
+		
+		showSolution(solution);
 	}
 	
-	public void testRiaDataSolution() {		
-		ShiftSolver solver=new ShiftSolver();
-		RiaState state = Utils.createBigFooState();
-		//RiaState state = Utils.createSmallFooState();
+	public void testRiaBigDataSolutionFirst() {
+		state = Utils.createBigFooState();
 		PeriodPreferences preferences = state.getPeriodPreferencesList()[0];
-		PeriodSolution solution = solver.solve(new ArrayList(preferences.getEmployeeToPreferences().keySet()), preferences, 1);
 		
+		PeriodSolution solution = solver.solve(
+				Arrays.asList(state.getEmployees()),
+				preferences, 
+				1);
+		
+		showSolution(solution);
+	}
+	
+	public void testRiaSmallDataSolutionFirst() {		
+		RiaState state = Utils.createSmallFooState();
+		PeriodPreferences preferences = state.getPeriodPreferencesList()[0];
+		
+		PeriodSolution solution = solver.solve(
+				Arrays.asList(state.getEmployees()),
+				preferences, 
+				1);
+		
+		showSolution(solution);
+	}
+
+	private void showSolution(PeriodSolution solution) {
 		if(solution==null) {
 			System.out.println("Solution doesn't exist for this team and employee preferences!");
 			// TODO solver.getFirstBacktrackCause();
@@ -86,6 +121,9 @@ public class ShiftSolverTest {
 	
 	public static void main(String[] args) {
 		ShiftSolverTest shiftSolverRiaTest = new ShiftSolverTest();
-		shiftSolverRiaTest.testRiaDataSolution();
+		//shiftSolverRiaTest.testRiaBigDataSolutionAll();
+		shiftSolverRiaTest.testRiaBigDataSolutionFirst();
+		//shiftSolverRiaTest.testRiaSmallDataSolutionFirst();
+		System.out.println("Test done!");
 	}
 }

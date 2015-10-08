@@ -1,2 +1,3 @@
 # Module shifts_solver
 # RPC service class, partial path of RPC policy file
+com.mindforger.shiftsolver.client.GreetingService, 05B50BB74B78416738FE744EA4EC0327.gwt.rpc

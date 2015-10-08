@@ -135,7 +135,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 
 			PeriodPreferences preferences = ctx.getState().getPeriodPreferences(solution.getDlouhanKey());
 			
-			for(Employee employee:preferences.getEmployeeToPreferences().keySet()) {
+			for(Employee employee:ctx.getState().getEmployees()) {
 				addEmployeeRow(
 						preferencesTable,
 						solution,

@@ -164,10 +164,9 @@ public class RiaContext implements ShiftSolverConstants {
 		return pageTitlePanel;
 	}
 	
-
-    public SolverProgressPanel getSolverProgressPanel() {
-	return solverProgressPanel;
-    }
+	public SolverProgressPanel getSolverProgressPanel() {
+		return solverProgressPanel;
+	}
 
 	public HomePanel getHomePanel() {
 		if(!initialized.contains(homePanel)) {

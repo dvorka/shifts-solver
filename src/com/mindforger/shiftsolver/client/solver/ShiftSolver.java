@@ -7,6 +7,7 @@ import java.util.Map;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.Utils;
+import com.mindforger.shiftsolver.client.ui.SolverProgressPanels;
 import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
 import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
@@ -27,6 +28,9 @@ import com.mindforger.shiftsolver.shared.model.shifts.WorkdayMorningShift;
  * 
  * Solver is stateful i.e. after initialization caller may get other solutions using
  * {@link ShiftSolver#next()} method.
+ * 
+ * Performance improvements:
+ *  - iterate only sportaks for sportak, editors for editor (not all)
  */
 public class ShiftSolver {
 	
@@ -39,17 +43,24 @@ public class ShiftSolver {
 	private Map<String,EmployeeAllocation> employeeAllocations;
 	private List<Employee> employees;
 
+	private SolverProgressPanels solverProgressPanel;
+	private int solutionsCount;
+	private int bestScore;
+	private PeriodSolution bestSolution; // TODO must be cloned
+
 	public ShiftSolver() {
+		this.solverProgressPanel=new DebugSolverPanel();
 	}
 	
 	public ShiftSolver(final RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
+		this.solverProgressPanel=ctx.getSolverProgressPanel();
 	}
 	
-	public PeriodSolution solve(List<Employee> keySet, PeriodPreferences periodPreferences, int solutionNumber) {
+	public PeriodSolution solve(List<Employee> employees, PeriodPreferences periodPreferences, int solutionNumber) {
   		Team team=new Team();
-  		team.addEmployees(periodPreferences.getEmployeeToPreferences().keySet());
+  		team.addEmployees(employees);
 		return solve(team, periodPreferences, solutionNumber);
 	}	
 
@@ -58,7 +69,7 @@ public class ShiftSolver {
 	}
 	
 	public PeriodSolution solve(Team team, PeriodPreferences periodPreferences, int solutionNumber) {
-		ctx.getStatusLine().showProgress("Calculating shifts schedule solution...");
+		if(ctx!=null) ctx.getStatusLine().showProgress("Calculating shifts schedule solution...");
 
 		this.preferences=periodPreferences;
 		
@@ -66,6 +77,9 @@ public class ShiftSolver {
 		result.setDlouhanKey(periodPreferences.getKey());
 		result.setKey(periodPreferences.getKey() + "/" + ++sequence);
 		result.setSolutionNumber(solutionNumber);
+		
+		solutionsCount=0;
+		bestScore=0;
 		
 		employees = team.getStableEmployeeList();
 		employeeAllocations = new HashMap<String,EmployeeAllocation>();
@@ -85,18 +99,31 @@ public class ShiftSolver {
 				result.addEmployeeJob(
 						key, 
 						new Job(employeeAllocations.get(key).shifts, employeeAllocations.get(key).shiftsToGet));
-				ctx.getStatusLine().showInfo("Solution #"+solutionNumber+" found!");
+				if(ctx!=null) ctx.getStatusLine().showInfo("Solution #"+solutionNumber+" found!");
 			}	
 			return result;			
 		}
 	}
 
+	private int calculateSolutionScore(PeriodSolution result) {
+		// TODO calculate number of matched greens
+		// TODO calculate fulltime has all uvazky to be most full
+		// TODO ...
+		return 0;
+	}
+	
 	private boolean solveDay(int d, PeriodSolution result) {
 		debugDown(d, "###DAY###", "ALL", -1);
 		showProgress(preferences.getMonthDays(), d-1);
 		
 		if(d>preferences.getMonthDays()) {
-			if(result.getSolutionNumber()>0) {
+			
+			solutionsCount++;
+			bestScore=calculateSolutionScore(result);
+			// TODO bestSolution=
+			solverProgressPanel.refresh("100", ""+solutionsCount, ""+bestScore);
+			
+			if(result.getSolutionNumber()>1) {
 				ShiftSolverLogger.debug("SOLUTION FOUND >>> GOING FOR NEXT "+result.getSolutionNumber());
 				result.setSolutionNumber(result.getSolutionNumber()-1);
 				// going for another solution
@@ -210,8 +237,8 @@ public class ShiftSolver {
 		
 		Employee lastAssignee=null;
 		int c=0;
-		while((lastAssignee=findEditorForWeekendAfternoon(daySolution.getWeekendMorningShift().editor, daySolution, lastAssignee))!=null) {
-			debugDown(d, "MORNING", "EDITOR", c++);
+		if((lastAssignee=findEditorForWeekendAfternoon(daySolution.getWeekendMorningShift().editor, daySolution, lastAssignee))!=null) {
+			debugDown(d, "AFTERNOON", "EDITOR", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign();					
 			daySolution.getWeekendAfternoonShift().editor=lastAssignee;
 			if(assignWeekendAfternoonDrone(d, daySolution, result)) {
@@ -497,8 +524,8 @@ public class ShiftSolver {
 	}
 
 	private static final DayPreference NO_PREFERENCE=new DayPreference();
-	private DayPreference getDayPreference(Employee employee, int day) {
-		DayPreference preferencesForDay = preferences.getEmployeeToPreferences().get(employee).getPreferencesForDay(day);
+	private DayPreference getDayPreference(String employeeKey, int day) {
+		DayPreference preferencesForDay = preferences.getEmployeeToPreferences().get(employeeKey).getPreferencesForDay(day);
 		if(preferencesForDay!=null) {
 			return preferencesForDay;
 		} else {
@@ -519,7 +546,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e, daySolution.getDay()).isNoAfternoon() && !getDayPreference(e, daySolution.getDay()).isNoDay()) {
+						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoAfternoon() && !getDayPreference(e.getKey(), daySolution.getDay()).isNoDay()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
 							return e;
 						}
@@ -537,7 +564,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e, daySolution.getDay()).isNoAfternoon()) {
+						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoAfternoon()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
 							return e;
 						}
@@ -555,7 +582,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isEditor()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e, daySolution.getDay()).isNoAfternoon()) {
+						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoAfternoon()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
 							return e;
 						}
@@ -573,7 +600,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isSportak() || e.isMorningSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e, daySolution.getDay()).isNoMorning6()) {
+						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
 							return e;
 						}
@@ -591,7 +618,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e, daySolution.getDay()).isNoMorning6()) {
+						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
 							return e;
 						}
@@ -609,7 +636,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isEditor()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e, daySolution.getDay()).isNoMorning6()) {
+						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
 							return e;							
 						}
@@ -627,7 +654,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e, daySolution.getDay()).isNoNight()) {
+						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoNight()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
 							return e;
 						}
@@ -645,7 +672,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e, daySolution.getDay()).isNoAfternoon()) {
+						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoAfternoon()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
 							return e;
 						}
@@ -663,7 +690,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e, daySolution.getDay()).isNoAfternoon()) {
+						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoAfternoon()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
 							return e;
 						}
@@ -676,7 +703,7 @@ public class ShiftSolver {
 
 	private Employee findEditorForWeekendAfternoon(Employee e, DaySolution daySolution, Employee lastAssignee) {
 		if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-			if(!getDayPreference(e, daySolution.getDay()).isNoAfternoon()) {
+			if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoAfternoon()) {
 				ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
 				return e;
 			}
@@ -692,7 +719,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e, daySolution.getDay()).isNoNight()) {
+						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoNight()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
 							return e;
 						}
@@ -710,7 +737,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e, daySolution.getDay()).isNoMorning6()) {
+						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
 							return e;
 						}
@@ -728,7 +755,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e, daySolution.getDay()).isNoMorning6()) {
+						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
 							return e;
 						}
@@ -746,7 +773,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(employeeAllocations.get(e.getKey()).hasCapacity()) {					
 					if(e.isEditor()) {
-						if(!getDayPreference(e, daySolution.getDay()).isNoMorning6()) {
+						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
 							return e;
 						}
@@ -759,14 +786,12 @@ public class ShiftSolver {
 
 	private void showProgress(int days, int processedDays) {
 		int percent = processedDays==0?0:Math.round(((float)processedDays) / (((float)days)/100f));
-		String message="Building shifts schedule: "+percent+"% ("+processedDays+"/"+days+")";
-		// TODO extra panel for progress ctx.getSolverProgressPanel().refresh(percent);
+		solverProgressPanel.refresh(""+percent, null, null);
 	}
 	
 	private void debugDown(int d, String shiftType, String role, int count) {
-		// LOOP prevention
 		if(count>employeeAllocations.size()) {
-			throw new RuntimeException("   >>> DOWN for day "+d+", shift "+shiftType+" and role "+role+" #"+count);
+			throw new RuntimeException("LOOP DETECTED in assign-WORKDAY/WEEKEND-"+shiftType+"-"+role+" for day "+d+" and solution number #"+solutionsCount);
 		}
 		
 		ShiftSolverLogger.debug("   >>> DOWN for day "+d+", shift "+shiftType+" and role "+role+" #"+count);		

@@ -281,7 +281,7 @@ public class Utils {
 				dayPreference.setNoNight(true);
 				dayPreferencesList.add(dayPreference);
 			}
-			periodPreferences.addEmployeePreferences(ee, employeePreferences);			
+			periodPreferences.addEmployeePreferences(ee.getKey(), employeePreferences);			
 		}
 		
 		PeriodPreferences[] periodPreferencesArray=new PeriodPreferences[1];
@@ -332,9 +332,9 @@ public class Utils {
 		periodPreferences.setStartWeekDay(5);
 		EmployeePreferences employeePreferences = new EmployeePreferences();
 		employeePreferences.setPreferences(new ArrayList<DayPreference>());
-		periodPreferences.addEmployeePreferences(lenka, employeePreferences);
-		periodPreferences.addEmployeePreferences(misa, employeePreferences);
-		periodPreferences.addEmployeePreferences(mirek, employeePreferences);
+		periodPreferences.addEmployeePreferences(lenka.getKey(), employeePreferences);
+		periodPreferences.addEmployeePreferences(misa.getKey(), employeePreferences);
+		periodPreferences.addEmployeePreferences(mirek.getKey(), employeePreferences);
 		PeriodPreferences[] periodPreferencesArray=new PeriodPreferences[1];
 		periodPreferencesArray[0]=periodPreferences;
 		state.setPeriodPreferencesList(periodPreferencesArray);

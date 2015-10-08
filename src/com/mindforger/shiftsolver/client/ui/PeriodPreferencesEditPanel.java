@@ -65,7 +65,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 	private FlowPanel newButtonPanel(final RiaContext ctx) {
 		FlowPanel buttonPanel=new FlowPanel();
 
-		Button solveButton=new Button("Solve"); // TODO i18n
+		Button solveButton=new Button("Find 1st Solution"); // TODO i18n
 		solveButton.setStyleName("mf-button");
 		solveButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -83,6 +83,26 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			}
 		});		
 		buttonPanel.add(solveButton);
+
+		Button solveBestButton=new Button("Find Best Solution"); // TODO i18n
+		solveBestButton.setTitle("Finds ALL solutions and picks best - may take LONG time");
+		solveBestButton.setStyleName("mf-button");
+		solveBestButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if(periodPreferences!=null) {		      		
+		    		ctx.getStatusLine().showProgress(ctx.getI18n().solvingShifts());
+		      		PeriodSolution solution = ctx.getSolver().solve(Arrays.asList(ctx.getState().getEmployees()), periodPreferences, 0);
+		      		if(solution!=null) {
+			    		ctx.getStatusLine().showInfo("Solution found!");		      			
+			      		ctx.getSolutionViewPanel().refresh(solution);
+			      		ctx.getRia().showSolutionViewPanel();		      			
+		      		} else {
+			    		ctx.getStatusLine().showError("No solution exists for this employees and their preferences!");
+		      		}
+				}
+			}
+		});		
+		buttonPanel.add(solveBestButton);
 		
 		Button saveButton=new Button("Save"); // TODO i18n
 		saveButton.setStyleName("mf-button");
@@ -167,7 +187,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			html = new HTML("Preferences"); // TODO i18n
 			table.setWidget(0, 1, html);
 
-			for(Employee employee:periodPreferences.getEmployeeToPreferences().keySet()) {
+			for(Employee employee:ctx.getState().getEmployees()) {
 				addEmployeeRow(
 						preferencesTable,
 						employee, 
@@ -345,9 +365,8 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			periodPreferences.setMonth(Integer.parseInt(monthListBox.getValue(monthListBox.getSelectedIndex())));
 		}
 
-		List<Employee> es=new ArrayList<Employee>(periodPreferences.getEmployeeToPreferences().keySet());
 		periodPreferences.getEmployeeToPreferences().clear();
-		for(Employee e:es) {
+		for(Employee e:ctx.getState().getEmployees()) {
 			EmployeePreferences ep=new EmployeePreferences();
 			List<DayPreference> dps=new ArrayList<DayPreference>();
 			ep.setPreferences(dps);
@@ -444,7 +463,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 					dps.add(dayPreference);
 				}
 			}			
-			periodPreferences.getEmployeeToPreferences().put(e, ep);			
+			periodPreferences.getEmployeeToPreferences().put(e.getKey(), ep);			
 		}
 	}	
 }
