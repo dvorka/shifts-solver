@@ -9,7 +9,7 @@ public class DebugSolverPanel implements SolverProgressPanels {
 	private String score;
 	
 	public DebugSolverPanel() {
-		progress=count=score="";
+		progress=count=score="0";
 	}
 	
 	@Override
@@ -20,9 +20,9 @@ public class DebugSolverPanel implements SolverProgressPanels {
 		this.count=(count==null?this.count:count);
 		this.score=(score==null?this.score:score);
 		
-		System.out.println("################### progress "+
-				this.progress+" count "+
-				this.count+" score "+
-				this.score+" ######################");
+		System.out.println("##### progress: "+
+				this.progress+"% - "+
+				this.count+" solutions, best score "+
+				this.score+"pt #####");
 	}
 }

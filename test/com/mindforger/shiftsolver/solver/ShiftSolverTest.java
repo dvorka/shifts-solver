@@ -120,9 +120,9 @@ public class ShiftSolverTest {
 	
 	public static void main(String[] args) {
 		ShiftSolverTest shiftSolverRiaTest = new ShiftSolverTest();
-		shiftSolverRiaTest.testRiaBigDataSolutionAll();
-		//shiftSolverRiaTest.testRiaBigDataSolutionFirst();
+		shiftSolverRiaTest.testRiaBigDataSolutionFirst();
 		//shiftSolverRiaTest.testRiaSmallDataSolutionFirst();
+		//shiftSolverRiaTest.testRiaBigDataSolutionAll();
 		System.out.println("Test done!");
 	}
 }

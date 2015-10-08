@@ -26,13 +26,13 @@ public class Utils {
 		Team team=new Team();
 		int key=0;
 
-		Employee e;
+		Employee e, igor;
 
 		/*
 		 * editors
 		 */
 		
-		e=new Employee();
+		igor=e=new Employee();
 		e.setKey(""+key++);
 		e.setFirstname("Igor");
 		e.setFamilyname("M");
@@ -248,11 +248,10 @@ public class Utils {
 		periodPreferences.setMonthWorkDays(22);
 		periodPreferences.setStartWeekDay(5);
 		
-		EmployeePreferences employeePreferences = new EmployeePreferences();
+		EmployeePreferences employeePreferences;
 		for(Employee ee:state.getEmployees()) {
 			ArrayList<DayPreference> dayPreferencesList = new ArrayList<DayPreference>();
-			employeePreferences.setPreferences(dayPreferencesList);
-			if(ee.getFirstname().equals("Igor")) {
+			if(ee.getKey().equals(igor.getKey())) {
 				DayPreference dayPreference = new DayPreference();
 				dayPreference.setYear(year);
 				dayPreference.setMonth(month);
@@ -277,10 +276,12 @@ public class Utils {
 				dayPreference = new DayPreference();
 				dayPreference.setYear(year);
 				dayPreference.setMonth(month);
-				dayPreference.setDay(2);
+				dayPreference.setDay(4);
 				dayPreference.setNoNight(true);
 				dayPreferencesList.add(dayPreference);
 			}
+			employeePreferences = new EmployeePreferences();
+			employeePreferences.setPreferences(dayPreferencesList);
 			periodPreferences.addEmployeePreferences(ee.getKey(), employeePreferences);			
 		}
 		
