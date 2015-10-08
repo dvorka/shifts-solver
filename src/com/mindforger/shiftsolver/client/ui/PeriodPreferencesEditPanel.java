@@ -78,31 +78,12 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			      		ctx.getRia().showSolutionViewPanel();		      			
 		      		} else {
 			    		ctx.getStatusLine().showError("No solution exists for this employees and their preferences!");
+			      		ctx.getRia().showPeriodPreferencesEditPanel();
 		      		}
 				}
 			}
 		});		
 		buttonPanel.add(solveButton);
-
-		Button solveBestButton=new Button("Find Best Solution"); // TODO i18n
-		solveBestButton.setTitle("Finds ALL solutions and picks best - may take LONG time");
-		solveBestButton.setStyleName("mf-button");
-		solveBestButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				if(periodPreferences!=null) {		      		
-		    		ctx.getStatusLine().showProgress(ctx.getI18n().solvingShifts());
-		      		PeriodSolution solution = ctx.getSolver().solve(Arrays.asList(ctx.getState().getEmployees()), periodPreferences, 0);
-		      		if(solution!=null) {
-			    		ctx.getStatusLine().showInfo("Solution found!");		      			
-			      		ctx.getSolutionViewPanel().refresh(solution);
-			      		ctx.getRia().showSolutionViewPanel();		      			
-		      		} else {
-			    		ctx.getStatusLine().showError("No solution exists for this employees and their preferences!");
-		      		}
-				}
-			}
-		});		
-		buttonPanel.add(solveBestButton);
 		
 		Button saveButton=new Button("Save"); // TODO i18n
 		saveButton.setStyleName("mf-button");

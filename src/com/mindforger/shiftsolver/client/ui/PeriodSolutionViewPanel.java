@@ -66,9 +66,11 @@ public class PeriodSolutionViewPanel extends FlexTable {
 				if(solution!=null) {
 		    		ctx.getStatusLine().showInfo("Found solution #"+(solutionNumber+1));
 					objectToRia(solution);
+		      		ctx.getRia().showSolutionViewPanel();
 	      		} else {
 		    		ctx.getStatusLine().showError("No other solution exists!");
 		    		objectToRia(null);
+		      		ctx.getRia().showSolutionViewPanel();
 	      		}
 			}
 		});		

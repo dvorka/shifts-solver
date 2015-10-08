@@ -61,7 +61,7 @@ public class DayPreference implements Serializable {
 	}
 
 	public boolean isNoMorning6() {
-		return noMorning6;
+		return noMorning6 || noDay;
 	}
 
 	public void setNoMorning6(boolean noMorning6) {
@@ -69,7 +69,7 @@ public class DayPreference implements Serializable {
 	}
 
 	public boolean isNoMorning7() {
-		return noMorning7;
+		return noMorning7 || noDay;
 	}
 
 	public void setNoMorning7(boolean noMorning7) {
@@ -77,7 +77,7 @@ public class DayPreference implements Serializable {
 	}
 
 	public boolean isNoMorning8() {
-		return noMorning8;
+		return noMorning8 || noDay;
 	}
 
 	public void setNoMorning8(boolean noMorning8) {
@@ -85,7 +85,7 @@ public class DayPreference implements Serializable {
 	}
 
 	public boolean isNoAfternoon() {
-		return noAfternoon;
+		return noAfternoon || noDay;
 	}
 
 	public void setNoAfternoon(boolean noAfternoon) {
@@ -101,7 +101,7 @@ public class DayPreference implements Serializable {
 	}
 	
 	public boolean isNoNight() {
-		return noNight;
+		return noNight || noDay;
 	}
 
 	public void setNoNight(boolean noNight) {

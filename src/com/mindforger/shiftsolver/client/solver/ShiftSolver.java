@@ -69,7 +69,10 @@ public class ShiftSolver {
 	}
 	
 	public PeriodSolution solve(Team team, PeriodPreferences periodPreferences, int solutionNumber) {
-		if(ctx!=null) ctx.getStatusLine().showProgress("Calculating shifts schedule solution...");
+		if(ctx!=null) {
+			ctx.getStatusLine().showProgress("Calculating shifts schedule solution...");
+			ctx.getRia().showSolverProgressPanel();
+		}
 
 		this.preferences=periodPreferences;
 		
@@ -524,8 +527,8 @@ public class ShiftSolver {
 	}
 
 	private static final DayPreference NO_PREFERENCE=new DayPreference();
-	private DayPreference getDayPreference(String employeeKey, int day) {
-		DayPreference preferencesForDay = preferences.getEmployeeToPreferences().get(employeeKey).getPreferencesForDay(day);
+	private DayPreference getDayPreference(Employee e, DaySolution daySolution) {
+		DayPreference preferencesForDay = preferences.getEmployeeToPreferences().get(e.getKey()).getPreferencesForDay(daySolution.getDay());
 		if(preferencesForDay!=null) {
 			return preferencesForDay;
 		} else {
@@ -546,7 +549,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoAfternoon() && !getDayPreference(e.getKey(), daySolution.getDay()).isNoDay()) {
+						if(!getDayPreference(e, daySolution).isNoAfternoon()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
 							return e;
 						}
@@ -564,7 +567,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoAfternoon()) {
+						if(!getDayPreference(e, daySolution).isNoAfternoon()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
 							return e;
 						}
@@ -582,7 +585,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isEditor()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoAfternoon()) {
+						if(!getDayPreference(e, daySolution).isNoAfternoon()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
 							return e;
 						}
@@ -600,7 +603,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isSportak() || e.isMorningSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoMorning6()) {
+						if(!getDayPreference(e, daySolution).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
 							return e;
 						}
@@ -618,7 +621,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoMorning6()) {
+						if(!getDayPreference(e, daySolution).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
 							return e;
 						}
@@ -636,7 +639,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isEditor()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoMorning6()) {
+						if(!getDayPreference(e, daySolution).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
 							return e;							
 						}
@@ -654,7 +657,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoNight()) {
+						if(!getDayPreference(e, daySolution).isNoNight()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
 							return e;
 						}
@@ -672,7 +675,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoAfternoon()) {
+						if(!getDayPreference(e, daySolution).isNoAfternoon()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
 							return e;
 						}
@@ -690,7 +693,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoAfternoon()) {
+						if(!getDayPreference(e, daySolution).isNoAfternoon()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
 							return e;
 						}
@@ -703,7 +706,7 @@ public class ShiftSolver {
 
 	private Employee findEditorForWeekendAfternoon(Employee e, DaySolution daySolution, Employee lastAssignee) {
 		if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-			if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoAfternoon()) {
+			if(!getDayPreference(e, daySolution).isNoAfternoon()) {
 				ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
 				return e;
 			}
@@ -719,7 +722,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoNight()) {
+						if(!getDayPreference(e, daySolution).isNoNight()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
 							return e;
 						}
@@ -737,7 +740,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoMorning6()) {
+						if(!getDayPreference(e, daySolution).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak");
 							return e;
 						}
@@ -755,7 +758,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
-						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoMorning6()) {
+						if(!getDayPreference(e, daySolution).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
 							return e;
 						}
@@ -773,7 +776,7 @@ public class ShiftSolver {
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
 				if(employeeAllocations.get(e.getKey()).hasCapacity()) {					
 					if(e.isEditor()) {
-						if(!getDayPreference(e.getKey(), daySolution.getDay()).isNoMorning6()) {
+						if(!getDayPreference(e, daySolution).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
 							return e;
 						}
