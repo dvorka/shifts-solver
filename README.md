@@ -49,7 +49,7 @@ Employee preferences:
    * preference type:
       * YES: I want this shift/day
       * NO: I cannot make this shift/day
-      * NO-PREFERENCE: I don't care
+      * WHATEVER: I don't care
    * preference target:
       * (whole) day
       * any shift type (see above)
@@ -62,7 +62,7 @@ Rules:
    * *MUST:* fulltime employee to serve on Sunday night (TODO)
    * *SHOULD:* editor to serve on Sunday night (TODO)
    * *MUST:* employee birthday is marked as NO preference
-   * *MUST:* national holidays are solved in the same way Sunday (TODO)
+   * *MUST:* national holidays are solved in the same way as Sunday (TODO)
    * Editor Friday to Sunday continuity:
       * *MUST:* particular editor to serve Friday afternoon + Saturday morning
         and afternoon + Sunday morning and afternoon shifts
