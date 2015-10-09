@@ -2,6 +2,7 @@ package com.mindforger.shiftsolver.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.Employee;
@@ -30,6 +31,16 @@ public class Utils {
 	
 	public static String getDayLetter(int day, int startWeekDay) {
 		return WEEKDAY_LETTERS[getWeekdayNumber(day, startWeekDay)];
+	}
+	
+	public static void shuffleArray(Employee[] array) {
+		Random random = new Random();
+		for (int i = array.length - 1; i > 0; i--) {
+			int index = random.nextInt(i + 1);
+			Employee a = array[index];
+			array[index] = array[i];
+			array[i] = a;
+		}
 	}
 	
 	public static RiaState createBigFooState() {

@@ -2,13 +2,12 @@ package com.mindforger.shiftsolver.solver;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 import com.mindforger.shiftsolver.client.RiaState;
 import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
 import com.mindforger.shiftsolver.client.solver.ShiftSolver;
+import com.mindforger.shiftsolver.client.solver.ShiftSolverTimeoutException;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
@@ -21,16 +20,6 @@ public class ShiftSolverTest {
 
 	public ShiftSolverTest() {		
 		solver = new ShiftSolver();
-	}
-
-	private void shuffleArray(Employee[] array) {
-		Random random = ThreadLocalRandom.current();
-		for (int i = array.length - 1; i > 0; i--) {
-			int index = random.nextInt(i + 1);
-			Employee a = array[index];
-			array[index] = array[i];
-			array[i] = a;
-		}
 	}
 
 	@Deprecated
@@ -50,16 +39,22 @@ public class ShiftSolverTest {
 		state = Utils.createBigFooState();
 		PeriodPreferences preferences = state.getPeriodPreferencesList()[0];
 
+		ShiftSolver.STEPS_LIMIT=Integer.MAX_VALUE;
+		
 		PeriodSolution solution;
 		for(int i=0; i<1; i++) {
-			//shuffleArray(state.getEmployees());
+			Utils.shuffleArray(state.getEmployees());
 
-			solution = solver.solve(
-					Arrays.asList(state.getEmployees()),
-					preferences, 
-					1);
+			try {
+				solution = solver.solve(
+						Arrays.asList(state.getEmployees()),
+						preferences, 
+						1);
 
-			showSolution(solution, state.getEmployees());			
+				showSolution(solution, state.getEmployees());				
+			} catch(ShiftSolverTimeoutException e) {
+				System.out.println("\nERROR:"+e.getMessage());
+			}
 		}
 	}
 

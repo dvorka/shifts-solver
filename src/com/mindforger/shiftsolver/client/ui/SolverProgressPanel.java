@@ -36,14 +36,28 @@ public class SolverProgressPanel extends FlexTable implements SolverProgressPane
 		bestSolutionScore = new TextBox();
 		setWidget(2, 1, bestSolutionScore);
 		
-		refresh("0", "0", "0");
+		refresh("0", "", "", "", "0", "0", "0");
 	}
 	
-	public void refresh(String progress, String count, String score) {
-		objectToRia(progress, count, score);
+	public void refresh(
+			String progress, 
+			String failedOnDay, // deepest one
+			String failedOnShiftType,
+			String failedOnRole,
+			String steps, 
+			String count, 
+			String score) {
+		objectToRia(progress, failedOnDay, failedOnRole, failedOnShiftType, steps, count, score);
 	}
 
-	private void objectToRia(String progress, String count, String score) {
+	private void objectToRia(
+			String progress, 
+			String failedOnDay, // deepest one
+			String failedOnShiftType,
+			String failedOnRole,
+			String steps, 
+			String count, 
+			String score) {
 		if(progress!=null) {
 		    currentSolutionPercentProgressTextBox.setText(progress+"%");			
 		}

@@ -1,13 +1,13 @@
 package com.mindforger.shiftsolver.client.ui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -16,12 +16,15 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.Utils;
+import com.mindforger.shiftsolver.client.solver.ShiftSolver;
+import com.mindforger.shiftsolver.client.solver.ShiftSolverTimeoutException;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.client.ui.buttons.YesNoDontcareButton;
 import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
+import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
 public class PeriodPreferencesEditPanel extends FlexTable {
 
@@ -71,33 +74,23 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			public void onClick(ClickEvent event) {
 				if(periodPreferences!=null) {
 		    		ctx.getStatusLine().showProgress(ctx.getI18n().solvingShifts());
-//		      		PeriodSolution solution = ctx.getSolver().solve(Arrays.asList(ctx.getState().getEmployees()), periodPreferences, 0);
-//		      		if(solution!=null) {
-		    		
-		    		ctx.getRia().showSolverProgressPanel();
-	    		    Timer t = new Timer() {
-	    		    	int j=0;
-	    		    	
-	    		        @Override
-	    		        public void run() {
-			    			ctx.getStatusLine().showInfo(""+j++);
-	    		        }
-	    		      };
-	    		      
-		    		for(int i=0; i<100; i++) {		    			
-		    			t.schedule(1000);		    			
-		    			ctx.getSolverProgressPanel().refresh(""+i, "1", "0");
-		    		}		    		
-				
-		    		//ctx.getRia().showEmployeesTable();
-		    		
-			    		//ctx.getStatusLine().showInfo("Solution found!!!");
-//			      		ctx.getSolutionViewPanel().refresh(solution);
-//			      		ctx.getRia().showSolutionViewPanel();		      			
-//		      		} else {
-//			    		ctx.getStatusLine().showError("No solution exists for this employees and their preferences!");
-//			      		ctx.getRia().showPeriodPreferencesEditPanel();
-//		      		}
+		    		PeriodSolution solution;
+		    		try {
+						Employee[] employees = ctx.getState().getEmployees();
+						Utils.shuffleArray(employees);
+						solution = ctx.getSolver().solve(Arrays.asList(employees), periodPreferences, 0);
+			    		if(solution!=null) {
+			    			ctx.getStatusLine().showInfo("Solution found!");
+			    			ctx.getSolutionViewPanel().refresh(solution);
+			    			ctx.getRia().showSolutionViewPanel();		      			
+			    		} else {
+			    			ctx.getStatusLine().showError("No solution exists for this employees and their preferences!");
+			    			ctx.getRia().showPeriodPreferencesEditPanel();
+			    		}		    			
+		    		} catch(ShiftSolverTimeoutException e) {
+			    		ctx.getStatusLine().showError("Solver didn't found schedule in "+ShiftSolver.STEPS_LIMIT+" steps. Click 'Solve' button to try again w/ different config."); // TODO i18n
+			    		ctx.getRia().showPeriodPreferencesEditPanel();
+		    		}
 				}
 			}
 		});		

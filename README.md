@@ -70,7 +70,7 @@ Rules:
         in job (TODO)
       * *SHOULD:* editor to have same staffer and sportak in continuity (TODO)
    * *MUST:* employee cannot have more than one shift in a day (there must be
-     at least 8 hours between two shifts served by the same employee)
+     at least 8 hours between two shifts served by the same employee) (TODO)
    * *MUST:* if employee serves afternoon shift, then first shift it may serve
      is morning 8AM (6AM and 7AM CANNOT be served by this employee) (TODO)
    * *MUST:* if employee serves on Saturday and Sunday then it CANNOT serve on Monday (TODO)
@@ -102,6 +102,9 @@ The implementation plan:
    * employee preferences:
       * CRUD (edit and load in panels + store to RIA state)
    * solver
+      * prune as soon as possible
+         * jobs for month - do I have enough?
+      * weekend: show editor A+M in table & eliminate same day shifts check
       * incorporate NEGATIVE preferences conditions to solver as additional constraints
       * incorporate POSITIVE preferences in solver (do 2 cycles of employees
         and remember it in solution: want employees for day and THEN don't
