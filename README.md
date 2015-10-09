@@ -59,30 +59,30 @@ Rules:
    * *MUST:* any employee role may serve on Monday to Saturday nights
    * *MUST:* part time employee to serve on Friday night
    * *MUST:* part time employee to serve on Saturday night
-   * *MUST:* fulltime employee to serve on Sunday night
-   * *SHOULD:* editor to serve on Sunday night
+   * *MUST:* fulltime employee to serve on Sunday night (TODO)
+   * *SHOULD:* editor to serve on Sunday night (TODO)
    * *MUST:* employee birthday is marked as NO preference
-   * *MUST:* national holidays are solved in the same way Sunday
+   * *MUST:* national holidays are solved in the same way Sunday (TODO)
    * Editor Friday to Sunday continuity:
       * *MUST:* particular editor to serve Friday afternoon + Saturday morning
         and afternoon + Sunday morning and afternoon shifts
       * *MUST:* editor continuity counts for 1 + 3 (Friday + weekend) = 4 shifts
-        in job
-      * *SHOULD:* editor to have same staffer and sportak in continuity
+        in job (TODO)
+      * *SHOULD:* editor to have same staffer and sportak in continuity (TODO)
    * *MUST:* employee cannot have more than one shift in a day (there must be
      at least 8 hours between two shifts served by the same employee)
    * *MUST:* if employee serves afternoon shift, then first shift it may serve
-     is morning 8AM (6AM and 7AM CANNOT be served by this employee)
-   * *MUST:* if employee serves on Saturday and Sunday then it CANNOT serve on Monday
+     is morning 8AM (6AM and 7AM CANNOT be served by this employee) (TODO)
+   * *MUST:* if employee serves on Saturday and Sunday then it CANNOT serve on Monday (TODO)
    * *MUST:* if employee serves night shift, then it CANNOT serve morning shift
-     next day
+     next day (TODO)
    * *SHOULD:* if employee has any shift in 5 consecutive days, then it SHOULD get
-     one day FREE
+     one day FREE (TODO)
    * Fulltime employee jobs:
       * *MUST:* job shifts = workdays * 8 / 7.5
       * *MUST:* fulltime employee must get max shifts +/-1 shift
-      * *MUST:* 2 night shifts in month at most
-      * *SHOULD:* morning and afternoon shifts to be balanced 50%/50%
+      * *MUST:* 2 night shifts in month at most (TODO)
+      * *SHOULD:* morning and afternoon shifts to be balanced 50%/50% (TODO)
    * Part time employee jobs:
       * *MUST:* max job shifts = fulltime job shifts / 2
 

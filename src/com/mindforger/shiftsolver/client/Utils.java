@@ -11,13 +11,25 @@ import com.mindforger.shiftsolver.shared.model.Team;
 
 public class Utils {
 
-	public static boolean isWeekend(int i, int startWeekDay) {
-		int sundayBeginningDayNumber=(i-1+startWeekDay-1)%7;
+	public static boolean isWeekend(int day, int startWeekDay) {
+		int sundayBeginningDayNumber=(day-1+startWeekDay-1)%7;
 		if(sundayBeginningDayNumber==0 || sundayBeginningDayNumber==6) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+		
+	private static final String[] WEEKDAY_LETTERS = {
+		"S", "M", "T", "W", "T", "F", "S"
+	};
+	
+	public static int getWeekdayNumber(int day, int startWeekDay) {
+		return (day-1+startWeekDay-1)%7;
+	}
+	
+	public static String getDayLetter(int day, int startWeekDay) {
+		return WEEKDAY_LETTERS[getWeekdayNumber(day, startWeekDay)];
 	}
 	
 	public static RiaState createBigFooState() {

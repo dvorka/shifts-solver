@@ -72,6 +72,7 @@ public class RiaContext implements ShiftSolverConstants {
 		service=GWT.create(GreetingService.class);		
 		fieldVerifier=new FieldVerifier();
 		state=new RiaState();
+		solverProgressPanel=new SolverProgressPanel(this);
 		solver=new ShiftSolver(this);
 		
 		// UI
@@ -85,7 +86,6 @@ public class RiaContext implements ShiftSolverConstants {
 		periodPreferencesEditPanel=new PeriodPreferencesEditPanel(this);
 		periodSolutionTable=new PeriodSolutionTable(this);
 		periodSolutionViewPanel=new PeriodSolutionViewPanel(this);
-		solverProgressPanel=new SolverProgressPanel(this);
 	}
 
 	public RiaMessages getI18n() {

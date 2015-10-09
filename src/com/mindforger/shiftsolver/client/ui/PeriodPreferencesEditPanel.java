@@ -1,13 +1,13 @@
 package com.mindforger.shiftsolver.client.ui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -15,13 +15,13 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
+import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.client.ui.buttons.YesNoDontcareButton;
 import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
-import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
 public class PeriodPreferencesEditPanel extends FlexTable {
 
@@ -65,21 +65,39 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 	private FlowPanel newButtonPanel(final RiaContext ctx) {
 		FlowPanel buttonPanel=new FlowPanel();
 
-		Button solveButton=new Button("Find 1st Solution"); // TODO i18n
+		Button solveButton=new Button("Solve"); // TODO i18n
 		solveButton.setStyleName("mf-button");
 		solveButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if(periodPreferences!=null) {		      		
+				if(periodPreferences!=null) {
 		    		ctx.getStatusLine().showProgress(ctx.getI18n().solvingShifts());
-		      		PeriodSolution solution = ctx.getSolver().solve(Arrays.asList(ctx.getState().getEmployees()), periodPreferences, 0);
-		      		if(solution!=null) {
-			    		ctx.getStatusLine().showInfo("Solution found!");		      			
-			      		ctx.getSolutionViewPanel().refresh(solution);
-			      		ctx.getRia().showSolutionViewPanel();		      			
-		      		} else {
-			    		ctx.getStatusLine().showError("No solution exists for this employees and their preferences!");
-			      		ctx.getRia().showPeriodPreferencesEditPanel();
-		      		}
+//		      		PeriodSolution solution = ctx.getSolver().solve(Arrays.asList(ctx.getState().getEmployees()), periodPreferences, 0);
+//		      		if(solution!=null) {
+		    		
+		    		ctx.getRia().showSolverProgressPanel();
+	    		    Timer t = new Timer() {
+	    		    	int j=0;
+	    		    	
+	    		        @Override
+	    		        public void run() {
+			    			ctx.getStatusLine().showInfo(""+j++);
+	    		        }
+	    		      };
+	    		      
+		    		for(int i=0; i<100; i++) {		    			
+		    			t.schedule(1000);		    			
+		    			ctx.getSolverProgressPanel().refresh(""+i, "1", "0");
+		    		}		    		
+				
+		    		//ctx.getRia().showEmployeesTable();
+		    		
+			    		//ctx.getStatusLine().showInfo("Solution found!!!");
+//			      		ctx.getSolutionViewPanel().refresh(solution);
+//			      		ctx.getRia().showSolutionViewPanel();		      			
+//		      		} else {
+//			    		ctx.getStatusLine().showError("No solution exists for this employees and their preferences!");
+//			      		ctx.getRia().showPeriodPreferencesEditPanel();
+//		      		}
 				}
 			}
 		});		
@@ -199,10 +217,10 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		
 		for (int i = 1; i<=monthDays; i++) {
 			// TODO append Mon...Sun to the number; weekend to have different color
-			HTML html = new HTML(""+i+getDayLetter(i, periodPreferences));
+			HTML html = new HTML(""+i+Utils.getDayLetter(i, periodPreferences.getStartWeekDay()));
 			//html.addStyleName("mf-progressHtml");
 			employeePrefsTable.setWidget(0, i, html);				
-			if(isWeekend(i, periodPreferences)) {
+			if(Utils.isWeekend(i, periodPreferences.getStartWeekDay())) {
 				html.addStyleName("s2-weekendDay");
 			}
 		}
@@ -217,7 +235,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		
 		List<YesNoDontcareButton> employeeButtons=new ArrayList<YesNoDontcareButton>();
 		for(int c=1; c<=monthDays; c++) {
-			EmployeePreferences preferences = periodPreferences.getEmployeeToPreferences().get(employee);
+			EmployeePreferences preferences = periodPreferences.getEmployeeToPreferences().get(employee.getKey());
 			DayPreference dayPreference = preferences.getPreferencesForDay(c);
 			for(int r=1; r<=6; r++) {
 				YesNoDontcareButton yesNoDontcare = new YesNoDontcareButton();
@@ -292,19 +310,6 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		preferenceButtons.put(employee.getKey(), employeeButtons);
 		
 		table.setWidget(numRows, 1, employeePrefsTable);		
-	}
-
-	public static boolean isWeekend(int i, PeriodPreferences periodPreferences) {
-		return "S".equals(getDayLetter(i, periodPreferences));
-	}
-
-	private static final String[] WEEKDAY_LETTERS = {
-		"S", "M", "T", "W", "T", "F", "S"
-	};
-	
-	public static String getDayLetter(int i, PeriodPreferences periodPreferences) {
-		int startWeekDay = periodPreferences.getStartWeekDay();
-		return WEEKDAY_LETTERS[(i-1+startWeekDay-1)%7];
 	}
 
 	public void refresh(PeriodPreferences result) {

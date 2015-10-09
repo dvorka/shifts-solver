@@ -97,6 +97,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		RootPanel.get(CONTAINER_DLOUHAN_EDITOR).setVisible(false);
 		RootPanel.get(CONTAINER_SOLUTION_TABLE).setVisible(false);
 		RootPanel.get(CONTAINER_SOLUTION_VIEW).setVisible(false);
+		RootPanel.get(CONTAINER_SOLVER_PROGRESS).setVisible(false);		
 		RootPanel.get(CONTAINER_HOME).setVisible(false);		
 	}
 	

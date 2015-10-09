@@ -14,13 +14,17 @@ public class DaySolution implements Serializable  {
 
 	int day;
 	boolean isWorkday;
+	int weekday;
 	WorkdayMorningShift workdayMorningShift;
 	WorkdayAfternoonShift workdayAfternoonShift;
 	WeekendMorningShift weekendMorningShift;
 	WeekendAfternoonShift weekendAfternoonShift;
 	NightShift nightShift;
 		
-	public DaySolution() {
+	public DaySolution(int day, int weekday, boolean isWorkday) {
+		this.day=day;
+		this.weekday=weekday;
+		this.isWorkday=isWorkday;
 	}
 	
 	public int getDay() {
@@ -116,5 +120,9 @@ public class DaySolution implements Serializable  {
 
 	public void setWorkdayMorningShift(WorkdayMorningShift workdayMorningShift) {
 		this.workdayMorningShift=workdayMorningShift;
+	}
+
+	public int getWeekday() {
+		return weekday;
 	}
 }

@@ -1,5 +1,6 @@
 package com.mindforger.shiftsolver.client.solver;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +31,11 @@ import com.mindforger.shiftsolver.shared.model.shifts.WorkdayMorningShift;
  * {@link ShiftSolver#next()} method.
  * 
  * Performance improvements:
+ *  - if solution is not found in 10.000 steps, then shuffle employees and try again
  *  - iterate only sportaks for sportak, editors for editor (not all)
  */
+// Split to solver work to show progress
+// http://www.gwtproject.org/doc/latest/DevGuideCodingBasicsDelayed.html
 public class ShiftSolver {
 	
 	private static long sequence=0;
@@ -53,9 +57,9 @@ public class ShiftSolver {
 	}
 	
 	public ShiftSolver(final RiaContext ctx) {
+		this();
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
-		this.solverProgressPanel=ctx.getSolverProgressPanel();
 	}
 	
 	public PeriodSolution solve(List<Employee> employees, PeriodPreferences periodPreferences, int solutionNumber) {
@@ -71,6 +75,7 @@ public class ShiftSolver {
 	public PeriodSolution solve(Team team, PeriodPreferences periodPreferences, int solutionNumber) {
 		if(ctx!=null) {
 			ctx.getStatusLine().showProgress("Calculating shifts schedule solution...");
+			this.solverProgressPanel=ctx.getSolverProgressPanel();
 			ctx.getRia().showSolverProgressPanel();
 		}
 
@@ -112,6 +117,7 @@ public class ShiftSolver {
 		// TODO calculate number of matched greens
 		// TODO calculate fulltime has all uvazky to be most full
 		// TODO ...
+		// TODO show the score w/ solution
 		return 0;
 	}
 	
@@ -140,16 +146,18 @@ public class ShiftSolver {
 		
 		ShiftSolverLogger.debug("Day "+d+":");
 
-		DaySolution daySolution = new DaySolution();
+		DaySolution daySolution = new DaySolution(
+				d, 
+				Utils.getWeekdayNumber(d, preferences.getStartWeekDay())+1, // Calendar.(weekday) starts with 1
+				!Utils.isWeekend(d, preferences.getStartWeekDay()));
 		result.addDaySolution(daySolution);
-		daySolution.setDay(d);
 				
 		if(Utils.isWeekend(d, preferences.getStartWeekDay())) {
 			daySolution.setWorkday(false);
 			daySolution.setWeekendMorningShift(new WeekendMorningShift());
 			daySolution.setWeekendAfternoonShift(new WeekendAfternoonShift());
 			daySolution.setNightShift(new NightShift());
-						
+			
 			if(!assignWeekendMorningEditor(d, daySolution, result)) {
 				// BACKTRACK previous day / END if on the first day
 				ShiftSolverLogger.debug("   <<< BACKTRACK ***DAY*** UP - day "+d+" --> WEEKEND DAY");
@@ -178,16 +186,36 @@ public class ShiftSolver {
 	 * assign a role to particular shift's slot
 	 */
 
-	private boolean assignWeekendMorningEditor(int d, DaySolution daySolution, PeriodSolution result) {		
-		// TODO editor should be friday afternoon editor (verify on Friday that editor has capacity for 3 shifts)
-		//      PROBLEM:  if friday/saturday is in different month, there is no way to ensure editor continuity (Friday afternoon + Sat + Sun)
-		//      SOLUTION: simply introduce a field like year/month where from dropbox you can choose friday editor
-		
+	private boolean assignWeekendMorningEditor(int d, DaySolution daySolution, PeriodSolution result) {						
 		ShiftSolverLogger.debug(" Weekend Morning");
+				
+		// editor has Fri afternoon > Sat morning > Sat afternoon > Sun morning > Sun afternoon continuity
+		// i.e. take editor from PREVIOUS day morning
+		DaySolution previousDaySolution;
+		Employee previousEditor;
+		if(result.getDays().size()>1) {
+			previousDaySolution=result.getDays().get(result.getDays().size()-2);
+			if(daySolution.getWeekday()==Calendar.SATURDAY) {
+				previousEditor=previousDaySolution.getWorkdayAfternoonShift().editor;				
+			} else {
+				if(daySolution.getWeekday()==Calendar.SUNDAY) {
+					previousEditor=previousDaySolution.getWeekendMorningShift().editor;
+				} else {
+					throw new RuntimeException("Workday in weekend? "+daySolution.getWeekday()+" - "+Utils.getDayLetter(d, preferences.getStartWeekDay()));
+				}
+			}
+		} else {
+			// TODO editor should be friday afternoon editor (verify on Friday that editor has capacity for 3 shifts)
+			//      PROBLEM:  if friday/saturday is in different month, there is no way to ensure editor continuity (Friday afternoon + Sat + Sun)
+			//      SOLUTION: simply introduce a field like year/month where from dropbox you can choose friday editor
+
+			// TODO take previous day editors from configuration > to be implemented UI
+			throw new RuntimeException("Unable to load editor from previous day as don't have previous month");
+		}
 		
 		Employee lastAssignee=null;
 		int c=0;
-		while((lastAssignee=findEditorForWeekendMorning(employees, daySolution, lastAssignee))!=null) {
+		if((lastAssignee=findEditorForWeekendAfternoon(previousEditor, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "EDITOR", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign();					
 			daySolution.getWeekendMorningShift().editor=lastAssignee;
@@ -197,7 +225,7 @@ public class ShiftSolver {
 			employeeAllocations.get(lastAssignee.getKey()).unassign();
 		}
 		debugUp(d, "MORNING", "EDITOR"); 
-		//daySolution.getWeekendMorningShift().editor=null;
+		//daySolution.getWeekendAfternoonShift().editor=null;
 		return false;
 	}
 	
@@ -214,7 +242,7 @@ public class ShiftSolver {
 			employeeAllocations.get(lastAssignee.getKey()).unassign();
 		}
 		debugUp(d, "MORNING", "DRONE"); 
-//		/daySolution.getWeekendMorningShift().drone6am=null;
+		//daySolution.getWeekendMorningShift().drone6am=null;
 		return false;
 	}
 
@@ -655,7 +683,12 @@ public class ShiftSolver {
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-				if(!e.isSportak()) {
+				if(!e.isSportak()
+					 &&
+				   (daySolution.getWeekday()!=Calendar.FRIDAY
+					 ||
+				   (daySolution.getWeekday()==Calendar.FRIDAY && !e.isFulltime()))
+				  ) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
 						if(!getDayPreference(e, daySolution).isNoNight()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
@@ -720,7 +753,17 @@ public class ShiftSolver {
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-				if(!e.isSportak()) {
+				if(!e.isSportak()
+				   &&
+				   (daySolution.getWeekday()!=Calendar.SATURDAY
+			        ||
+				    (daySolution.getWeekday()==Calendar.SATURDAY && !e.isFulltime()))
+				   &&
+				   (daySolution.getWeekday()!=Calendar.SUNDAY
+			        ||
+				    (daySolution.getWeekday()==Calendar.SUNDAY && e.isFulltime()))
+				  ) 
+				{
 					if(employeeAllocations.get(e.getKey()).hasCapacity()) {
 						if(!getDayPreference(e, daySolution).isNoNight()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff");
@@ -769,22 +812,15 @@ public class ShiftSolver {
 		return null;
 	}
 
-	private Employee findEditorForWeekendMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
-		for(int i=lastIndex; i<employees.size(); i++) {
-			Employee e=employees.get(i);
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-				if(employeeAllocations.get(e.getKey()).hasCapacity()) {					
-					if(e.isEditor()) {
-						if(!getDayPreference(e, daySolution).isNoMorning6()) {
-							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
-							return e;
-						}
-					}					
-				}
+	private Employee findEditorForWeekendMorning(Employee e, DaySolution daySolution, Employee lastAssignee) {
+		if(employeeAllocations.get(e.getKey()).hasCapacity()) {
+			if(!getDayPreference(e, daySolution).isNoMorning6()) {
+				ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor");
+				return e;
 			}
 		}
-		return null;
+		// if BACKTRACK that fail to let editor be assigned on FRI and/or SUN
+		return null;			
 	}
 
 	private void showProgress(int days, int processedDays) {

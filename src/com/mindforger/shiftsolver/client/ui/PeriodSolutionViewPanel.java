@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
+import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
@@ -204,8 +205,8 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		
 		for (int i = 0; i<monthDays; i++) {
 			// TODO append Mon...Sun to the number; weekend to have different color
-			HTML html = new HTML(""+(i+1)+PeriodPreferencesEditPanel.getDayLetter(i+1, preferences));
-			if(PeriodPreferencesEditPanel.isWeekend(i+1,preferences)) {
+			HTML html = new HTML(""+(i+1)+Utils.getDayLetter(i+1, preferences.getStartWeekDay()));
+			if(Utils.isWeekend(i+1, preferences.getStartWeekDay())) {
 				html.addStyleName("s2-weekendDay");
 			}
 			table.setWidget(0, i+2, html);
