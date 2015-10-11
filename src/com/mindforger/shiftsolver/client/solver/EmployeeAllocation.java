@@ -32,7 +32,13 @@ public class EmployeeAllocation {
 	public void assign(int day, boolean isNight) {
 		shiftsOnDays.add(day);
 		shifts++;
-		nights++;
+		if(isNight) {
+			if(employee.isFulltime() && nights>=2) {
+				throw new RuntimeException("Attemp to assign fulltime employee "+employee.getFullName()+" more than 2 night shifts (has "+nights+")");
+			} else {
+				nights++;				
+			}
+		}
 	}
 	
 	public void unassign(boolean isNight) {
@@ -40,24 +46,30 @@ public class EmployeeAllocation {
 		shifts--;
 		nights--;
 	}
-	
+
 	public boolean hasCapacity(int day, boolean isNight) {
-		if(employee.isFulltime() && nights>=2) {
+		return hasCapacity(day, isNight, 1, false);
+	}
+	
+	public boolean hasCapacity(int day, boolean isNight, int capacityNeeded, boolean editorWeekendContinuity) {
+		if(employee.isFulltime() && nights>=2 && isNight) {
 			return false;
 		}
-		if(shiftsOnDays.size()>0) {			
-			if(shiftsOnDays.get(shiftsOnDays.size()-1)!=day) {
-				// detecting 5 consecutive days
+		if(shiftsOnDays.size()>0) {
+			// RULE: at most 1 shift/day
+			if(shiftsOnDays.get(shiftsOnDays.size()-1)!=day || editorWeekendContinuity) {
+				// RULE: at most 5 consecutive days at work (last 4 days connected to today)
 				if(shiftsOnDays.size()>=5) {
-					int i=shiftsOnDays.size()-1;
-					int lastDay=shiftsOnDays.get(i);
-					if(shiftsOnDays.get(i-1)==(lastDay-1)
-							&&
-							shiftsOnDays.get(i-2)==(lastDay-2)
-							&&
-							shiftsOnDays.get(i-3)==(lastDay-3)
-							&&
-							shiftsOnDays.get(i-3)==(lastDay-3)) {
+					int lastIndex=shiftsOnDays.size()-1;
+					int lastDay=shiftsOnDays.get(lastIndex);
+					if(lastDay==(day-1)
+						 &&
+					   shiftsOnDays.get(lastIndex-1)==(lastDay-1)
+						 &&
+					   shiftsOnDays.get(lastIndex-2)==(lastDay-2)
+						 &&
+					   shiftsOnDays.get(lastIndex-3)==(lastDay-3)) 
+					{
 						return false;
 					}
 				}
@@ -68,10 +80,10 @@ public class EmployeeAllocation {
 		} else {
 			shiftsOnDays.add(day);
 		}
-		return hasCapacity();
+		return hasCapacity(capacityNeeded);
 	}
 
-	private boolean hasCapacity() {
-		return shiftsToGet>0 && shiftsToGet>shifts;
+	private boolean hasCapacity(int capacityNeeded) {
+		return shiftsToGet>0 && shiftsToGet>=(shifts+capacityNeeded);
 	}
 }

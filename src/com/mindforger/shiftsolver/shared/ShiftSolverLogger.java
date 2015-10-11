@@ -13,7 +13,7 @@ public class ShiftSolverLogger {
 //		out=null;
 		
 		// stdout
-		//out=System.out;
+//		out=System.out;
 		
 		// file
 		try {

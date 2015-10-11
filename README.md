@@ -102,7 +102,12 @@ The implementation plan:
    * employee preferences:
       * CRUD (edit and load in panels + store to RIA state)
    * solver
+      * strategy: try to build schedule w/o need to backtrack, smart allocation and know
+        what to do; backtrack to be used only in situations when you cannot allocate wisely
       * prune as soon as possible
+         * calculate capacity: editors, nights, sports, ...
+         * allocate user and ensure it wont fail (failure is last option causing backtrack)
+           e.g. make sure editor has 5 shifts capacity when assigned on Friday afternoon
          * jobs for month - do I have enough?
       * weekend: show editor A+M in table & eliminate same day shifts check
       * incorporate NEGATIVE preferences conditions to solver as additional constraints

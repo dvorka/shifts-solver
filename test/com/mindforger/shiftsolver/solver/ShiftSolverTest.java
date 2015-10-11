@@ -1,11 +1,13 @@
 package com.mindforger.shiftsolver.solver;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.mindforger.shiftsolver.client.RiaState;
 import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
+import com.mindforger.shiftsolver.client.solver.EmployeeCapacity;
 import com.mindforger.shiftsolver.client.solver.ShiftSolver;
 import com.mindforger.shiftsolver.client.solver.ShiftSolverTimeoutException;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
@@ -22,28 +24,15 @@ public class ShiftSolverTest {
 		solver = new ShiftSolver();
 	}
 
-	@Deprecated
-	public void testRiaBigDataSolutionAll() {
-		state = Utils.createBigFooState();
-		PeriodPreferences preferences = state.getPeriodPreferencesList()[0];
-
-		PeriodSolution solution = solver.solve(
-				Arrays.asList(state.getEmployees()),
-				preferences, 
-				Integer.MAX_VALUE);
-
-		showSolution(solution, state.getEmployees());
-	}
-
 	public void testRiaBigDataSolutionFirst() {
 		state = Utils.createBigFooState();
 		PeriodPreferences preferences = state.getPeriodPreferencesList()[0];
 
-		ShiftSolver.STEPS_LIMIT=Integer.MAX_VALUE;
+		ShiftSolver.STEPS_LIMIT=Long.MAX_VALUE;
 		
 		PeriodSolution solution;
 		for(int i=0; i<1; i++) {
-			Utils.shuffleArray(state.getEmployees());
+			//Utils.shuffleArray(state.getEmployees());
 
 			try {
 				solution = solver.solve(
@@ -51,7 +40,7 @@ public class ShiftSolverTest {
 						preferences, 
 						1);
 
-				showSolution(solution, state.getEmployees());				
+				showSolution(preferences, solution, state.getEmployees());				
 			} catch(ShiftSolverTimeoutException e) {
 				System.out.println("\nERROR:"+e.getMessage());
 			}
@@ -67,30 +56,19 @@ public class ShiftSolverTest {
 				preferences, 
 				1);
 
-		showSolution(solution, state.getEmployees());
+		showSolution(preferences, solution, state.getEmployees());
 	}
 
-	private void showSolution(PeriodSolution solution, Employee[] employees) {
+	private void showSolution(PeriodPreferences preferences, PeriodSolution solution, Employee[] employees) {
 		if(solution==null) {
 			System.out.println("Solution doesn't exist for this team and employee preferences!");
 			// TODO solver.getFirstBacktrackCause();
 		} else {
 
-			System.out.println("----------------------------------------------------------------");
-			System.out.println("Employee allocation ("+solver.getEmployeeAllocations().size()+"):");
-			for(Employee e:employees) {
-				EmployeeAllocation a = solver.getEmployeeAllocations().get(e.getKey());
-				String prefix=a.shifts<a.shiftsToGet?"<":(a.shifts==a.shiftsToGet?"=":">");
-				System.out.println("  "+prefix+" "+a.employee.getFullName()+": "+a.shifts+"/"+a.shiftsToGet+" "+
-						(a.employee.isEditor()?"editor":"")+
-						(a.employee.isMorningSportak()?"morning-sportak":"")+
-						(a.employee.isSportak()?"sportak":"")+
-						" "+
-						(a.employee.isFulltime()?"FULL":"PART")+
-						"");
-			}
+			System.out.println("- CAPACITY ---------------------------------------------------------------");
+			new EmployeeCapacity(preferences, new ArrayList<EmployeeAllocation>(solver.getEmployeeAllocations().values()));
 
-			System.out.println("----------------------------------------------------------------");
+			System.out.println("- SOLUTION ---------------------------------------------------------------");
 			List<DaySolution> days = solution.getDays();
 			for(DaySolution ds:days) {
 				System.out.println((ds.isWorkday()?"Work":"Weekend") + " Day "+ ds.getDay() +":");

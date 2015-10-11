@@ -79,38 +79,38 @@ public class DaySolution implements Serializable  {
 		this.nightShift = nightShift;
 	}
 
-	public boolean isEmployeeAllocated(String key) {
-		return getShiftTypeForEmployee(key)>0;
+	public boolean isEmployeeAllocatedToday(String employeeKey) {
+		return getShiftTypeForEmployee(employeeKey)>0;
 	}
 	
-	public int getShiftTypeForEmployee(String key) {
+	public int getShiftTypeForEmployee(String employeeKey) {
 		int shift;
 		
 		if(nightShift!=null) {
-			if((shift=nightShift.isEmployeeAllocated(key))>0) {
+			if((shift=nightShift.isEmployeeAllocated(employeeKey))>0) {
 				return shift;
 			}
 		}
 		
 		if(isWorkday) {
 			if(workdayMorningShift!=null) {
-				if((shift=workdayMorningShift.isEmployeeAllocated(key))>0) {
+				if((shift=workdayMorningShift.isEmployeeAllocated(employeeKey))>0) {
 					return shift;
 				}
 			}
 			if(workdayAfternoonShift!=null) {
-				if((shift=workdayAfternoonShift.isEmployeeAllocated(key))>0) {
+				if((shift=workdayAfternoonShift.isEmployeeAllocated(employeeKey))>0) {
 					return shift;
 				}
 			}
 		} else {
 			if(weekendMorningShift!=null) {
-				if((shift=weekendMorningShift.isEmployeeAllocated(key))>0) {
+				if((shift=weekendMorningShift.isEmployeeAllocated(employeeKey))>0) {
 					return shift;
 				}
 			}
 			if(weekendAfternoonShift!=null) {
-				if((shift=weekendAfternoonShift.isEmployeeAllocated(key))>0) {
+				if((shift=weekendAfternoonShift.isEmployeeAllocated(employeeKey))>0) {
 					return shift;
 				}
 			}

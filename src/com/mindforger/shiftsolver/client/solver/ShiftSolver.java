@@ -1,5 +1,6 @@
 package com.mindforger.shiftsolver.client.solver;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ import com.mindforger.shiftsolver.shared.model.shifts.WorkdayMorningShift;
 // http://www.gwtproject.org/doc/latest/DevGuideCodingBasicsDelayed.html
 public class ShiftSolver {
 	
-	public static int STEPS_LIMIT=3000000;
+	public static long STEPS_LIMIT=3000000;
 	
 	private static long sequence=0;
 
@@ -47,18 +48,19 @@ public class ShiftSolver {
 	private RiaMessages i18n;
 	
 	private PeriodPreferences preferences;
-	private Map<String,EmployeeAllocation> employeeAllocations;
 	private List<Employee> employees;
+	private Map<String,EmployeeAllocation> employeeAllocations;
 
-	private SolverProgressPanels solverProgressPanel;
-	private int steps;
-	private int failedOnDay; // deepest
+	private long steps;
+	private int depth;
+	private int failedOnMaxDepth;
 	private String failedOnShiftType;
 	private String failedOnRole;
 	private int solutionsCount;
 	private int bestScore;
-	private PeriodSolution bestSolution; // TODO must be cloned
 
+	private SolverProgressPanels solverProgressPanel;
+	
 	public ShiftSolver() {
 		this.solverProgressPanel=new DebugSolverPanel();
 	}
@@ -94,6 +96,7 @@ public class ShiftSolver {
 		result.setSolutionNumber(solutionNumber);
 		
 		steps=0;
+		depth=0;
 		clearFailedOn();
 		solutionsCount=0;
 		bestScore=0;
@@ -131,7 +134,7 @@ public class ShiftSolver {
 	}
 	
 	private boolean solveDay(int d, PeriodSolution result) {
-		debugDown(d, "###DAY###", "ALL", -1);
+		debugDown(d, "DAY", "###", -1);
 		showProgress(preferences.getMonthDays(), d-1);
 		
 		if(d>preferences.getMonthDays()) {
@@ -140,7 +143,7 @@ public class ShiftSolver {
 			// TODO bestSolution=
 			solverProgressPanel.refresh(
 					"100", 
-					(failedOnDay==-1?"":""+failedOnDay),
+					(failedOnMaxDepth==-1?"":""+failedOnMaxDepth),
 					(failedOnRole==null?"":failedOnRole),
 					(failedOnShiftType==null?"":failedOnShiftType),
 					""+steps, 
@@ -271,7 +274,7 @@ public class ShiftSolver {
 			}
 			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
 		}
-		debugUp(d, "MORNING", "SPORTAK"); 
+		debugUp(d, "MORNING", "SPORTAK");		
 		//daySolution.getWeekendMorningShift().sportak=null;
 		return false;
 	}
@@ -568,12 +571,12 @@ public class ShiftSolver {
 
 	private static final DayPreference NO_PREFERENCE=new DayPreference();
 	private DayPreference getDayPreference(Employee e, DaySolution daySolution) {
-		DayPreference preferencesForDay = preferences.getEmployeeToPreferences().get(e.getKey()).getPreferencesForDay(daySolution.getDay());
-		if(preferencesForDay!=null) {
-			return preferencesForDay;
-		} else {
+//		DayPreference preferencesForDay = preferences.getEmployeeToPreferences().get(e.getKey()).getPreferencesForDay(daySolution.getDay());
+//		if(preferencesForDay!=null) {
+//			return preferencesForDay;
+//		} else {
 			return NO_PREFERENCE;
-		}
+//		}
 	}
 		
 	/*
@@ -586,7 +589,7 @@ public class ShiftSolver {
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
 						if(!getDayPreference(e, daySolution).isNoAfternoon()) {
@@ -604,7 +607,7 @@ public class ShiftSolver {
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
 						if(!getDayPreference(e, daySolution).isNoAfternoon()) {
@@ -622,12 +625,17 @@ public class ShiftSolver {
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(e.isEditor()) {
-					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
-						if(!getDayPreference(e, daySolution).isNoAfternoon()) {
-							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor WORK AFTERNOON");
+					if(!getDayPreference(e, daySolution).isNoAfternoon()) {
+						if(daySolution.getWeekday()==Calendar.FRIDAY && employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false, 5, false)) {
+							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor WORK FRIDAY AFTERNOON -> SUNDAY");
 							return e;
+						} else {						
+							if(daySolution.getWeekday()!=Calendar.FRIDAY && employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
+								ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor WORK AFTERNOON");
+								return e;
+							}
 						}
 					}
 				}
@@ -640,7 +648,7 @@ public class ShiftSolver {
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(e.isSportak() || e.isMorningSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
 						if(!getDayPreference(e, daySolution).isNoMorning6()) {
@@ -658,7 +666,7 @@ public class ShiftSolver {
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
 						if(!getDayPreference(e, daySolution).isNoMorning6()) {
@@ -676,7 +684,7 @@ public class ShiftSolver {
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(e.isEditor()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
 						if(!getDayPreference(e, daySolution).isNoMorning6()) {
@@ -694,7 +702,7 @@ public class ShiftSolver {
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(!e.isSportak()
 					 &&
 				   (daySolution.getWeekday()!=Calendar.FRIDAY
@@ -717,7 +725,7 @@ public class ShiftSolver {
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
 						if(!getDayPreference(e, daySolution).isNoAfternoon()) {
@@ -735,7 +743,7 @@ public class ShiftSolver {
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
 						if(!getDayPreference(e, daySolution).isNoAfternoon()) {
@@ -750,7 +758,7 @@ public class ShiftSolver {
 	}
 
 	private Employee findEditorForWeekendAfternoon(Employee e, DaySolution daySolution) {
-		if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
+		if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false, 1, true)) {
 			if(!getDayPreference(e, daySolution).isNoAfternoon()) {
 				ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor WEEKEND AFTERNOON");
 				return e;
@@ -764,35 +772,33 @@ public class ShiftSolver {
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
-				if(!e.isSportak()
-				   &&
-				   (daySolution.getWeekday()!=Calendar.SATURDAY
-			        ||
-				    (daySolution.getWeekday()==Calendar.SATURDAY && !e.isFulltime()))
-				   &&
-				   (daySolution.getWeekday()!=Calendar.SUNDAY
-			        ||
-				    (daySolution.getWeekday()==Calendar.SUNDAY && e.isFulltime()))
-				  ) 
-				{
+			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {				
+				if(!e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), true)) {
 						if(!getDayPreference(e, daySolution).isNoNight()) {
-							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff WEEKEND NIGHT");
-							return e;
+							// part time on Saturday night, full time on Sunday night
+							if(daySolution.getWeekday()==Calendar.SATURDAY && !e.isFulltime()) {
+								ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff WEEKEND NIGHT (Saturday part time)");
+								return e;						
+							} else {
+								if(daySolution.getWeekday()==Calendar.SUNDAY && e.isFulltime()) {
+									ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff WEEKEND NIGHT (Sunday fulltime");
+									return e;															
+								}
+							}
 						}
 					}
 				}
 			}
 		}
-		return null;
+		return null;		
 	}
 
 	private Employee findSportakForWeekendMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
 						if(!getDayPreference(e, daySolution).isNoMorning6()) {
@@ -810,7 +816,7 @@ public class ShiftSolver {
 		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
-			if(!daySolution.isEmployeeAllocated(e.getKey())) {
+			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
 						if(!getDayPreference(e, daySolution).isNoMorning6()) {
@@ -839,7 +845,7 @@ public class ShiftSolver {
 		int percent = processedDays==0?0:Math.round(((float)processedDays) / (((float)days)/100f));
 		solverProgressPanel.refresh(
 				""+percent,
-				(failedOnDay==-1?"":""+failedOnDay),
+				(failedOnMaxDepth==-1?"":""+failedOnMaxDepth),
 				(failedOnRole==null?"":failedOnRole),
 				(failedOnShiftType==null?"":failedOnShiftType),
 				""+steps, 
@@ -848,42 +854,48 @@ public class ShiftSolver {
 	}
 	
 	private void debugDown(int d, String shiftType, String role, int count) {		
-		ShiftSolverLogger.debug("   >>> DOWN - FOUND for day "+d+", shift "+shiftType+" and role "+role+" #"+count+" ("+(steps++)+")");
+		ShiftSolverLogger.debug("   >>> DOWN - FOUND for day-shift-role "+d+"-"+shiftType+"-"+role+" #"+count+" ("+(steps++)+"/"+(depth++)+")");
 		
 		if(count>employeeAllocations.size()) {
 			throw new RuntimeException("LOOP DETECTED when assigning WORKDAY/WEEKEND-"+
 					shiftType+"-"+
 					role+" for day "+d+" and solution number #"+solutionsCount);
-		}		
+		}
+		
 		if(steps>STEPS_LIMIT) {
 			throw new ShiftSolverTimeoutException(
 					"Steps exceeded (depth "+d+", "+shiftType+", "+role+") "+
-					"fail: "+failedOnDay+" "+failedOnShiftType+" "+failedOnRole
+					"fail: "+failedOnMaxDepth+" "+failedOnShiftType+" "+failedOnRole
 					);
 		}
-		
-		clearFailedOn();
 	}
 
 	private void clearFailedOn() {
-		failedOnDay=-1;
+		failedOnMaxDepth=-1;
 		failedOnShiftType=null;
 		failedOnRole=null;
 	}
 	
 	private void debugUp(int d, String shiftType, String role) {
-		ShiftSolverLogger.debug("   <<< BACKTRACK UP - failed for day "+d+", shift "+shiftType+" and role "+role+" ("+(steps++)+")");
-		if(failedOnDay<=d) {
-			// remember last
-			failedOnDay=d;
+		ShiftSolverLogger.debug("   <<< BACKTRACK UP - failed for day/shift/role "+d+"-"+shiftType+"-"+role+" ("+(steps++)+"/"+depth+")");
+
+		if(failedOnMaxDepth<depth) {
+			failedOnMaxDepth=depth;
 			failedOnShiftType=shiftType;
-			failedOnRole=role;
+			failedOnRole=role;						
 		}
+
+		ShiftSolverLogger.debug("     BOTTOM CAUSE - failed for depth/shift/role "+failedOnMaxDepth+"-"+failedOnShiftType+"-"+failedOnRole);
+		EmployeeCapacity capacity
+		=new EmployeeCapacity(preferences, new ArrayList<EmployeeAllocation>(employeeAllocations.values()));
+			capacity.printEmployeeAllocations();		
+
+		depth--;
 		
 		if(steps>STEPS_LIMIT) {
 			throw new ShiftSolverTimeoutException(
 					"Steps exceeded (depth "+d+", "+shiftType+", "+role+") "+
-					"fail: "+failedOnDay+" "+failedOnShiftType+" "+failedOnRole
+					"fail: "+failedOnMaxDepth+" "+failedOnShiftType+" "+failedOnRole
 					);
 		}
 	}	

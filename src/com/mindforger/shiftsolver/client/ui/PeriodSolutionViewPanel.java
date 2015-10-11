@@ -214,7 +214,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 				
 		HTML html;
 		for(int c=0; c<monthDays; c++) {
-			if(solution.getDays().get(c).isEmployeeAllocated(employee.getKey())) {
+			if(solution.getDays().get(c).isEmployeeAllocatedToday(employee.getKey())) {
 				switch(solution.getDays().get(c).getShiftTypeForEmployee(employee.getKey())) {
 				case ShiftSolverConstants.SHIFT_MORNING:
 					html = new HTML("&nbsp;M");
