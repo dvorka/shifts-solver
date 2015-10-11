@@ -10,6 +10,7 @@ import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
 import com.mindforger.shiftsolver.client.solver.EmployeeCapacity;
 import com.mindforger.shiftsolver.client.solver.ShiftSolver;
 import com.mindforger.shiftsolver.client.solver.ShiftSolverTimeoutException;
+import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
@@ -32,7 +33,7 @@ public class ShiftSolverTest {
 		
 		PeriodSolution solution;
 		for(int i=0; i<1; i++) {
-			//Utils.shuffleArray(state.getEmployees());
+			Utils.shuffleArray(state.getEmployees());
 
 			try {
 				solution = solver.solve(
@@ -42,7 +43,7 @@ public class ShiftSolverTest {
 
 				showSolution(preferences, solution, state.getEmployees());				
 			} catch(ShiftSolverTimeoutException e) {
-				System.out.println("\nERROR:"+e.getMessage());
+				ShiftSolverLogger.debug("\nERROR:"+e.getMessage());
 			}
 		}
 	}
@@ -61,48 +62,49 @@ public class ShiftSolverTest {
 
 	private void showSolution(PeriodPreferences preferences, PeriodSolution solution, Employee[] employees) {
 		if(solution==null) {
-			System.out.println("Solution doesn't exist for this team and employee preferences!");
+			ShiftSolverLogger.debug("Solution doesn't exist for this team and employee preferences!");
 			// TODO solver.getFirstBacktrackCause();
 		} else {
 
-			System.out.println("- CAPACITY ---------------------------------------------------------------");
-			new EmployeeCapacity(preferences, new ArrayList<EmployeeAllocation>(solver.getEmployeeAllocations().values()));
+			ShiftSolverLogger.debug("- CAPACITY ---------------------------------------------------------------");
+			new EmployeeCapacity(preferences, new ArrayList<EmployeeAllocation>(solver.getEmployeeAllocations().values()))
+				.printEmployeeAllocations();;
 
-			System.out.println("- SOLUTION ---------------------------------------------------------------");
+			ShiftSolverLogger.debug("- SOLUTION ---------------------------------------------------------------");
 			List<DaySolution> days = solution.getDays();
 			for(DaySolution ds:days) {
-				System.out.println((ds.isWorkday()?"Work":"Weekend") + " Day "+ ds.getDay() +":");
+				ShiftSolverLogger.debug((ds.isWorkday()?"Work":"Weekend") + " Day "+ ds.getDay() +":");
 				if(ds.isWorkday()) {
-					System.out.println("  Morning:");
-					System.out.println("    E "+ds.getWorkdayMorningShift().editor.getFullName());
-					System.out.println("    D "+ds.getWorkdayMorningShift().drone6am.getFullName());
-					System.out.println("    D "+ds.getWorkdayMorningShift().drone7am.getFullName());
-					System.out.println("    D "+ds.getWorkdayMorningShift().drone8am.getFullName());
-					System.out.println("    E "+ds.getWorkdayMorningShift().sportak.getFullName());
+					ShiftSolverLogger.debug("  Morning:");
+					ShiftSolverLogger.debug("    E "+ds.getWorkdayMorningShift().editor.getFullName());
+					ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().drone6am.getFullName());
+					ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().drone7am.getFullName());
+					ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().drone8am.getFullName());
+					ShiftSolverLogger.debug("    E "+ds.getWorkdayMorningShift().sportak.getFullName());
 
-					System.out.println("  Afternoon:");
-					System.out.println("    E "+ds.getWorkdayAfternoonShift().editor.getFullName());
-					System.out.println("    D "+ds.getWorkdayAfternoonShift().drones[0].getFullName());
-					System.out.println("    D "+ds.getWorkdayAfternoonShift().drones[1].getFullName());
-					System.out.println("    D "+ds.getWorkdayAfternoonShift().drones[2].getFullName());
-					System.out.println("    D "+ds.getWorkdayAfternoonShift().drones[3].getFullName());
-					System.out.println("    S "+ds.getWorkdayAfternoonShift().sportak.getFullName());
+					ShiftSolverLogger.debug("  Afternoon:");
+					ShiftSolverLogger.debug("    E "+ds.getWorkdayAfternoonShift().editor.getFullName());
+					ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().drones[0].getFullName());
+					ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().drones[1].getFullName());
+					ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().drones[2].getFullName());
+					ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().drones[3].getFullName());
+					ShiftSolverLogger.debug("    S "+ds.getWorkdayAfternoonShift().sportak.getFullName());
 
-					System.out.println("  Night:");
-					System.out.println("    D "+ds.getNightShift().drone.getFullName());
+					ShiftSolverLogger.debug("  Night:");
+					ShiftSolverLogger.debug("    D "+ds.getNightShift().drone.getFullName());
 				} else {		
-					System.out.println("  Morning:");
-					System.out.println("    E "+ds.getWeekendMorningShift().editor.getFullName());
-					System.out.println("    D "+ds.getWeekendMorningShift().drone6am.getFullName());
-					System.out.println("    E "+ds.getWeekendMorningShift().sportak.getFullName());
+					ShiftSolverLogger.debug("  Morning:");
+					ShiftSolverLogger.debug("    E "+ds.getWeekendMorningShift().editor.getFullName());
+					ShiftSolverLogger.debug("    D "+ds.getWeekendMorningShift().drone6am.getFullName());
+					ShiftSolverLogger.debug("    E "+ds.getWeekendMorningShift().sportak.getFullName());
 
-					System.out.println("  Afternoon:");
-					System.out.println("    E "+ds.getWeekendAfternoonShift().editor.getFullName());
-					System.out.println("    D "+ds.getWeekendAfternoonShift().drone.getFullName());
-					System.out.println("    S "+ds.getWeekendAfternoonShift().sportak.getFullName());
+					ShiftSolverLogger.debug("  Afternoon:");
+					ShiftSolverLogger.debug("    E "+ds.getWeekendAfternoonShift().editor.getFullName());
+					ShiftSolverLogger.debug("    D "+ds.getWeekendAfternoonShift().drone.getFullName());
+					ShiftSolverLogger.debug("    S "+ds.getWeekendAfternoonShift().sportak.getFullName());
 
-					System.out.println("  Night:");
-					System.out.println("    D "+ds.getNightShift().drone.getFullName());
+					ShiftSolverLogger.debug("  Night:");
+					ShiftSolverLogger.debug("    D "+ds.getNightShift().drone.getFullName());
 				}
 			}
 		}
@@ -113,6 +115,6 @@ public class ShiftSolverTest {
 		shiftSolverRiaTest.testRiaBigDataSolutionFirst();
 		//shiftSolverRiaTest.testRiaSmallDataSolutionFirst();
 		//shiftSolverRiaTest.testRiaBigDataSolutionAll();
-		System.out.println("Test done!");
+		ShiftSolverLogger.debug("Test done!");
 	}
 }

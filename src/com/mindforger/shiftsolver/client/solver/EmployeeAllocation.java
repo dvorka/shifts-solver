@@ -73,14 +73,14 @@ public class EmployeeAllocation {
 						return false;
 					}
 				}
-				return true;
+				return hasCapacity(capacityNeeded);
 			} else {
 				return false;
 			}
 		} else {
 			shiftsOnDays.add(day);
+			return hasCapacity(capacityNeeded);
 		}
-		return hasCapacity(capacityNeeded);
 	}
 
 	private boolean hasCapacity(int capacityNeeded) {

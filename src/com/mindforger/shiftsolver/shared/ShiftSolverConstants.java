@@ -4,6 +4,13 @@ public interface ShiftSolverConstants {
 
 	String CODENAME="ShiftSolver";
 	
+	// roles
+	int ROOT=0;
+	int ROLE_EDITOR=1;
+	int ROLE_SPORTAK=2;
+	int ROLE_DRONE=3;
+	int ROLE_ANYBODY = 4;
+	
 	// types
 	int NO_SHIFT = 0;	
 	int SHIFT_MORNING=1;
