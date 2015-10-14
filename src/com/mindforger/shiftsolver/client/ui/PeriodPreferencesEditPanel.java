@@ -77,7 +77,6 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		    		PeriodSolution solution;
 		    		try {
 						Employee[] employees = ctx.getState().getEmployees();
-						Utils.shuffleArray(employees);
 						solution = ctx.getSolver().solve(Arrays.asList(employees), periodPreferences, 0);
 			    		if(solution!=null) {
 			    			ctx.getStatusLine().showInfo("Solution found!");

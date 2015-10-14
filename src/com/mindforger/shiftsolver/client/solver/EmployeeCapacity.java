@@ -27,13 +27,18 @@ public class EmployeeCapacity {
 		// TODO
 	}
 	
-	public void printEmployeeAllocations() {
+	public void printEmployeeAllocations(int day) {
 		ShiftSolverLogger.debug("     Employee allocations ("+allocations.size()+"):");
 		for(EmployeeAllocation a:allocations) {
 			String fullShifts=a.shifts<a.shiftsToGet?"<":(a.shifts==a.shiftsToGet?"!":"X");
 			String fullNights=a.nights<2?"<":(a.nights==2?"!":"X");
 			ShiftSolverLogger.debug(
-					"       "+fullShifts+fullNights+
+					"       "+
+					fullShifts+fullNights+
+					" "+
+					(fullShifts.equals("!")?"!!!":
+						(a.hadShiftsLast5Days(day)?"123":
+							(a.hadShiftToday(day)?"ttt":"...")))+
 					" "+
 					(a.employee.isEditor()?"editor    ":
 						(a.employee.isSportak()?"sportak   ":

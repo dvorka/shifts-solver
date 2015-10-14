@@ -16,11 +16,11 @@ public class ShiftSolverLogger {
 //		out=System.out;
 		
 		// file
-		try {
-			out=new PrintStream(new File("/tmp/s2.txt"));
-		} catch (FileNotFoundException e) {
-			System.err.println(e.getMessage());
-		}
+//		try {
+//			out=new PrintStream(new File("/tmp/s2.txt"));
+//		} catch (FileNotFoundException e) {
+//			System.err.println(e.getMessage());
+//		}
 	}
 	
 	public static void debug(String message) {

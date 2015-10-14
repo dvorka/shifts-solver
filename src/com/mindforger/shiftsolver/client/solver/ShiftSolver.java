@@ -2,6 +2,7 @@ package com.mindforger.shiftsolver.client.solver;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,7 +108,6 @@ public class ShiftSolver implements ShiftSolverConstants {
 		for(int i=0; i<employees.size(); i++) {
 			Employee e = employees.get(i);
 			EmployeeAllocation employeeAllocation = new EmployeeAllocation(e, periodPreferences.getMonthWorkDays());
-			employeeAllocation.stableArrayIndex = i;
 			employeeAllocations.put(e.getKey(), employeeAllocation);
 		}
 		
@@ -127,6 +127,12 @@ public class ShiftSolver implements ShiftSolverConstants {
 		}
 	}
 
+	private List<Employee> sortEmployeesByShifts() {
+		List<Employee> result=new ArrayList<Employee>(employees);
+		Collections.sort(result, new EmployeeShiftsComparator(employeeAllocations));
+		return result;
+	}
+	
 	private int calculateSolutionScore(PeriodSolution result) {
 		// TODO calculate number of matched greens
 		// TODO calculate fulltime has all uvazky to be most full
@@ -261,6 +267,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_DRONE;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWeekendMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "DRONE", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
@@ -286,6 +293,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_SPORTAK;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findSportakForWeekendMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "SPORTAK", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
@@ -336,6 +344,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_DRONE;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWeekendAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "STAFFER", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
@@ -361,6 +370,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_SPORTAK;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findSportakForWeekendAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "SPORTAK", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
@@ -387,6 +397,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_DRONE;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWeekendNight(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "NIGHT", "STAFFER", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, true);					
@@ -413,6 +424,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_EDITOR;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findEditorForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "EDITOR", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
@@ -438,6 +450,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_DRONE;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "DRONE6AM", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
@@ -463,6 +476,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_DRONE;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "DRONE7AM", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
@@ -488,6 +502,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_DRONE;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "DRONE8AM", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
@@ -513,6 +528,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_SPORTAK;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findSportakForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "SPORTAK", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
@@ -539,6 +555,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_EDITOR;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findEditorForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "EDITOR", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
@@ -564,6 +581,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_DRONE;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "DRONE1", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
@@ -589,6 +607,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_DRONE;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "DRONE2", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
@@ -614,6 +633,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_DRONE;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "DRONE3", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
@@ -639,6 +659,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_DRONE;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "DRONE4", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
@@ -664,6 +685,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_SPORTAK;
 		Employee lastAssignee=null;
 		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findSportakForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "SPORTAK", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
@@ -690,7 +712,8 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_DRONE;
 		Employee lastAssignee=null;
 		int c=0;
-		while((lastAssignee=findDroneForWorkdayNight(employees, daySolution, lastAssignee))!=null) {
+		List<Employee> es=sortEmployeesByShifts();
+		while((lastAssignee=findDroneForWorkdayNight(es, daySolution, lastAssignee))!=null) {
 			debugDown(d, "NIGHT", "DRONE", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, true);					
 			daySolution.getNightShift().drone=lastAssignee;
@@ -711,27 +734,27 @@ public class ShiftSolver implements ShiftSolverConstants {
 		return new BacktrackFor(thisLevelRole);		
 	}
 	
-	private int getLastAssigneeIndexWithSkip(Employee lastAssignee) {
+	private int getLastAssigneeIndexWithSkip(Employee lastAssignee, List<Employee> es) {
 		if(lastAssignee==null) {
 			return 0;
 		} else {
-			return 1+employeeAllocations.get(lastAssignee.getKey()).stableArrayIndex;			
+			for(int i=0; i<es.size(); i++) {
+				if(es.get(i).getKey().equals(lastAssignee.getKey())) {
+					return 1+i;					
+				}
+			}
+			throw new RuntimeException("Employee not found!");
 		}
 	}
 
 	private static final DayPreference NO_PREFERENCE=new DayPreference();
 	private DayPreference getDayPreference(Employee e, DaySolution daySolution) {
-		// TODO
-		// TODO
-		// TODO
-		// TODO
-		// TODO
-//		DayPreference preferencesForDay = preferences.getEmployeeToPreferences().get(e.getKey()).getPreferencesForDay(daySolution.getDay());
-//		if(preferencesForDay!=null) {
-//			return preferencesForDay;
-//		} else {
+		DayPreference preferencesForDay = preferences.getEmployeeToPreferences().get(e.getKey()).getPreferencesForDay(daySolution.getDay());
+		if(preferencesForDay!=null) {
+			return preferencesForDay;
+		} else {
 			return NO_PREFERENCE;
-//		}
+		}
 	}
 		
 	/*
@@ -740,10 +763,10 @@ public class ShiftSolver implements ShiftSolverConstants {
 	 * TODO want - basically do 3 iterations, first iterate green, then don't care, finally NOT
 	 */
 	
-	private Employee findSportakForWorkdayAfternoon(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
-		for(int i=lastIndex; i<employees.size(); i++) {
-			Employee e=employees.get(i);
+	private Employee findSportakForWorkdayAfternoon(List<Employee> es, DaySolution daySolution, Employee lastAssignee) {
+		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee, es);
+		for(int i=lastIndex; i<es.size(); i++) {
+			Employee e=es.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(e.isSportak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
@@ -759,7 +782,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 	}
 
 	private Employee findDroneForWorkdayAfternoon(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
+		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee, employees);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
@@ -777,7 +800,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 	}
 
 	private Employee findEditorForWorkdayAfternoon(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
+		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee, employees);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
@@ -800,7 +823,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 	}
 
 	private Employee findSportakForWorkdayMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
+		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee, employees);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
@@ -818,7 +841,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 	}
 
 	private Employee findDroneForWorkdayMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
+		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee, employees);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
@@ -836,7 +859,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 	}
 
 	private Employee findEditorForWorkdayMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
+		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee, employees);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
@@ -854,7 +877,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 	}
 
 	private Employee findDroneForWorkdayNight(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
+		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee, employees);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
@@ -877,7 +900,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 	}
 
 	private Employee findSportakForWeekendAfternoon(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
+		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee, employees);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
@@ -895,7 +918,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 	}
 
 	private Employee findDroneForWeekendAfternoon(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
+		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee, employees);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
@@ -924,7 +947,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 	}
 
 	private Employee findDroneForWeekendNight(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
+		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee, employees);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {				
@@ -950,7 +973,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 	}
 
 	private Employee findSportakForWeekendMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
+		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee, employees);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
@@ -968,7 +991,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 	}
 	
 	private Employee findDroneForWeekendMorning(List<Employee> employees, DaySolution daySolution, Employee lastAssignee) {
-		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee);
+		int lastIndex = getLastAssigneeIndexWithSkip(lastAssignee, employees);
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
@@ -1009,10 +1032,10 @@ public class ShiftSolver implements ShiftSolverConstants {
 	}
 	
 	private void debugDown(int d, String shiftType, String role, int count) {		
-		ShiftSolverLogger.debug("   >>> DOWN - FOUND for day-shift-role "+d+"-"+shiftType+"-"+role+" #"+count+" ("+(steps++)+"/"+(depth++)+")");
+		ShiftSolverLogger.debug("   >>> DOWN - FOUND for day-shift-role "+d+"-"+shiftType+"-"+role+" #"+count+" ("+(steps++)+" steps, depth: "+(depth++)+")");
 		
-		if(count>employeeAllocations.size()) {
-			throw new RuntimeException("LOOP DETECTED when assigning WORKDAY/WEEKEND-"+
+		if(count>employees.size()) {
+			throw new RuntimeException("LOOP DETECTED ("+count+">"+employees.size()+"="+employeeAllocations.size()+") when assigning WORKDAY/WEEKEND-"+
 					shiftType+"-"+
 					role+" for day "+d+" and solution number #"+solutionsCount);
 		}
@@ -1032,7 +1055,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 	}
 	
 	private void debugUp(int d, String shiftType, String role) {
-		ShiftSolverLogger.debug("   <<< BACKTRACK UP - failed for day/shift/role "+d+"-"+shiftType+"-"+role+" ("+(steps++)+"/"+depth+")");
+		ShiftSolverLogger.debug("   <<< BACKTRACK UP - failed for day/shift/role "+d+"-"+shiftType+"-"+role+" ("+(steps++)+" steps, depth: "+depth+")");
 
 		if(failedOnMaxDepth<depth) {
 			failedOnMaxDepth=depth;
@@ -1043,7 +1066,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		ShiftSolverLogger.debug("     BOTTOM CAUSE - failed for depth/shift/role "+failedOnMaxDepth+"-"+failedOnShiftType+"-"+failedOnRole);
 		EmployeeCapacity capacity
 		=new EmployeeCapacity(preferences, new ArrayList<EmployeeAllocation>(employeeAllocations.values()));
-			capacity.printEmployeeAllocations();		
+			capacity.printEmployeeAllocations(d);		
 
 		depth--;
 		

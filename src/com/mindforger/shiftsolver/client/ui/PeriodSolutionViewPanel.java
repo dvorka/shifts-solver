@@ -63,6 +63,8 @@ public class PeriodSolutionViewPanel extends FlexTable {
 			public void onClick(ClickEvent event) {
 				ctx.getStatusLine().showInfo("Building solution #"+(solutionNumber+1));
 				PeriodPreferences preferences = ctx.getState().getPeriodPreferences(solution.getDlouhanKey());				
+				//Employee[] employees = ctx.getState().getEmployees();
+				//Utils.shuffleArray(employees);
 				solution = ctx.getSolver().solve(Arrays.asList(ctx.getState().getEmployees()), preferences, ++solutionNumber);
 				if(solution!=null) {
 		    		ctx.getStatusLine().showInfo("Found solution #"+(solutionNumber+1));

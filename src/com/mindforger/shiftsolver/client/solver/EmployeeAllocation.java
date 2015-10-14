@@ -8,7 +8,6 @@ import com.mindforger.shiftsolver.shared.model.Employee;
 public class EmployeeAllocation {
 
 	public Employee employee;
-	public int stableArrayIndex;
 	
 	public int shiftsToGet;
 	public int shifts;
@@ -44,7 +43,9 @@ public class EmployeeAllocation {
 	public void unassign(boolean isNight) {
 		shiftsOnDays.remove(shiftsOnDays.size()-1);
 		shifts--;
-		nights--;
+		if(isNight) {
+			nights--;			
+		}
 	}
 
 	public boolean hasCapacity(int day, boolean isNight) {
@@ -59,19 +60,8 @@ public class EmployeeAllocation {
 			// RULE: at most 1 shift/day
 			if(shiftsOnDays.get(shiftsOnDays.size()-1)!=day || editorWeekendContinuity) {
 				// RULE: at most 5 consecutive days at work (last 4 days connected to today)
-				if(shiftsOnDays.size()>=5) {
-					int lastIndex=shiftsOnDays.size()-1;
-					int lastDay=shiftsOnDays.get(lastIndex);
-					if(lastDay==(day-1)
-						 &&
-					   shiftsOnDays.get(lastIndex-1)==(lastDay-1)
-						 &&
-					   shiftsOnDays.get(lastIndex-2)==(lastDay-2)
-						 &&
-					   shiftsOnDays.get(lastIndex-3)==(lastDay-3)) 
-					{
-						return false;
-					}
+				if(hadShiftsLast5Days(day)) {
+					return false;
 				}
 				return hasCapacity(capacityNeeded);
 			} else {
@@ -81,6 +71,33 @@ public class EmployeeAllocation {
 			shiftsOnDays.add(day);
 			return hasCapacity(capacityNeeded);
 		}
+	}
+
+	public boolean hadShiftToday(int day) {
+		if(shiftsOnDays.size()>0) {
+			return day==shiftsOnDays.get(shiftsOnDays.size()-1);			
+		}		
+		return false;
+	}
+	
+	public boolean hadShiftsLast5Days(int day) {
+		if(shiftsOnDays.size()>=5) {
+			int lastIndex=shiftsOnDays.size()-1;
+			int lastDay=shiftsOnDays.get(lastIndex);
+			if(lastDay==(day-1)
+				 &&
+			   shiftsOnDays.get(lastIndex-1)==(lastDay-1)
+				 &&
+			   shiftsOnDays.get(lastIndex-2)==(lastDay-2)
+				 &&
+			   shiftsOnDays.get(lastIndex-3)==(lastDay-3) 
+				 &&
+			   shiftsOnDays.get(lastIndex-4)==(lastDay-4)) 
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private boolean hasCapacity(int capacityNeeded) {
