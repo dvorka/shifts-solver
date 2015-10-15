@@ -1,4 +1,4 @@
-package com.mindforger.shiftsolver.shared.model;
+package com.mindforger.shiftsolver.client.ui;
 
 import com.google.gwt.user.client.ui.HTML;
 

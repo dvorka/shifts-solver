@@ -80,7 +80,7 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 		}
 	}
 
-	private void addTableTitle() {
+	private void addTableTitle() {		
 		setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
 		setWidget(0, 1, new TableSetSortingButton(i18n.gender(),TableSortCriteria.BY_GENDER, this, ctx));
 		setWidget(0, 2, new TableSetSortingButton(i18n.editor(),TableSortCriteria.BY_EDITOR, this, ctx));
@@ -104,6 +104,11 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 				// TODO css
 				"mf-growsTableGoalButton", 
 				ctx);
+		if(woman) {
+			button.addStyleName("s2-female");			
+		} else {
+			button.addStyleName("s2-male");						
+		}
 		
 		final HTML womanHtml = new HTML((woman?i18n.female():i18n.male())+"&nbsp;&nbsp;");
 		womanHtml.setStyleName("mf-progressHtml");

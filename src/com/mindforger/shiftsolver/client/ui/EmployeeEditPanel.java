@@ -42,7 +42,7 @@ public class EmployeeEditPanel extends FlexTable {
 		    		ctx.getStatusLine().showProgress(ctx.getI18n().savingEmployee());
 		    		riaToObject();
 		      		ctx.getRia().saveEmployee(employee);
-		      		ctx.getStatusLine().showInfo("Employee '"+employee.getFullName()+"' successufly stored");
+		      		ctx.getStatusLine().showInfo("Employee '"+employee.getFullName()+"' saved");
 				}
 			}
 		});		
@@ -64,7 +64,7 @@ public class EmployeeEditPanel extends FlexTable {
 			public void onClick(ClickEvent event) {
 				if(employee!=null) {
 		    		ctx.getStatusLine().showProgress(ctx.getI18n().deletingEmployee());
-		      		ctx.getRia().deleteOrUpdateEmployee(employee, true);
+		      		ctx.getRia().deleteEmployee(employee);
 		      		ctx.getStatusLine().showInfo("Employee '"+employee.getFullName()+"' deleted");
 				}
 			}

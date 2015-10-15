@@ -21,6 +21,8 @@ public class RiaState {
 	private Map<String,PeriodPreferences> periodPreferencesByKey;
 	
 	public RiaState() {
+		employees=new Employee[0];
+		periodPreferencesList=new PeriodPreferences[0];
 		employeesByKey=new HashMap<String,Employee>();
 		periodPreferencesByKey=new HashMap<String,PeriodPreferences>();
 	}

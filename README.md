@@ -101,6 +101,9 @@ Backend:
 The implementation plan:
    * employee preferences:
       * CRUD (edit and load in panels + store to RIA state)
+
+   * server side persistence
+      
    * solver
       * strategy: try to build schedule w/o need to backtrack, smart allocation and know
         what to do; backtrack to be used only in situations when you cannot allocate wisely
@@ -117,7 +120,7 @@ The implementation plan:
       * if no solution found, report deepest cause i.e. day where is the problem
         e.g. day 23, afternoon shift, editor role.
       * national holidays panel, CRUD and solver logic
-   * server side persistence
+      
    * authentication and authorization
 
 Readme:

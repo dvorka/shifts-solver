@@ -8,6 +8,7 @@ import com.mindforger.shiftsolver.client.solver.ShiftSolver;
 import com.mindforger.shiftsolver.client.ui.EmployeeEditPanel;
 import com.mindforger.shiftsolver.client.ui.EmployeesTable;
 import com.mindforger.shiftsolver.client.ui.HomePanel;
+import com.mindforger.shiftsolver.client.ui.PageTitlePanel;
 import com.mindforger.shiftsolver.client.ui.PeriodPreferencesEditPanel;
 import com.mindforger.shiftsolver.client.ui.PeriodPreferencesTable;
 import com.mindforger.shiftsolver.client.ui.PeriodSolutionTable;
@@ -17,7 +18,6 @@ import com.mindforger.shiftsolver.client.ui.StatusLine;
 import com.mindforger.shiftsolver.client.ui.menu.LeftMenubar;
 import com.mindforger.shiftsolver.shared.FieldVerifier;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
-import com.mindforger.shiftsolver.shared.model.PageTitlePanel;
 
 /**
  * This is an analogy of Spring Application Context. It gives overview of the most
