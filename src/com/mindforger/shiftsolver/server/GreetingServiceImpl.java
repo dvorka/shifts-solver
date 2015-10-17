@@ -60,7 +60,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 	private PeriodPreferences newPeriodPreferences(int year, int month) {
 		PeriodPreferences periodPreferences = new PeriodPreferences(year, month);
 
-		Calendar myCalendar = new GregorianCalendar(year, month, 1);
+		Calendar myCalendar = new GregorianCalendar(year, month-1, 1);
 		int numberOfDaysInMonth=myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 		periodPreferences.setMonthDays(numberOfDaysInMonth);
 		
