@@ -170,8 +170,9 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				}				
 			});			
 		}
-		showEmployeesTable();		
+		showEmployeesTable();			
 	}
+	
 	public void deleteEmployee(final Employee employee) {
 		if(employee!=null) {
 			ctx.getService().deleteEmployee(employee.getKey(), new AsyncCallback<Void>() {
@@ -187,6 +188,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 			});
 		}
 	}
+	
 	public void deleteOrUpdateEmployee(Employee employee, boolean delete) {
 		if(employee!=null) {
 			Employee[] employees = ctx.getState().getEmployees();
@@ -214,42 +216,68 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 	}
 
 	// TODO merge save and delete/update to single method
-	@Deprecated
-	public void savePeriodPreferences(PeriodPreferences preferences) {
+	public void savePeriodPreferences(final PeriodPreferences preferences) {
 		if(preferences!=null) {
-			PeriodPreferences[] array = ctx.getState().getPeriodPreferencesList();
-			if(array!=null) {
-				if(ctx.getState().getPeriodPreferences(preferences.getKey())==null) {			
-					List<PeriodPreferences> list = new ArrayList<PeriodPreferences>();
-					for(PeriodPreferences e:array) list.add(e); // Arrays.asList() returns unmodifiable list
-					list.add(preferences);
-					PeriodPreferences[] newArray = list.toArray(new PeriodPreferences[list.size()]);
-					ctx.getState().setPeriodPreferencesList(newArray);
-				} else {
-					deleteOrUpdatePeriodPreferences(preferences, false);					
-					return;
+			ctx.getService().savePeriodPreferences(preferences, new AsyncCallback<Void>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					ctx.getStatusLine().showError("Unable to save period preferences "+preferences.getYear()+"/"+preferences.getMonth());
 				}
-			}
-			ctx.getPeriodPreferencesTable().refresh(ctx.getState().getPeriodPreferencesList());
+
+				@Override
+				public void onSuccess(Void result) {		
+					PeriodPreferences[] array = ctx.getState().getPeriodPreferencesList();
+					if(array!=null) {
+						if(ctx.getState().getPeriodPreferences(preferences.getKey())==null) {			
+							List<PeriodPreferences> list = new ArrayList<PeriodPreferences>();
+							for(PeriodPreferences e:array) list.add(e); // Arrays.asList() returns unmodifiable list
+							list.add(preferences);
+							PeriodPreferences[] newArray = list.toArray(new PeriodPreferences[list.size()]);
+							ctx.getState().setPeriodPreferencesList(newArray);
+						} else {
+							deleteOrUpdatePeriodPreferences(preferences, false);					
+							return;
+						}
+					}
+					ctx.getPeriodPreferencesTable().refresh(ctx.getState().getPeriodPreferencesList());
+				}
+			});
 		}
-		showPeriodPreferencesTable();		
+		showPeriodPreferencesTable();
 	}
-	public void deleteOrUpdatePeriodPreferences(PeriodPreferences employee, boolean delete) {
-		if(employee!=null) {
-			PeriodPreferences[] employees = ctx.getState().getPeriodPreferencesList();
-			if(employees!=null && ctx.getState().getPeriodPreferences(employee.getKey())!=null) {
+
+	public void deletePeriodPreferences(final PeriodPreferences preferences) {
+		if(preferences!=null) {
+			ctx.getService().deletePeriodPreferences(preferences.getKey(), new AsyncCallback<Void>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					ctx.getStatusLine().showError("Unable to delete period preferences "+preferences.getYear()+"/"+preferences.getMonth());
+				}
+
+				@Override
+				public void onSuccess(Void result) {
+					deleteOrUpdatePeriodPreferences(preferences, true);
+				}
+			});
+		}
+	}
+	
+	public void deleteOrUpdatePeriodPreferences(PeriodPreferences pref, boolean delete) {
+		if(pref!=null) {
+			PeriodPreferences[] prefs = ctx.getState().getPeriodPreferencesList();
+			if(prefs!=null && ctx.getState().getPeriodPreferences(pref.getKey())!=null) {
 				List<PeriodPreferences> list = new ArrayList<PeriodPreferences>();
 				PeriodPreferences victim=null;
-				for(PeriodPreferences e:employees) {
+				for(PeriodPreferences e:prefs) {
 					list.add(e);
-					if(e.getKey().equals(employee.getKey())) {
+					if(e.getKey().equals(pref.getKey())) {
 						victim=e;
 					}
 				}
 				if(victim!=null) {
 					list.remove(victim);					
 					if(!delete) {
-						list.add(employee);
+						list.add(pref);
 					}
 				}
 				PeriodPreferences[] newArray = list.toArray(new PeriodPreferences[list.size()]);

@@ -77,15 +77,21 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		    		PeriodSolution solution;
 		    		try {
 						Employee[] employees = ctx.getState().getEmployees();
-						solution = ctx.getSolver().solve(Arrays.asList(employees), periodPreferences, 0);
-			    		if(solution!=null) {
-			    			ctx.getStatusLine().showInfo("Solution found!");
-			    			ctx.getSolutionViewPanel().refresh(solution);
-			    			ctx.getRia().showSolutionViewPanel();		      			
-			    		} else {
-			    			ctx.getStatusLine().showError("No solution exists for this employees and their preferences!");
-			    			ctx.getRia().showPeriodPreferencesEditPanel();
-			    		}		    			
+						try {
+							solution = ctx.getSolver().solve(Arrays.asList(employees), periodPreferences, 0);							
+				    		if(solution!=null) {
+				    			ctx.getStatusLine().showInfo("Solution found!");
+				    			ctx.getSolutionViewPanel().refresh(solution);
+				    			ctx.getRia().showSolutionViewPanel();		      			
+				    		} else {
+				    			ctx.getStatusLine().showError("No solution exists for this employees and their preferences!");
+				    			ctx.getRia().showPeriodPreferencesEditPanel();
+				    		}		    			
+						} catch(RuntimeException e) {
+							// TODO throw my solver exception to distinquish
+							ctx.getStatusLine().showError("Unable to find solution: "+e.getMessage());
+							ctx.getRia().showPeriodPreferencesEditPanel();
+						}
 		    		} catch(ShiftSolverTimeoutException e) {
 			    		ctx.getStatusLine().showError("Solver didn't found schedule in "+ShiftSolver.STEPS_LIMIT+" steps. Click 'Solve' button to try again w/ different config."); // TODO i18n
 			    		ctx.getRia().showPeriodPreferencesEditPanel();
@@ -124,8 +130,8 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		deleteButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if(periodPreferences!=null) {
-		    		ctx.getStatusLine().showProgress(ctx.getI18n().deletingEmployee());
-		      		ctx.getRia().deleteOrUpdatePeriodPreferences(periodPreferences, true);
+		    		ctx.getStatusLine().showProgress("Deleting period preferences...");
+		      		ctx.getRia().deletePeriodPreferences(periodPreferences);
 		      		ctx.getStatusLine().showInfo("Period preferences deleted");
 				}
 			}
@@ -169,23 +175,24 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 
 		table.removeAllRows();
 		preferenceButtons.clear();
-		
-		if(periodPreferences!=null && periodPreferences.getEmployeeToPreferences()!=null && periodPreferences.getEmployeeToPreferences().size()>0) {
-			HTML html = new HTML("Employee"); // TODO i18n
-			// TODO allow sorting the table by employee name
-			// setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
-			table.setWidget(0, 0, html);
-			html = new HTML("Preferences"); // TODO i18n
-			table.setWidget(0, 1, html);
 
-			for(Employee employee:ctx.getState().getEmployees()) {
-				addEmployeeRow(
-						preferencesTable,
-						employee, 
-						periodPreferences.getEmployeeToPreferences().get(employee),
-						periodPreferences.getMonthDays());
-			}						
-		}		
+		HTML html = new HTML("Employee"); // TODO i18n
+		// TODO allow sorting the table by employee name
+		// setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
+		table.setWidget(0, 0, html);
+		html = new HTML("Preferences"); // TODO i18n
+		table.setWidget(0, 1, html);
+
+		EmployeePreferences employeePreferences;
+		int monthDays = periodPreferences.getMonthDays();
+		for(Employee employee:ctx.getState().getEmployees()) {
+			if(periodPreferences!=null && periodPreferences.getEmployeeToPreferences()!=null && periodPreferences.getEmployeeToPreferences().size()>0) {
+				employeePreferences = periodPreferences.getEmployeeToPreferences().get(employee.getKey());
+			} else {
+				employeePreferences = null;
+			}
+			addEmployeeRow(preferencesTable, employee, employeePreferences, monthDays);
+		}
 		
 		ctx.getStatusLine().showInfo("Period preferences built!");
 	}
@@ -226,70 +233,74 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		employeePrefsTable.setWidget(CHECK_NIGHT, 0, new HTML("Night"));
 		
 		List<YesNoDontcareButton> employeeButtons=new ArrayList<YesNoDontcareButton>();
+		DayPreference dayPreference;
 		for(int c=1; c<=monthDays; c++) {
-			EmployeePreferences preferences = periodPreferences.getEmployeeToPreferences().get(employee.getKey());
-			DayPreference dayPreference = preferences.getPreferencesForDay(c);
+			if(employeePreferences!=null) {
+				dayPreference = employeePreferences.getPreferencesForDay(c);				
+			} else {
+				dayPreference = null;
+			}
 			for(int r=1; r<=6; r++) {
 				YesNoDontcareButton yesNoDontcare = new YesNoDontcareButton();
 				if(dayPreference!=null) {
 					switch(r) {
 					case CHECK_DAY:
 						if(dayPreference.isNoDay()) {
-							yesNoDontcare.setYesNoValue(2);
+							yesNoDontcare.setYesNoValue(1);
 							yesNoDontcare.setStylePrimaryName("s2-3stateNo");
 						}
 						if(dayPreference.isYesDay()) {
-							yesNoDontcare.setYesNoValue(1);
+							yesNoDontcare.setYesNoValue(2);
 							yesNoDontcare.setStylePrimaryName("s2-3stateYes");
 						}
 						break;
 					case CHECK_MORNING_6:
 						if(dayPreference.isNoMorning6()) {
-							yesNoDontcare.setYesNoValue(2);
+							yesNoDontcare.setYesNoValue(1);
 							yesNoDontcare.setStylePrimaryName("s2-3stateNo");
 						}
 						if(dayPreference.isYesMorning6()) {
-							yesNoDontcare.setYesNoValue(1);
+							yesNoDontcare.setYesNoValue(2);
 							yesNoDontcare.setStylePrimaryName("s2-3stateYes");
 						}
 						break;
 					case CHECK_MORNING_7:
 						if(dayPreference.isNoMorning7()) {
-							yesNoDontcare.setYesNoValue(2);
+							yesNoDontcare.setYesNoValue(1);
 							yesNoDontcare.setStylePrimaryName("s2-3stateNo");
 						}
 						if(dayPreference.isYesMorning7()) {
-							yesNoDontcare.setYesNoValue(1);
+							yesNoDontcare.setYesNoValue(2);
 							yesNoDontcare.setStylePrimaryName("s2-3stateYes");
 						}
 						break;
 					case CHECK_MORNING_8:
 						if(dayPreference.isNoMorning8()) {
-							yesNoDontcare.setYesNoValue(2);
+							yesNoDontcare.setYesNoValue(1);
 							yesNoDontcare.setStylePrimaryName("s2-3stateNo");
 						}
 						if(dayPreference.isYesMorning8()) {
-							yesNoDontcare.setYesNoValue(1);
+							yesNoDontcare.setYesNoValue(2);
 							yesNoDontcare.setStylePrimaryName("s2-3stateYes");
 						}
 						break;
 					case CHECK_AFTERNOON:
 						if(dayPreference.isNoAfternoon()) {
-							yesNoDontcare.setYesNoValue(2);
+							yesNoDontcare.setYesNoValue(1);
 							yesNoDontcare.setStylePrimaryName("s2-3stateNo");
 						}
 						if(dayPreference.isYesAfternoon()) {
-							yesNoDontcare.setYesNoValue(1);
+							yesNoDontcare.setYesNoValue(2);
 							yesNoDontcare.setStylePrimaryName("s2-3stateYes");
 						}
 						break;
 					case CHECK_NIGHT:
 						if(dayPreference.isNoNight()) {
-							yesNoDontcare.setYesNoValue(2);
+							yesNoDontcare.setYesNoValue(1);
 							yesNoDontcare.setStylePrimaryName("s2-3stateNo");
 						}
 						if(dayPreference.isYesNight()) {
-							yesNoDontcare.setYesNoValue(1);
+							yesNoDontcare.setYesNoValue(2);
 							yesNoDontcare.setStylePrimaryName("s2-3stateYes");
 						}
 						break;
@@ -364,10 +375,10 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 						switch(r) {
 						case CHECK_DAY:
 							switch(yesNoDontcareButton.getYesNoValue()) {
-							case 1:
+							case 2:
 								dayPreference.setYesDay(true);
 								break;
-							case 2:
+							case 1:
 								dayPreference.setNoDay(true);
 								break;
 							default:
@@ -376,10 +387,10 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 							break;
 						case CHECK_MORNING_6:
 							switch(yesNoDontcareButton.getYesNoValue()) {
-							case 1:
+							case 2:
 								dayPreference.setYesMorning6(true);
 								break;
-							case 2:
+							case 1:
 								dayPreference.setNoMorning6(true);
 								break;
 							default:
@@ -388,10 +399,10 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 							break;
 						case CHECK_MORNING_7:
 							switch(yesNoDontcareButton.getYesNoValue()) {
-							case 1:
+							case 2:
 								dayPreference.setYesMorning7(true);
 								break;
-							case 2:
+							case 1:
 								dayPreference.setNoMorning7(true);
 								break;
 							default:
@@ -400,10 +411,10 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 							break;
 						case CHECK_MORNING_8:
 							switch(yesNoDontcareButton.getYesNoValue()) {
-							case 1:
+							case 2:
 								dayPreference.setYesMorning8(true);
 								break;
-							case 2:
+							case 1:
 								dayPreference.setNoMorning8(true);
 								break;
 							default:
@@ -412,10 +423,10 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 							break;
 						case CHECK_AFTERNOON:
 							switch(yesNoDontcareButton.getYesNoValue()) {
-							case 1:
+							case 2:
 								dayPreference.setYesAfternoon(true);
 								break;
-							case 2:
+							case 1:
 								dayPreference.setNoAfternoon(true);
 								break;
 							default:
@@ -424,10 +435,10 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 							break;
 						case CHECK_NIGHT:
 							switch(yesNoDontcareButton.getYesNoValue()) {
-							case 1:
+							case 2:
 								dayPreference.setYesNight(true);
 								break;
-							case 2:
+							case 1:
 								dayPreference.setNoNight(true);
 								break;
 							default:

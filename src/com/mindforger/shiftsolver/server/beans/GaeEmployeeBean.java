@@ -25,6 +25,8 @@ public class GaeEmployeeBean implements Serializable, GaeBean {
 	@Persistent
 	private String familyname;
 	@Persistent
+	private String email;
+	@Persistent
 	private int birthdayYear;
 	@Persistent
 	private int birthdayMonth;
@@ -46,8 +48,7 @@ public class GaeEmployeeBean implements Serializable, GaeBean {
 	
 	@Override
 	public Key getKey() {
-		// TODO Auto-generated method stub
-		return null;
+		return key;
 	}
 	
 	public String getFirstname() {
@@ -134,10 +135,19 @@ public class GaeEmployeeBean implements Serializable, GaeBean {
 		this.key = key;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public void fromPojo(Employee e) {
 		key=ServerUtils.stringToKey(e.getKey());
 		familyname=e.getFamilyname();
 		firstname=e.getFirstname();
+		email=e.getEmail();
 		birthdayDay=e.getBirthdayDay();
 		birthdayMonth=e.getBirthdayMonth();
 		birthdayYear=e.getBirthdayYear();
@@ -158,6 +168,7 @@ public class GaeEmployeeBean implements Serializable, GaeBean {
 		e.setFemale(female);
 		e.setFirstname(firstname);
 		e.setFulltime(fulltime);
+		e.setEmail(email);
 		e.setKey(ServerUtils.keyToString(key));
 		e.setMorningSportak(morningSportak);
 		e.setSportak(sportak);

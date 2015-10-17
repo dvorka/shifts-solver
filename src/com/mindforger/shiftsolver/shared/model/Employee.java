@@ -8,6 +8,7 @@ public class Employee implements Serializable  {
 	private String key;
 	private String firstname;
 	private String familyname;
+	private String email;
 	private int birthdayYear;
 	private int birthdayMonth;
 	private int birthdayDay;
@@ -48,6 +49,14 @@ public class Employee implements Serializable  {
 		return (getFirstname()!=null?getFirstname():"")+" "+(getFamilyname()!=null?getFamilyname():"");
 	}
 	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public boolean isFemale() {
 		return female;
 	}

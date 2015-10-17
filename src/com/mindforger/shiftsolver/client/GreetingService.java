@@ -16,6 +16,8 @@ public interface GreetingService extends RemoteService {
 	Employee[] getEmployees();
 	void deleteEmployee(String key);
 	
-	PeriodPreferences newPeriodPreferences(int year, int month);
 	PeriodPreferences newPeriodPreferences();
+	void savePeriodPreferences(PeriodPreferences periodPreferences);
+	void deletePeriodPreferences(String key);
+	PeriodPreferences[] getPeriodPreferences();
 }

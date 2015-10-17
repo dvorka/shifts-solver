@@ -11,7 +11,7 @@ public interface Persistence {
 	void deleteEmployee(String key);
 	Employee[] getEmployees();
 
-	PeriodPreferences createPeriodPreferences();
+	PeriodPreferences createPeriodPreferences(PeriodPreferences periodPreferences);
 	PeriodPreferences savePeriodPreferences(PeriodPreferences periodPreferences);
 	void deletePeriodPreferences(String key);
 	PeriodPreferences[] getPeriodPreferences();

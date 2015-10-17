@@ -51,6 +51,7 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 			comparator=new ComparatorEmployeeByName(sortIsAscending);
 			break;
 		case BY_EDITOR:
+		case BY_EMAIL:
 		case BY_SPORTAK:
 		case BY_GENDER:
 		case BY_TIMESTAMP:
@@ -72,6 +73,7 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 				addRow(
 						result[i].getKey(), 
 						result[i].getFullName(),
+						result[i].getEmail(),
 						result[i].isFemale(),
 						result[i].isEditor(),
 						result[i].isSportak(),
@@ -82,15 +84,17 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 
 	private void addTableTitle() {		
 		setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
-		setWidget(0, 1, new TableSetSortingButton(i18n.gender(),TableSortCriteria.BY_GENDER, this, ctx));
-		setWidget(0, 2, new TableSetSortingButton(i18n.editor(),TableSortCriteria.BY_EDITOR, this, ctx));
-		setWidget(0, 3, new TableSetSortingButton(i18n.sportak(),TableSortCriteria.BY_SPORTAK, this, ctx));
-		setWidget(0, 4, new TableSetSortingButton(i18n.fulltime(),TableSortCriteria.BY_FULLTIME, this, ctx));
+		setWidget(0, 1, new TableSetSortingButton("Email",TableSortCriteria.BY_EMAIL, this, ctx)); // TODO i18n
+		setWidget(0, 2, new TableSetSortingButton(i18n.gender(),TableSortCriteria.BY_GENDER, this, ctx));
+		setWidget(0, 3, new TableSetSortingButton(i18n.editor(),TableSortCriteria.BY_EDITOR, this, ctx));
+		setWidget(0, 4, new TableSetSortingButton(i18n.sportak(),TableSortCriteria.BY_SPORTAK, this, ctx));
+		setWidget(0, 5, new TableSetSortingButton(i18n.fulltime(),TableSortCriteria.BY_FULLTIME, this, ctx));
 	}
 		
 	public void addRow(
 			String id, 
 			String fullname,
+			String email,
 			boolean woman, 
 			boolean editor, 
 			boolean sportak, 
@@ -110,6 +114,8 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 			button.addStyleName("s2-male");						
 		}
 		
+		final HTML mailHtml = new HTML(email==null?"":email);
+		mailHtml.setStyleName("mf-progressHtml");
 		final HTML womanHtml = new HTML((woman?i18n.female():i18n.male())+"&nbsp;&nbsp;");
 		womanHtml.setStyleName("mf-progressHtml");
 		final HTML editorHtml = new HTML((editor?i18n.yes():i18n.no())+"&nbsp;&nbsp;");
@@ -123,10 +129,11 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 		fulltimeHtml.setStyleName("mf-progressHtml");
 		
 		setWidget(numRows, 0, button);
-		setWidget(numRows, 1, womanHtml);
-		setWidget(numRows, 2, editorHtml);
-		setWidget(numRows, 3, sportakHtml);
-		setWidget(numRows, 4, fulltimeHtml);
+		setWidget(numRows, 1, mailHtml);
+		setWidget(numRows, 2, womanHtml);
+		setWidget(numRows, 3, editorHtml);
+		setWidget(numRows, 4, sportakHtml);
+		setWidget(numRows, 5, fulltimeHtml);
 	}
 
 	public void removeRow() {

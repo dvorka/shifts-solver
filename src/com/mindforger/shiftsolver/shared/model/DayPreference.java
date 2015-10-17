@@ -5,6 +5,8 @@ import java.io.Serializable;
 public class DayPreference implements Serializable {
 	private static final long serialVersionUID = 1302160963964962116L;
 
+	private String key;
+	
 	private int year;
 	private int month;
 	private int day;
@@ -26,6 +28,14 @@ public class DayPreference implements Serializable {
 	private boolean yesNight;
 	
 	public DayPreference() {		
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	public int getYear() {

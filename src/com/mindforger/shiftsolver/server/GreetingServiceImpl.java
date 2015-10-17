@@ -2,7 +2,6 @@ package com.mindforger.shiftsolver.server;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.concurrent.atomic.AtomicLong;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.mindforger.shiftsolver.client.GreetingService;
@@ -16,12 +15,8 @@ import com.mindforger.shiftsolver.shared.service.UserSettingsBean;
 public class GreetingServiceImpl extends RemoteServiceServlet implements GreetingService {
 
 	private Persistence persistence;
-	
-	@Deprecated
-	private AtomicLong sequence;	
-	
+		
 	public GreetingServiceImpl() {
-		sequence=new AtomicLong(1000);
 		persistence = new GaePersistence();
 	}
 
@@ -54,12 +49,16 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 	public void deleteEmployee(String key) {
 		persistence.deleteEmployee(key);
 	}
+
+	public PeriodPreferences newPeriodPreferences() {
+		Calendar calendar = Calendar.getInstance();
+		return newPeriodPreferences(
+				calendar.get(Calendar.YEAR), 
+				calendar.get(Calendar.MONTH)+1);
+	}
 	
-	
-	
-	public PeriodPreferences newPeriodPreferences(int year, int month) {
+	private PeriodPreferences newPeriodPreferences(int year, int month) {
 		PeriodPreferences periodPreferences = new PeriodPreferences(year, month);
-		periodPreferences.setKey(""+sequence.incrementAndGet());
 
 		Calendar myCalendar = new GregorianCalendar(year, month, 1);
 		int numberOfDaysInMonth=myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
@@ -70,12 +69,21 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
 		periodPreferences.setStartWeekDay(dayOfWeek);
 		
-		return periodPreferences;
+		return persistence.createPeriodPreferences(periodPreferences);
 	}
 
 	@Override
-	public PeriodPreferences newPeriodPreferences() {
-		return newPeriodPreferences(2015, 9);
+	public void savePeriodPreferences(PeriodPreferences periodPreferences) {
+		persistence.savePeriodPreferences(periodPreferences);
 	}
 
+	@Override
+	public void deletePeriodPreferences(String key) {
+		persistence.deletePeriodPreferences(key);
+	}
+
+	@Override
+	public PeriodPreferences[] getPeriodPreferences() {
+		return persistence.getPeriodPreferences();
+	}
 }

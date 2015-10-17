@@ -14,7 +14,8 @@ public interface GreetingServiceAsync {
 	void deleteEmployee(String key, AsyncCallback<Void> callback);
 	void getEmployees(AsyncCallback<Employee[]> callback);
 	
-	void newPeriodPreferences(int year, int month, AsyncCallback<PeriodPreferences> callback);
-	void newPeriodPreferences(AsyncCallback<PeriodPreferences> asyncCallback);
-
+	void newPeriodPreferences(AsyncCallback<PeriodPreferences> callback);
+	void savePeriodPreferences(PeriodPreferences periodPreferences, AsyncCallback<Void> callback);
+	void deletePeriodPreferences(String key, AsyncCallback<Void> callback);
+	void getPeriodPreferences(AsyncCallback<PeriodPreferences[]> callback);
 }

@@ -23,10 +23,10 @@ public class YesNoDontcareButton extends Button {
 					setStylePrimaryName("s2-3stateDontcare");
 					break;					
 				case 1:
-					setStylePrimaryName("s2-3stateYes");
+					setStylePrimaryName("s2-3stateNo");
 					break;
 				case 2:
-					setStylePrimaryName("s2-3stateNo");
+					setStylePrimaryName("s2-3stateYes");
 					break;
 				}
 			}

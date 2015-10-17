@@ -19,6 +19,7 @@ public class EmployeeEditPanel extends FlexTable {
 	
 	private TextBox firstNameTextBox;
 	private TextBox familyNameTextBox;
+	private TextBox emailTextBox;
 	private CheckBox fulltimeCheckbox;
 	private CheckBox sportakCheckbox;
 	private CheckBox morningSportakCheckbox;
@@ -90,6 +91,14 @@ public class EmployeeEditPanel extends FlexTable {
 		setWidget(++numRows, 0, html);
 		familyNameTextBox = new TextBox();
 		setWidget(numRows, 1, familyNameTextBox);
+
+		// TODO i18n
+		html = new HTML("Email");
+		// TODO css
+		html.setStyleName("mf-progressHtml");
+		setWidget(++numRows, 0, html);
+		emailTextBox = new TextBox();
+		setWidget(numRows, 1, emailTextBox);
 		
 		// TODO i18n
 		html = new HTML("Female");
@@ -152,6 +161,7 @@ public class EmployeeEditPanel extends FlexTable {
 		this.employee=employee;		
 		firstNameTextBox.setText(employee.getFirstname());
 		familyNameTextBox.setText(employee.getFamilyname());
+		emailTextBox.setText(employee.getEmail());
 		femaleCheckbox.setValue(employee.isFemale());
 		sportakCheckbox.setValue(employee.isSportak());
 		morningSportakCheckbox.setValue(employee.isMorningSportak());
@@ -164,6 +174,7 @@ public class EmployeeEditPanel extends FlexTable {
 			employee.setEditor(editorCheckbox.getValue());
 			employee.setFamilyname(familyNameTextBox.getText());
 			employee.setFemale(femaleCheckbox.getValue());
+			employee.setEmail(emailTextBox.getText());
 			employee.setFirstname(firstNameTextBox.getText());
 			employee.setFulltime(fulltimeCheckbox.getValue());
 			employee.setSportak(sportakCheckbox.getValue());
