@@ -50,17 +50,23 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		persistence.deleteEmployee(key);
 	}
 
+	@Override
 	public PeriodPreferences newPeriodPreferences() {
 		Calendar calendar = Calendar.getInstance();
 		return newPeriodPreferences(
 				calendar.get(Calendar.YEAR), 
 				calendar.get(Calendar.MONTH)+1);
 	}
-	
-	private PeriodPreferences newPeriodPreferences(int year, int month) {
+		
+	public PeriodPreferences newPeriodPreferences(int year, int month) {
 		PeriodPreferences periodPreferences = new PeriodPreferences(year, month);
+		setDaysAndStartDay(periodPreferences);
+		return persistence.createPeriodPreferences(periodPreferences);
+	}
 
-		Calendar myCalendar = new GregorianCalendar(year, month-1, 1);
+	@Override
+	public PeriodPreferences setDaysAndStartDay(PeriodPreferences periodPreferences) {
+		Calendar myCalendar = new GregorianCalendar(periodPreferences.getYear(), periodPreferences.getMonth()-1, 1);
 		int numberOfDaysInMonth=myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 		periodPreferences.setMonthDays(numberOfDaysInMonth);
 		
@@ -69,7 +75,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
 		periodPreferences.setStartWeekDay(dayOfWeek);
 		
-		return persistence.createPeriodPreferences(periodPreferences);
+		return periodPreferences;
 	}
 
 	@Override

@@ -6,8 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -72,34 +75,19 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		solveButton.setStyleName("mf-button");
 		solveButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if(periodPreferences!=null) {
-		    		ctx.getStatusLine().showProgress(ctx.getI18n().solvingShifts());
-		    		PeriodSolution solution;
-		    		try {
-						Employee[] employees = ctx.getState().getEmployees();
-						try {
-							solution = ctx.getSolver().solve(Arrays.asList(employees), periodPreferences, 0);							
-				    		if(solution!=null) {
-				    			ctx.getStatusLine().showInfo("Solution found!");
-				    			ctx.getSolutionViewPanel().refresh(solution);
-				    			ctx.getRia().showSolutionViewPanel();		      			
-				    		} else {
-				    			ctx.getStatusLine().showError("No solution exists for this employees and their preferences!");
-				    			ctx.getRia().showPeriodPreferencesEditPanel();
-				    		}		    			
-						} catch(RuntimeException e) {
-							// TODO throw my solver exception to distinquish
-							ctx.getStatusLine().showError("Unable to find solution: "+e.getMessage());
-							ctx.getRia().showPeriodPreferencesEditPanel();
-						}
-		    		} catch(ShiftSolverTimeoutException e) {
-			    		ctx.getStatusLine().showError("Solver didn't found schedule in "+ShiftSolver.STEPS_LIMIT+" steps. Click 'Solve' button to try again w/ different config."); // TODO i18n
-			    		ctx.getRia().showPeriodPreferencesEditPanel();
-		    		}
-				}
+				handleSolve(ctx, false);
 			}
 		});		
 		buttonPanel.add(solveButton);
+
+		Button shuffleAndSolveButton=new Button("Shuffle and Solve"); // TODO i18n
+		shuffleAndSolveButton.setStyleName("mf-button");
+		shuffleAndSolveButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				handleSolve(ctx, true);
+			}
+		});		
+		buttonPanel.add(shuffleAndSolveButton);
 		
 		Button saveButton=new Button("Save"); // TODO i18n
 		saveButton.setStyleName("mf-button");
@@ -149,6 +137,13 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			yearListBox.addItem(""+(YEAR+i));			
 		}
 		yearListBox.setTitle("Year"); // TODO i18n
+		yearListBox.addChangeHandler(new ChangeHandler() {			
+			@Override
+			public void onChange(ChangeEvent event) {
+				periodPreferences.setYear(Integer.parseInt(yearListBox.getValue(yearListBox.getSelectedIndex())));
+				handleDateListboxChange();				
+			}
+		});
 		flowPanel.add(yearListBox);
 		
 		monthListBox = new ListBox(false);
@@ -156,6 +151,13 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			monthListBox.addItem(""+i);			
 		}
 		monthListBox.setTitle("Month"); // TODO i18n
+		monthListBox.addChangeHandler(new ChangeHandler() {			
+			@Override
+			public void onChange(ChangeEvent event) {
+				periodPreferences.setMonth(Integer.parseInt(monthListBox.getValue(monthListBox.getSelectedIndex())));
+				handleDateListboxChange();				
+			}
+		});
 		flowPanel.add(monthListBox);
 		
 		return flowPanel;
@@ -454,5 +456,52 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			}			
 			periodPreferences.getEmployeeToPreferences().put(e.getKey(), ep);			
 		}
+	}
+
+	private void handleSolve(final RiaContext ctx, final boolean shuffle) {
+		if(periodPreferences!=null) {
+			ctx.getStatusLine().showProgress(ctx.getI18n().solvingShifts());
+			PeriodSolution solution;
+			try {
+				Employee[] employees = ctx.getState().getEmployees();
+				try {
+					if(shuffle) {
+						Utils.shuffleArray(employees);						
+					}
+					solution = ctx.getSolver().solve(Arrays.asList(employees), periodPreferences, 0);							
+		    		if(solution!=null) {
+		    			ctx.getStatusLine().showInfo("Solution found!");
+		    			ctx.getSolutionViewPanel().refresh(solution);
+		    			ctx.getRia().showSolutionViewPanel();  			
+		    		} else {
+		    			ctx.getStatusLine().showError("No solution exists for this employees and their preferences!");
+		    			ctx.getRia().showPeriodPreferencesEditPanel();
+		    		}		    			
+				} catch(RuntimeException e) {
+					// TODO throw my solver exception to distinguish
+					ctx.getStatusLine().showError("Unable to find solution: "+e.getMessage());
+					ctx.getRia().showPeriodPreferencesEditPanel();
+				}
+			} catch(ShiftSolverTimeoutException e) {
+				ctx.getStatusLine().showError("Solver didn't found schedule in "+ShiftSolver.STEPS_LIMIT+" steps. Click 'Solve' button to try again w/ different config."); // TODO i18n
+				ctx.getRia().showPeriodPreferencesEditPanel();
+			}
+		}
+	}
+
+	private void handleDateListboxChange() {
+		PeriodPreferences p=new PeriodPreferences(periodPreferences.getYear(), periodPreferences.getMonth());
+		ctx.getService().setDaysAndStartDay(p, new AsyncCallback<PeriodPreferences>() {					
+			@Override
+			public void onSuccess(PeriodPreferences result) {
+				periodPreferences.setMonthDays(result.getMonthDays());
+				periodPreferences.setStartWeekDay(result.getStartWeekDay());
+				refresh(result);
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				ctx.getStatusLine().showError("Unable to determine month's properties!");
+			}
+		});
 	}	
 }
