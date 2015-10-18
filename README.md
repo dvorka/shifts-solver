@@ -14,7 +14,7 @@ Month preferences management:
 
 Solution management:
 
-...
+[![Solution Management](http://mindforger.com/project/s2/s2-solution.png "Solution Management")](http://mindforger.com/project/s2/s2-solution.png)
 
 
 
