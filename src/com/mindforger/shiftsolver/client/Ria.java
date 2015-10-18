@@ -112,6 +112,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		hideAllContainers();
 		ctx.getPageTitlePanel().setHTML(i18n.home());
 		RootPanel.get(CONTAINER_HOME).setVisible(true);
+		ctx.getStatusLine().clear();
 	}
 	
 	public void showEmployeesTable() {
@@ -159,6 +160,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 							ctx.getState().setEmployees(newArray);
 						} else {
 							deleteOrUpdateEmployee(employee, false);					
+				      		ctx.getMenu().setEmployeesCount(ctx.getState().getEmployees().length);
 							return;
 						}
 					} else {
@@ -167,6 +169,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 						ctx.getState().setEmployees(employees);
 					}
 					ctx.getEmployeesTable().refresh(ctx.getState().getEmployees());
+		      		ctx.getMenu().setEmployeesCount(ctx.getState().getEmployees().length);
 				}				
 			});			
 		}
@@ -184,6 +187,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				@Override
 				public void onSuccess(Void result) {
 					deleteOrUpdateEmployee(employee, true);
+		      		ctx.getMenu().setEmployeesCount(ctx.getState().getEmployees().length);
 				}
 			});
 		}
@@ -226,20 +230,22 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 
 				@Override
 				public void onSuccess(Void result) {		
-					PeriodPreferences[] array = ctx.getState().getPeriodPreferencesList();
+					PeriodPreferences[] array = ctx.getState().getPeriodPreferencesArray();
 					if(array!=null) {
 						if(ctx.getState().getPeriodPreferences(preferences.getKey())==null) {			
 							List<PeriodPreferences> list = new ArrayList<PeriodPreferences>();
-							for(PeriodPreferences e:array) list.add(e); // Arrays.asList() returns unmodifiable list
+							for(PeriodPreferences e:array) list.add(e);
 							list.add(preferences);
 							PeriodPreferences[] newArray = list.toArray(new PeriodPreferences[list.size()]);
 							ctx.getState().setPeriodPreferencesList(newArray);
 						} else {
 							deleteOrUpdatePeriodPreferences(preferences, false);					
+				      		ctx.getMenu().setPeriodPreferencesCount(ctx.getState().getPeriodPreferencesArray().length);
 							return;
 						}
 					}
-					ctx.getPeriodPreferencesTable().refresh(ctx.getState().getPeriodPreferencesList());
+					ctx.getPeriodPreferencesTable().refresh(ctx.getState().getPeriodPreferencesArray());
+		      		ctx.getMenu().setPeriodPreferencesCount(ctx.getState().getPeriodPreferencesArray().length);
 				}
 			});
 		}
@@ -257,6 +263,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				@Override
 				public void onSuccess(Void result) {
 					deleteOrUpdatePeriodPreferences(preferences, true);
+		      		ctx.getMenu().setPeriodPreferencesCount(ctx.getState().getPeriodPreferencesArray().length);
 				}
 			});
 		}
@@ -264,7 +271,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 	
 	public void deleteOrUpdatePeriodPreferences(PeriodPreferences pref, boolean delete) {
 		if(pref!=null) {
-			PeriodPreferences[] prefs = ctx.getState().getPeriodPreferencesList();
+			PeriodPreferences[] prefs = ctx.getState().getPeriodPreferencesArray();
 			if(prefs!=null && ctx.getState().getPeriodPreferences(pref.getKey())!=null) {
 				List<PeriodPreferences> list = new ArrayList<PeriodPreferences>();
 				PeriodPreferences victim=null;
@@ -283,7 +290,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				PeriodPreferences[] newArray = list.toArray(new PeriodPreferences[list.size()]);
 				ctx.getState().setPeriodPreferencesList(newArray);
 			}
-			ctx.getPeriodPreferencesTable().refresh(ctx.getState().getPeriodPreferencesList());
+			ctx.getPeriodPreferencesTable().refresh(ctx.getState().getPeriodPreferencesArray());
 		}
 		showPeriodPreferencesTable();		
 	}

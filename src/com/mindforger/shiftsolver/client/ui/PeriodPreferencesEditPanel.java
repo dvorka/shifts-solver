@@ -111,6 +111,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		cancelButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if(periodPreferences!=null) {
+					ctx.getPeriodPreferencesTable().refresh(ctx.getState().getPeriodPreferencesArray());
 		      		ctx.getRia().showPeriodPreferencesTable();
 				}
 			}
@@ -371,11 +372,16 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		yearListBox.setSelectedIndex(periodPreferences.getYear()-YEAR);
 		monthListBox.setSelectedIndex(periodPreferences.getMonth()-1);
 		lastMonthEditorListBox.clear();
+		int idx=0;
 		for(Employee ee:ctx.getState().getEmployees()) {
 			if(ee.isEditor()) {
 				lastMonthEditorListBox.addItem(""+ee.getFullName());		
 			}
+			if(ee.getKey().equals(periodPreferences.getKey())) {
+				idx=lastMonthEditorListBox.getItemCount()-1;
+			}
 		}
+		lastMonthEditorListBox.setSelectedIndex(idx);
 		
 		refreshPreferencesTable(preferencesTable);
 	}
@@ -515,7 +521,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 					ctx.getRia().showPeriodPreferencesEditPanel();
 				}		    			
 			} catch(ShiftSolverException e) {
-				ctx.getStatusLine().showError("Solver didn't found schedule in "+ShiftSolver.STEPS_LIMIT+" steps. Click 'Solve' button to try again."); // TODO i18n
+				ctx.getStatusLine().showError(e.getMessage()); // TODO i18n
 				ctx.getRia().showPeriodPreferencesEditPanel();
 			} catch(RuntimeException e) {
 				// TODO throw my solver exception to distinguish

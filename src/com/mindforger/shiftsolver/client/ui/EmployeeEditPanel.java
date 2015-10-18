@@ -54,6 +54,7 @@ public class EmployeeEditPanel extends FlexTable {
 		cancelButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if(employee!=null) {
+					ctx.getEmployeesTable().refresh(ctx.getState().getEmployees());
 		      		ctx.getRia().showEmployeesTable();
 				}
 			}
@@ -143,7 +144,9 @@ public class EmployeeEditPanel extends FlexTable {
 		setWidget(++numRows, 0, html);
 		fulltimeCheckbox = new CheckBox();
 		fulltimeCheckbox.setValue(false);
-		setWidget(numRows, 1, fulltimeCheckbox);		
+		setWidget(numRows, 1, fulltimeCheckbox);
+		
+		firstNameTextBox.setFocus(true);
 	}
 	
 	public void refresh(Employee employee) {
@@ -158,8 +161,9 @@ public class EmployeeEditPanel extends FlexTable {
 	}
 
 	private void objectToRia(Employee employee) {
-		this.employee=employee;		
+		this.employee=employee;
 		firstNameTextBox.setText(employee.getFirstname());
+		firstNameTextBox.setFocus(true);
 		familyNameTextBox.setText(employee.getFamilyname());
 		emailTextBox.setText(employee.getEmail());
 		femaleCheckbox.setValue(employee.isFemale());

@@ -83,8 +83,8 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 
 		periodPreferencesButton=new Button(i18n.periodPreferences(), new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if(ctx.getState().getPeriodPreferencesList()!=null && ctx.getState().getPeriodPreferencesList().length>0) {
-					int count=(ctx.getState().getEmployees()!=null?ctx.getState().getPeriodPreferencesList().length:0);
+				if(ctx.getState().getPeriodPreferencesArray()!=null && ctx.getState().getPeriodPreferencesArray().length>0) {
+					int count=(ctx.getState().getEmployees()!=null?ctx.getState().getPeriodPreferencesArray().length:0);
 					setPeriodPreferencesCount(count);
 					showPeriodPreferencesTable();
 				} else {
@@ -104,7 +104,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 				
 		reinitialize();
 		setEmployeesCount(ctx.getState().getEmployees().length);
-		setPeriodPreferencesCount(ctx.getState().getPeriodPreferencesList().length);
+		setPeriodPreferencesCount(ctx.getState().getPeriodPreferencesArray().length);
 	}
 
 	public void reinitialize() {
@@ -170,6 +170,8 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 			}
 			public void onSuccess(Employee result) {
 				GWT.log("RIA - new employee succesfuly created! "+result);
+				result.setFulltime(true);
+				ctx.getState().addEmployee(result);
 				ctx.getEmployeesEditPanel().refresh(result);
 				ria.showEmployeeEditPanel();
 				ctx.getStatusLine().showInfo("New employee created");
@@ -193,6 +195,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 				result.setEmployeeToPreferences(prefs);
 				
 				ctx.getPeriodPreferencesEditPanel().refresh(result);
+				ctx.getState().addPeriodPreferences(result);
 				ria.showPeriodPreferencesEditPanel();
 				ctx.getStatusLine().showInfo("New period preferences created");
 			}

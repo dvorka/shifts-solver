@@ -33,11 +33,11 @@ public class PeriodSolutionTable extends FlexTable implements SortableTable {
 		addStyleName("mf-growsTable");
 		sortCriteria=TableSortCriteria.BY_YEAR_AND_MONTH;
 		sortIsAscending=true;
-		refresh(ctx.getState().getPeriodPreferencesList());
+		refresh(ctx.getState().getPeriodPreferencesArray());
 	}
 
 	public void refreshWithNewSortingCriteria() {
-		refresh(ctx.getState().getPeriodPreferencesList());
+		refresh(ctx.getState().getPeriodPreferencesArray());
 	}
 	
 	public void refresh(PeriodPreferences[] result) {

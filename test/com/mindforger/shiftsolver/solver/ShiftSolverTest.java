@@ -26,7 +26,7 @@ public class ShiftSolverTest {
 
 	public void testRiaBigDataSolutionFirst() {
 		state = Utils.createNovemberFooState();
-		PeriodPreferences preferences = state.getPeriodPreferencesList()[0];
+		PeriodPreferences preferences = state.getPeriodPreferencesArray()[0];
 
 		// TODO ShiftSolver.STEPS_LIMIT=Long.MAX_VALUE;
 		
@@ -49,7 +49,7 @@ public class ShiftSolverTest {
 
 	public void testRiaSmallDataSolutionFirst() {		
 		RiaState state = Utils.createSmallFooState();
-		PeriodPreferences preferences = state.getPeriodPreferencesList()[0];
+		PeriodPreferences preferences = state.getPeriodPreferencesArray()[0];
 
 		PeriodSolution solution = solver.solve(
 				Arrays.asList(state.getEmployees()),
