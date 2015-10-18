@@ -8,9 +8,9 @@ Employees management:
 
 [![Employees Management](http://mindforger.com/project/s2/s2-employees.png "Employees Management")](http://mindforger.com/project/s2/s2-employees.png)
 
-Period preferences management:
+Month preferences management:
 
-...
+[![Month Preferences Management](http://mindforger.com/project/s2/s2-preferences.png "Month Preferences Management")](http://mindforger.com/project/s2/s2-preferences.png)
 
 Solution management:
 
