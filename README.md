@@ -6,7 +6,7 @@ shifts-based operation.
 # Overview
 Employees management:
 
-[![Employees Management](http://mindforger.com/project/s2/s2-employees.png "Employees Management")](http://mindforger.com/project/s2/s2-employees.jpg)
+[![Employees Management](http://mindforger.com/project/s2/s2-employees.jpg "Employees Management")](http://mindforger.com/project/s2/s2-employees.jpg)
 
 Month preferences management:
 
