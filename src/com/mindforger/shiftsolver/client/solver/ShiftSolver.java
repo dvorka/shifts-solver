@@ -121,6 +121,10 @@ public class ShiftSolver implements ShiftSolverConstants {
 			}
 		}
 		
+		PeriodPreferencesCapacity capacity = new PeriodPreferencesCapacity();
+		capacity.calculate(periodPreferences, employeeAllocations.values());
+		capacity.printCapacity();
+		
 		if(!solveDay(1, result).isSolutionFound()) {
 			// NO SOLUTION exists for this team and requirements
 			ShiftSolverLogger.debug("NO SOLUTION EXISTS!");
@@ -1104,9 +1108,9 @@ public class ShiftSolver implements ShiftSolverConstants {
 		}
 
 		ShiftSolverLogger.debug("     BOTTOM CAUSE - failed for depth/shift/role "+failedOnMaxDepth+"-"+failedOnShiftType+"-"+failedOnRole);
-		EmployeeCapacity capacity
-			=new EmployeeCapacity(preferences, new ArrayList<EmployeeAllocation>(employeeAllocations.values()));
-				capacity.printEmployeeAllocations(d);		
+		PeriodPreferencesCapacity capacity
+			=new PeriodPreferencesCapacity();
+				capacity.printEmployeeAllocations(d,new ArrayList<EmployeeAllocation>(employeeAllocations.values()));		
 
 		depth--;
 		

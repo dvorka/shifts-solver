@@ -1,8 +1,8 @@
 package com.mindforger.shiftsolver.shared;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
-
-import com.google.gwt.core.client.GWT;
 
 public class ShiftSolverLogger {
 
@@ -14,13 +14,13 @@ public class ShiftSolverLogger {
 		
 		// stdout
 //		out=System.out;
-		
+				
 		// file
-//		try {
-//			out=new PrintStream(new File("/tmp/s2.txt"));
-//		} catch (FileNotFoundException e) {
-//			System.err.println(e.getMessage());
-//		}
+		try {
+			out=new PrintStream(new File("/tmp/s2.txt"));
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 	
 	public static void debug(String message) {

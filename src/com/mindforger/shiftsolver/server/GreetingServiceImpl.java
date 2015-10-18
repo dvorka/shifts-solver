@@ -1,7 +1,6 @@
 package com.mindforger.shiftsolver.server;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.mindforger.shiftsolver.client.GreetingService;
