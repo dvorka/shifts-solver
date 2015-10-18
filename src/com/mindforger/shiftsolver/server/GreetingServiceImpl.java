@@ -60,22 +60,13 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		
 	public PeriodPreferences newPeriodPreferences(int year, int month) {
 		PeriodPreferences periodPreferences = new PeriodPreferences(year, month);
-		setDaysAndStartDay(periodPreferences);
+		setDaysWorkdaysStartDay(periodPreferences);
 		return persistence.createPeriodPreferences(periodPreferences);
 	}
 
 	@Override
-	public PeriodPreferences setDaysAndStartDay(PeriodPreferences periodPreferences) {
-		Calendar myCalendar = new GregorianCalendar(periodPreferences.getYear(), periodPreferences.getMonth()-1, 1);
-		int numberOfDaysInMonth=myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-		periodPreferences.setMonthDays(numberOfDaysInMonth);
-		
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(myCalendar.getTime());
-		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-		periodPreferences.setStartWeekDay(dayOfWeek);
-		
-		return periodPreferences;
+	public PeriodPreferences setDaysWorkdaysStartDay(PeriodPreferences periodPreferences) {
+		return ServerUtils.countDaysWorkdaysStartDay(periodPreferences);
 	}
 
 	@Override

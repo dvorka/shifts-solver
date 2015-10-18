@@ -16,6 +16,7 @@ import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
 import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.Employee;
+import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.Job;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
@@ -62,6 +63,8 @@ public class ShiftSolver implements ShiftSolverConstants {
 	private int bestScore;
 
 	private SolverProgressPanels solverProgressPanel;
+
+	private Employee lastMonthEditor;
 	
 	public ShiftSolver() {
 		this.solverProgressPanel=new DebugSolverPanel();
@@ -105,10 +108,17 @@ public class ShiftSolver implements ShiftSolverConstants {
 		
 		employees = team.getStableEmployeeList();
 		employeeAllocations = new HashMap<String,EmployeeAllocation>();
+		lastMonthEditor = null;
 		for(int i=0; i<employees.size(); i++) {
 			Employee e = employees.get(i);
-			EmployeeAllocation employeeAllocation = new EmployeeAllocation(e, periodPreferences.getMonthWorkDays());
+			EmployeeAllocation employeeAllocation 
+				= new EmployeeAllocation(e, periodPreferences);
 			employeeAllocations.put(e.getKey(), employeeAllocation);
+			if(preferences.getLastMonthEditor()!=null && !preferences.getLastMonthEditor().isEmpty()) {
+				if(e.getKey().equals(preferences.getLastMonthEditor())) {
+					lastMonthEditor=e;
+				}
+			}
 		}
 		
 		if(!solveDay(1, result).isSolutionFound()) {
@@ -219,7 +229,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		int thisLevelRole=ROLE_EDITOR;
 				
 		// editor has Fri afternoon > Sat morning > Sat afternoon > Sun morning > Sun afternoon continuity
-		// i.e. take editor from PREVIOUS day morning
+		// i.e. take editor from PREVIOUS day afternoon/morning
 		DaySolution previousDaySolution;
 		Employee previousEditor;
 		if(result.getDays().size()>1) {
@@ -230,16 +240,28 @@ public class ShiftSolver implements ShiftSolverConstants {
 				if(daySolution.getWeekday()==Calendar.SUNDAY) {
 					previousEditor=previousDaySolution.getWeekendMorningShift().editor;
 				} else {
-					throw new RuntimeException("Workday in weekend? "+daySolution.getWeekday()+" - "+Utils.getDayLetter(d, preferences.getStartWeekDay()));
+					throw new ShiftSolverException(
+							"Workday in weekend? "+daySolution.getWeekday()+" - "+Utils.getDayLetter(d, preferences.getStartWeekDay()),
+							d,
+							failedOnMaxDepth,
+							failedOnShiftType,
+							failedOnRole);
 				}
 			}
 		} else {
-			// TODO editor should be friday afternoon editor (verify on Friday that editor has capacity for 3 shifts)
-			//      PROBLEM:  if friday/saturday is in different month, there is no way to ensure editor continuity (Friday afternoon + Sat + Sun)
-			//      SOLUTION: simply introduce a field like year/month where from dropbox you can choose friday editor
-
-			// TODO take previous day editors from configuration > to be implemented UI
-			throw new RuntimeException("Unable to load editor from previous day as don't have previous month");
+			if(lastMonthEditor!=null) {
+				previousEditor=lastMonthEditor;
+			} else {
+				// TODO editor should be friday afternoon editor (verify on Friday that editor has capacity for 3 shifts)
+				//      PROBLEM:  if friday/saturday is in different month, there is no way to ensure editor continuity (Friday afternoon + Sat + Sun)
+				//      SOLUTION: simply introduce a field like year/month where from dropbox you can choose friday editor
+				throw new ShiftSolverException(
+						"Unable to load editor from previous day as don't have previous month",
+						d,
+						failedOnMaxDepth,
+						failedOnShiftType,
+						failedOnRole);				
+			}
 		}
 		
 		if(findEditorForWeekendMorning(previousEditor, daySolution)!=null) {
@@ -743,18 +765,28 @@ public class ShiftSolver implements ShiftSolverConstants {
 					return 1+i;					
 				}
 			}
-			throw new RuntimeException("Employee not found!");
+			throw new ShiftSolverException(
+					"Employee "+lastAssignee.getFullName()+" found!",
+					-1,
+					failedOnMaxDepth,
+					failedOnShiftType,
+					failedOnRole);					
 		}
 	}
 
 	private static final DayPreference NO_PREFERENCE=new DayPreference();
 	private DayPreference getDayPreference(Employee e, DaySolution daySolution) {
-		DayPreference preferencesForDay = preferences.getEmployeeToPreferences().get(e.getKey()).getPreferencesForDay(daySolution.getDay());
-		if(preferencesForDay!=null) {
-			return preferencesForDay;
-		} else {
-			return NO_PREFERENCE;
+		Map<String, EmployeePreferences> employeeToPreferences = preferences.getEmployeeToPreferences();
+		if(employeeToPreferences!=null) {
+			EmployeePreferences employeePreferences = employeeToPreferences.get(e.getKey());
+			if(employeePreferences!=null) {
+				DayPreference preferencesForDay = employeePreferences.getPreferencesForDay(daySolution.getDay());
+				if(preferencesForDay!=null) {
+					return preferencesForDay;
+				}				
+			}
 		}
+		return NO_PREFERENCE;
 	}
 		
 	/*
@@ -1035,15 +1067,23 @@ public class ShiftSolver implements ShiftSolverConstants {
 		ShiftSolverLogger.debug("   >>> DOWN - FOUND for day-shift-role "+d+"-"+shiftType+"-"+role+" #"+count+" ("+(steps++)+" steps, depth: "+(depth++)+")");
 		
 		if(count>employees.size()) {
-			throw new RuntimeException("LOOP DETECTED ("+count+">"+employees.size()+"="+employeeAllocations.size()+") when assigning WORKDAY/WEEKEND-"+
-					shiftType+"-"+
-					role+" for day "+d+" and solution number #"+solutionsCount);
+			throw new ShiftSolverException(
+					"LOOP DETECTED ("+count+">"+employees.size()+"="+employeeAllocations.size()+") "
+					+ "when assigning WORKDAY/WEEKEND-"+ shiftType+"-"+ role+" for day "+d
+					+" and solution number #"+solutionsCount,
+					d,
+					failedOnMaxDepth,
+					failedOnShiftType,
+					failedOnRole);										
 		}
 		
 		if(steps>STEPS_LIMIT) {
-			throw new ShiftSolverTimeoutException(
-					"Steps exceeded (depth "+d+", "+shiftType+", "+role+") "+
-					"fail: "+failedOnMaxDepth+" "+failedOnShiftType+" "+failedOnRole
+			throw new ShiftSolverException(
+					"Steps exceeded - depth "+d+", "+shiftType+", "+role,
+					d,
+					failedOnMaxDepth,
+					failedOnShiftType,
+					failedOnRole
 					);
 		}
 	}
@@ -1065,16 +1105,19 @@ public class ShiftSolver implements ShiftSolverConstants {
 
 		ShiftSolverLogger.debug("     BOTTOM CAUSE - failed for depth/shift/role "+failedOnMaxDepth+"-"+failedOnShiftType+"-"+failedOnRole);
 		EmployeeCapacity capacity
-		=new EmployeeCapacity(preferences, new ArrayList<EmployeeAllocation>(employeeAllocations.values()));
-			capacity.printEmployeeAllocations(d);		
+			=new EmployeeCapacity(preferences, new ArrayList<EmployeeAllocation>(employeeAllocations.values()));
+				capacity.printEmployeeAllocations(d);		
 
 		depth--;
 		
 		if(steps>STEPS_LIMIT) {
-			throw new ShiftSolverTimeoutException(
-					"Steps exceeded (depth "+d+", "+shiftType+", "+role+") "+
-					"fail: "+failedOnMaxDepth+" "+failedOnShiftType+" "+failedOnRole
-					);
+			int failedOnDay=d;
+			throw new ShiftSolverException(
+					"Solution didn't found in "+STEPS_LIMIT+" steps, depth "+d+", "+shiftType+", "+role+")",
+					failedOnDay,
+					failedOnMaxDepth,
+					failedOnShiftType,
+					failedOnRole);
 		}
 	}	
 }

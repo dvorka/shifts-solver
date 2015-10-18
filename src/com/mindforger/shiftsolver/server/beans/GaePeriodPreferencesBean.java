@@ -30,6 +30,9 @@ public class GaePeriodPreferencesBean implements Serializable, GaeBean {
 	int year;
 	@Persistent
 	int month;
+
+	@Persistent
+	String lastMonthEditor; 
 	
 	// private Map<String,EmployeePreferences> employeeToPreferences;
 	
@@ -84,6 +87,14 @@ public class GaePeriodPreferencesBean implements Serializable, GaeBean {
 	public void setKey(Key key) {
 		this.key = key;
 	}
+	
+	public String getLastMonthEditor() {
+		return lastMonthEditor;
+	}
+
+	public void setLastMonthEditor(String lastMonthEditor) {
+		this.lastMonthEditor = lastMonthEditor;
+	}
 
 	public void fromPojo(PeriodPreferences e) {
 		key=ServerUtils.stringToKey(e.getKey());
@@ -92,6 +103,7 @@ public class GaePeriodPreferencesBean implements Serializable, GaeBean {
 		monthWorkDays=e.getMonthWorkDays();
 		startWeekDay=e.getStartWeekDay();
 		year=e.getYear();
+		lastMonthEditor=e.getLastMonthEditor();
 	}
 	
 	public PeriodPreferences toPojo() {
@@ -102,6 +114,7 @@ public class GaePeriodPreferencesBean implements Serializable, GaeBean {
 		e.setMonthWorkDays(monthWorkDays);
 		e.setStartWeekDay(startWeekDay);
 		e.setYear(year);
+		e.setLastMonthEditor(lastMonthEditor);
 		return e;
 	}
 }

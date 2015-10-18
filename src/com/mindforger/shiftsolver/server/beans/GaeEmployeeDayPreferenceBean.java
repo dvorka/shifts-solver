@@ -33,6 +33,9 @@ public class GaeEmployeeDayPreferenceBean  implements Serializable, GaeBean {
 	private int day;
 	
 	@Persistent
+	private boolean isHoliDay;
+	
+	@Persistent
 	private boolean noDay;
 	@Persistent
 	private boolean noMorning6;
@@ -206,12 +209,22 @@ public class GaeEmployeeDayPreferenceBean  implements Serializable, GaeBean {
 		this.employeeKey = employeeKey;
 	}
 
+	public boolean isHoliDay() {
+		return isHoliDay;
+	}
+
+	public void setHoliDay(boolean isHoliDay) {
+		this.isHoliDay = isHoliDay;
+	}
+
 	public void fromPojo(DayPreference e) {
 		key=ServerUtils.stringToKey(e.getKey());
 		
 		year=e.getYear();
 		month=e.getMonth();
 		day=e.getDay();
+
+		isHoliDay=e.isHoliDay();
 		
 		noDay=e.isNoDay();
 		noMorning6=e.isNoMorning6();
@@ -234,6 +247,8 @@ public class GaeEmployeeDayPreferenceBean  implements Serializable, GaeBean {
 		e.setYear(year);
 		e.setMonth(month);
 		e.setDay(day);
+		
+		e.setHoliDay(isHoliDay);
 		
 		e.setNoDay(noDay);
 		e.setNoMorning6(noMorning6);

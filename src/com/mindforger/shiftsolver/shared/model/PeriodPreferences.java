@@ -17,7 +17,8 @@ public class PeriodPreferences implements Serializable  {
 	int year;
 	int month;
 	private Map<String,EmployeePreferences> employeeToPreferences;
-
+	String lastMonthEditor;
+	
 	public PeriodPreferences() {		
 	}
 	
@@ -85,5 +86,13 @@ public class PeriodPreferences implements Serializable  {
 
 	public void setMonthWorkDays(int monthWorkDays) {
 		this.monthWorkDays = monthWorkDays;
+	}
+
+	public String getLastMonthEditor() {
+		return lastMonthEditor;
+	}
+
+	public void setLastMonthEditor(String lastMonthEditor) {
+		this.lastMonthEditor = lastMonthEditor;
 	}
 }

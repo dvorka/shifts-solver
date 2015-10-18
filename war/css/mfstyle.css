@@ -2668,7 +2668,7 @@ html>body .gwt-MenuBarPopup {
 	color: #000;
 }
 .s2-female {
-	color: #330000;	
+	color: #AA0000;	
 }
 .s2-fulltime {
 	color: #000;
@@ -2722,6 +2722,9 @@ html>body .gwt-MenuBarPopup {
 }
 .s2-3stateDontcare {
 	background-color: #FFF;	
+}
+.s2-3stateDofca {
+	background-color: #FF6;	
 }
 
 /** EOF **/

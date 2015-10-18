@@ -13,6 +13,8 @@ public class DayPreference implements Serializable {
 	
 	// three state preferences: NO, I CANNOT MAKE IT (bool) / YES PLEASE, I WANT IT (bool) / I DONT CARE (nothing)
 	
+	private boolean isHoliDay;
+	
 	private boolean noDay;
 	private boolean noMorning6; // 6 AM or entire day
 	private boolean noMorning7;
@@ -156,5 +158,14 @@ public class DayPreference implements Serializable {
 
 	public void setYesAfternoon(boolean yesAfternoon) {
 		this.yesAfternoon = yesAfternoon;
+	}
+
+	public boolean isHoliDay() {
+		return isHoliDay;
+	}
+
+	public void setHoliDay(boolean isHoliDay) {
+		this.isHoliDay = isHoliDay;
+		if(isHoliDay) setNoDay(true);
 	}	
 }

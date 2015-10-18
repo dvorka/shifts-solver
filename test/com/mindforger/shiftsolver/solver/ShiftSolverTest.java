@@ -8,7 +8,8 @@ import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
 import com.mindforger.shiftsolver.client.solver.EmployeeCapacity;
 import com.mindforger.shiftsolver.client.solver.ShiftSolver;
-import com.mindforger.shiftsolver.client.solver.ShiftSolverTimeoutException;
+import com.mindforger.shiftsolver.client.solver.ShiftSolverException;
+import com.mindforger.shiftsolver.server.ServerUtils;
 import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
@@ -24,14 +25,14 @@ public class ShiftSolverTest {
 	}
 
 	public void testRiaBigDataSolutionFirst() {
-		state = Utils.createBigFooState();
+		state = Utils.createNovemberFooState();
 		PeriodPreferences preferences = state.getPeriodPreferencesList()[0];
 
-		ShiftSolver.STEPS_LIMIT=Long.MAX_VALUE;
+		// TODO ShiftSolver.STEPS_LIMIT=Long.MAX_VALUE;
 		
 		PeriodSolution solution;
 		for(int i=0; i<1; i++) {
-			Utils.shuffleArray(state.getEmployees());
+			// TODO Utils.shuffleArray(state.getEmployees());
 
 			try {
 				solution = solver.solve(
@@ -40,7 +41,7 @@ public class ShiftSolverTest {
 						1);
 
 				showSolution(preferences, solution, state.getEmployees());				
-			} catch(ShiftSolverTimeoutException e) {
+			} catch(Exception e) {
 				ShiftSolverLogger.debug("\nERROR:"+e.getMessage());
 			}
 		}
@@ -60,10 +61,11 @@ public class ShiftSolverTest {
 
 	private void showSolution(PeriodPreferences preferences, PeriodSolution solution, Employee[] employees) {
 		if(solution==null) {
+			System.out.println("Solution doesn't exist!");
 			ShiftSolverLogger.debug("Solution doesn't exist for this team and employee preferences!");
 			// TODO solver.getFirstBacktrackCause();
 		} else {
-
+			System.out.println("Solution exists!");
 			ShiftSolverLogger.debug("- CAPACITY ---------------------------------------------------------------");
 			new EmployeeCapacity(preferences, new ArrayList<EmployeeAllocation>(solver.getEmployeeAllocations().values()))
 				.printEmployeeAllocations(31);
@@ -73,11 +75,24 @@ public class ShiftSolverTest {
 		}
 	}
 
+	public void calendarFun() {
+		int year=2015;
+		int month=11;
+		
+		PeriodPreferences periodPreferences = new PeriodPreferences(year, month);
+		periodPreferences = ServerUtils.countDaysWorkdaysStartDay(periodPreferences);
+		System.out.println("    Days: "+periodPreferences.getMonthDays());		
+		System.out.println("Workdays: "+periodPreferences.getMonthWorkDays());
+		System.out.println("Star day: "+periodPreferences.getStartWeekDay());
+	}
+	
 	public static void main(String[] args) {
 		ShiftSolverTest shiftSolverRiaTest = new ShiftSolverTest();
-		shiftSolverRiaTest.testRiaBigDataSolutionFirst();
-		//shiftSolverRiaTest.testRiaSmallDataSolutionFirst();
-		//shiftSolverRiaTest.testRiaBigDataSolutionAll();
+		
+		//shiftSolverRiaTest.calendarFun();
+		shiftSolverRiaTest.testRiaBigDataSolutionFirst();		
+		//shiftSolverRiaTest.testRiaSmallDataSolutionFirst();		
+		
 		ShiftSolverLogger.debug("Test done!");
 	}
 }

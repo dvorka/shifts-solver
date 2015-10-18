@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -20,9 +21,10 @@ import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.client.solver.ShiftSolver;
-import com.mindforger.shiftsolver.client.solver.ShiftSolverTimeoutException;
+import com.mindforger.shiftsolver.client.solver.ShiftSolverException;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.client.ui.buttons.YesNoDontcareButton;
+import com.mindforger.shiftsolver.client.ui.buttons.YesNoDontcareDofcaButton;
 import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
@@ -41,6 +43,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 	
 	private ListBox yearListBox;
 	private ListBox monthListBox;
+	private ListBox lastMonthEditorListBox;
 	private FlexTable preferencesTable;
 	private Map<String,List<YesNoDontcareButton>> preferenceButtons;
 	
@@ -159,6 +162,17 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			}
 		});
 		flowPanel.add(monthListBox);
+
+		lastMonthEditorListBox = new ListBox(false);
+		lastMonthEditorListBox.setTitle("Last month editor"); // TODO i18n
+		lastMonthEditorListBox.addChangeHandler(new ChangeHandler() {			
+			@Override
+			public void onChange(ChangeEvent event) {
+				int idx = lastMonthEditorListBox.getSelectedIndex();				
+				periodPreferences.setLastMonthEditor(ctx.getState().getEmployees()[idx].getKey());
+			}
+		});
+		flowPanel.add(lastMonthEditorListBox);
 		
 		return flowPanel;
 	}
@@ -243,17 +257,27 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 				dayPreference = null;
 			}
 			for(int r=1; r<=6; r++) {
-				YesNoDontcareButton yesNoDontcare = new YesNoDontcareButton();
+				YesNoDontcareButton yesNoDontcare;
+				if(r==CHECK_DAY) {
+					yesNoDontcare = new YesNoDontcareDofcaButton();
+				} else {
+					yesNoDontcare = new YesNoDontcareButton();					
+				}
 				if(dayPreference!=null) {
 					switch(r) {
 					case CHECK_DAY:
-						if(dayPreference.isNoDay()) {
-							yesNoDontcare.setYesNoValue(1);
-							yesNoDontcare.setStylePrimaryName("s2-3stateNo");
-						}
-						if(dayPreference.isYesDay()) {
-							yesNoDontcare.setYesNoValue(2);
-							yesNoDontcare.setStylePrimaryName("s2-3stateYes");
+						if(dayPreference.isHoliDay()) {
+							yesNoDontcare.setYesNoValue(3);
+							yesNoDontcare.setStylePrimaryName("s2-3stateDofca");							
+						} else {
+							if(dayPreference.isNoDay()) {
+								yesNoDontcare.setYesNoValue(1);
+								yesNoDontcare.setStylePrimaryName("s2-3stateNo");
+							}
+							if(dayPreference.isYesDay()) {
+								yesNoDontcare.setYesNoValue(2);
+								yesNoDontcare.setStylePrimaryName("s2-3stateYes");
+							}							
 						}
 						break;
 					case CHECK_MORNING_6:
@@ -346,6 +370,12 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		
 		yearListBox.setSelectedIndex(periodPreferences.getYear()-YEAR);
 		monthListBox.setSelectedIndex(periodPreferences.getMonth()-1);
+		lastMonthEditorListBox.clear();
+		for(Employee ee:ctx.getState().getEmployees()) {
+			if(ee.isEditor()) {
+				lastMonthEditorListBox.addItem(""+ee.getFullName());		
+			}
+		}
 		
 		refreshPreferencesTable(preferencesTable);
 	}
@@ -356,7 +386,11 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			periodPreferences.setMonth(Integer.parseInt(monthListBox.getValue(monthListBox.getSelectedIndex())));
 		}
 
-		periodPreferences.getEmployeeToPreferences().clear();
+		if(periodPreferences.getEmployeeToPreferences()!=null) {
+			periodPreferences.getEmployeeToPreferences().clear();			
+		} else {
+			periodPreferences.setEmployeeToPreferences(new HashMap<String,EmployeePreferences>());
+		}
 		for(Employee e:ctx.getState().getEmployees()) {
 			EmployeePreferences ep=new EmployeePreferences();
 			List<DayPreference> dps=new ArrayList<DayPreference>();
@@ -377,6 +411,10 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 						switch(r) {
 						case CHECK_DAY:
 							switch(yesNoDontcareButton.getYesNoValue()) {
+							case 3:
+								dayPreference.setNoDay(true);
+								dayPreference.setHoliDay(true);
+								break;
 							case 2:
 								dayPreference.setYesDay(true);
 								break;
@@ -464,26 +502,25 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			PeriodSolution solution;
 			try {
 				Employee[] employees = ctx.getState().getEmployees();
-				try {
-					if(shuffle) {
-						Utils.shuffleArray(employees);						
-					}
-					solution = ctx.getSolver().solve(Arrays.asList(employees), periodPreferences, 0);							
-		    		if(solution!=null) {
-		    			ctx.getStatusLine().showInfo("Solution found!");
-		    			ctx.getSolutionViewPanel().refresh(solution);
-		    			ctx.getRia().showSolutionViewPanel();  			
-		    		} else {
-		    			ctx.getStatusLine().showError("No solution exists for this employees and their preferences!");
-		    			ctx.getRia().showPeriodPreferencesEditPanel();
-		    		}		    			
-				} catch(RuntimeException e) {
-					// TODO throw my solver exception to distinguish
-					ctx.getStatusLine().showError("Unable to find solution: "+e.getMessage());
-					ctx.getRia().showPeriodPreferencesEditPanel();
+				if(shuffle) {
+					Utils.shuffleArray(employees);						
 				}
-			} catch(ShiftSolverTimeoutException e) {
-				ctx.getStatusLine().showError("Solver didn't found schedule in "+ShiftSolver.STEPS_LIMIT+" steps. Click 'Solve' button to try again w/ different config."); // TODO i18n
+				solution = ctx.getSolver().solve(Arrays.asList(employees), periodPreferences, 0);							
+				if(solution!=null) {
+					ctx.getStatusLine().showInfo("Solution found!");
+					ctx.getSolutionViewPanel().refresh(solution);
+					ctx.getRia().showSolutionViewPanel();  			
+				} else {
+					ctx.getStatusLine().showError("No solution exists for these employees and their preferences!");
+					ctx.getRia().showPeriodPreferencesEditPanel();
+				}		    			
+			} catch(ShiftSolverException e) {
+				ctx.getStatusLine().showError("Solver didn't found schedule in "+ShiftSolver.STEPS_LIMIT+" steps. Click 'Solve' button to try again."); // TODO i18n
+				ctx.getRia().showPeriodPreferencesEditPanel();
+			} catch(RuntimeException e) {
+				// TODO throw my solver exception to distinguish
+				ctx.getStatusLine().showError("Solver failed: "+e.getMessage());
+				GWT.log("Solver failed:", e);
 				ctx.getRia().showPeriodPreferencesEditPanel();
 			}
 		}
@@ -491,11 +528,12 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 
 	private void handleDateListboxChange() {
 		PeriodPreferences p=new PeriodPreferences(periodPreferences.getYear(), periodPreferences.getMonth());
-		ctx.getService().setDaysAndStartDay(p, new AsyncCallback<PeriodPreferences>() {					
+		ctx.getService().setDaysWorkdaysStartDay(p, new AsyncCallback<PeriodPreferences>() {					
 			@Override
 			public void onSuccess(PeriodPreferences result) {
 				periodPreferences.setMonthDays(result.getMonthDays());
 				periodPreferences.setStartWeekDay(result.getStartWeekDay());
+				periodPreferences.setMonthWorkDays(result.getMonthWorkDays());
 				refresh(result);
 			}
 			@Override

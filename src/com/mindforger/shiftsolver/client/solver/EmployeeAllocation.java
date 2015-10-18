@@ -3,7 +3,11 @@ package com.mindforger.shiftsolver.client.solver;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mindforger.shiftsolver.client.Utils;
+import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.Employee;
+import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
+import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
 public class EmployeeAllocation {
 
@@ -15,16 +19,32 @@ public class EmployeeAllocation {
 	public List<Integer> shiftsOnDays;
 	public int nights;
 	
-	public EmployeeAllocation(Employee employee, int workdaysInPeriod) {
+	public EmployeeAllocation(Employee employee, PeriodPreferences preferences) {
 		this.employee=employee;
 		this.shifts=0;
 		this.nights=0;
 		this.shiftsOnDays=new ArrayList<Integer>();
 		
 		if(employee.isFulltime()) {
-			shiftsToGet=Math.round(((float)workdaysInPeriod)/8f*7.5f);
+			shiftsToGet=Math.round(((float)preferences.getMonthWorkDays())/8f*7.5f);
 		} else {
-			shiftsToGet=Math.round((((float)workdaysInPeriod)/8f*7.5f)/2f);			
+			shiftsToGet=Math.round((((float)preferences.getMonthWorkDays())/8f*7.5f)/2f);			
+		}
+		
+		if(preferences.getEmployeeToPreferences()!=null) {
+			EmployeePreferences employeePreferences = preferences.getEmployeeToPreferences().get(employee.getKey());
+			if(employeePreferences!=null) {
+				for(DayPreference dayPreference:employeePreferences.getPreferences()) {
+					if(dayPreference.isHoliDay()) {
+						if(Utils.isWorkday(
+								dayPreference.getDay(), 
+								preferences.getStartWeekDay(), 
+								preferences.getMonthDays())) {
+							shifts++;
+						}
+					}
+				}
+			}
 		}
 	}
 

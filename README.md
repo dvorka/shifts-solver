@@ -80,8 +80,11 @@ Rules:
      one day FREE (TODO)
    * Fulltime employee jobs:
       * *MUST:* job shifts = workdays * 8 / 7.5
+         * *MUST:* on even months round job shifts float up, on odd months down (TODO)
       * *MUST:* fulltime employee must get max shifts +/-1 shift
-      * *MUST:* 2 night shifts in month at most (TODO)
+      * *MUST:* 2 night shifts in month at most
+      * *MUST:* if employee has holidays on workday, then it adds 1 to her/his
+        job shifts (TODO)
       * *SHOULD:* morning and afternoon shifts to be balanced 50%/50% (TODO)
    * Part time employee jobs:
       * *MUST:* max job shifts = fulltime job shifts / 2
@@ -103,7 +106,7 @@ The implementation plan:
       * CRUD (edit and load in panels + store to RIA state)
 
    * server side persistence
-      
+
    * solver
       * strategy: try to build schedule w/o need to backtrack, smart allocation and know
         what to do; backtrack to be used only in situations when you cannot allocate wisely
@@ -120,7 +123,7 @@ The implementation plan:
       * if no solution found, report deepest cause i.e. day where is the problem
         e.g. day 23, afternoon shift, editor role.
       * national holidays panel, CRUD and solver logic
-      
+
    * authentication and authorization
 
 Readme:

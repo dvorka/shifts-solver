@@ -9,7 +9,7 @@ import com.mindforger.shiftsolver.shared.service.RiaBootImageBean;
 @RemoteServiceRelativePath("greet")
 public interface GreetingService extends RemoteService {
 
-	PeriodPreferences setDaysAndStartDay(PeriodPreferences periodPreferences);
+	PeriodPreferences setDaysWorkdaysStartDay(PeriodPreferences periodPreferences);
 	
 	RiaBootImageBean getRiaBootImage();
 	

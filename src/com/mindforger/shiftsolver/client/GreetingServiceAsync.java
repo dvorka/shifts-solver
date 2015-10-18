@@ -7,7 +7,7 @@ import com.mindforger.shiftsolver.shared.service.RiaBootImageBean;
 
 public interface GreetingServiceAsync {
 
-	void setDaysAndStartDay(PeriodPreferences periodPreferences, AsyncCallback<PeriodPreferences> callback);
+	void setDaysWorkdaysStartDay(PeriodPreferences periodPreferences, AsyncCallback<PeriodPreferences> callback);
 	
 	void getRiaBootImage(AsyncCallback<RiaBootImageBean> asyncCallback);
 	
