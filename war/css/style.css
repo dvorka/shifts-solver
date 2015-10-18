@@ -2670,10 +2670,10 @@ html>body .gwt-MenuBarPopup {
 }
 
 .s2-male {
-	color: #000;
+	color: #000055;
 }
 .s2-female {
-	color: #AA0000;	
+	color: #990000;	
 }
 .s2-fulltime {
 	color: #000;
@@ -2686,6 +2686,14 @@ html>body .gwt-MenuBarPopup {
 }
 .s2-sportak {
 	background-color: #FF8; 	
+}
+
+.s2-match {
+	color: #005500;	
+	font-weight: bolder;
+}
+.s2-mismatch {
+	/* color: #990000; */
 }
 
 .s2-shiftFree {

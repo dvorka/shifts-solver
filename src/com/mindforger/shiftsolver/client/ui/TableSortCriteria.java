@@ -8,5 +8,6 @@ public enum TableSortCriteria {
 	BY_GENDER,
 	BY_FULLTIME, 
 	BY_YEAR_AND_MONTH, 
-	BY_EMAIL
+	BY_EMAIL, 
+	BY_MORNING_SPORTAK
 }

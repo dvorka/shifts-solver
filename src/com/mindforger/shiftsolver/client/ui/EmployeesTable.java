@@ -53,6 +53,7 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 		case BY_EDITOR:
 		case BY_EMAIL:
 		case BY_SPORTAK:
+		case BY_MORNING_SPORTAK:
 		case BY_GENDER:
 		case BY_TIMESTAMP:
 		default:
@@ -77,6 +78,7 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 						result[i].isFemale(),
 						result[i].isEditor(),
 						result[i].isSportak(),
+						result[i].isMorningSportak(),
 						result[i].isFulltime());
 			}			
 		}
@@ -88,7 +90,8 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 		setWidget(0, 2, new TableSetSortingButton(i18n.gender(),TableSortCriteria.BY_GENDER, this, ctx));
 		setWidget(0, 3, new TableSetSortingButton(i18n.editor(),TableSortCriteria.BY_EDITOR, this, ctx));
 		setWidget(0, 4, new TableSetSortingButton(i18n.sportak(),TableSortCriteria.BY_SPORTAK, this, ctx));
-		setWidget(0, 5, new TableSetSortingButton(i18n.fulltime(),TableSortCriteria.BY_FULLTIME, this, ctx));
+		setWidget(0, 5, new TableSetSortingButton(i18n.sportak(),TableSortCriteria.BY_MORNING_SPORTAK, this, ctx));
+		setWidget(0, 6, new TableSetSortingButton(i18n.fulltime(),TableSortCriteria.BY_FULLTIME, this, ctx));
 	}
 		
 	public void addRow(
@@ -98,6 +101,7 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 			boolean woman, 
 			boolean editor, 
 			boolean sportak, 
+			boolean morningSportak,
 			boolean fulltime) 
 	{
 		int numRows = getRowCount();
@@ -115,25 +119,50 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 		}
 		
 		final HTML mailHtml = new HTML(email==null?"":email);
-		mailHtml.setStyleName("mf-progressHtml");
+		//mailHtml.setStyleName("mf-progressHtml");
+		
 		final HTML womanHtml = new HTML((woman?i18n.female():i18n.male())+"&nbsp;&nbsp;");
-		womanHtml.setStyleName("mf-progressHtml");
+		if(woman) {
+			womanHtml.setStyleName("s2-female");
+		} else {
+			womanHtml.setStyleName("s2-male");			
+		}
+		
 		final HTML editorHtml = new HTML((editor?i18n.yes():i18n.no())+"&nbsp;&nbsp;");
-		// TODO color yes/no green/red
-		editorHtml.setStyleName("mf-progressHtml");
+		if(editor) {
+			editorHtml.setStyleName("s2-match");
+		} else {
+			editorHtml.setStyleName("s2-mismatch");			
+		}
+		
 		final HTML sportakHtml = new HTML((sportak?i18n.yes():i18n.no())+"&nbsp;&nbsp;");
-		// TODO color yes/no green/red
-		sportakHtml.setStyleName("mf-progressHtml");
+		if(sportak) {
+			sportakHtml.setStyleName("s2-match");
+		} else {
+			sportakHtml.setStyleName("s2-mismatch");
+		}
+
+		final HTML morningSportakHtml = new HTML((morningSportak?i18n.yes():i18n.no())+"&nbsp;&nbsp;");
+		if(morningSportak) {
+			morningSportakHtml.setStyleName("s2-match");
+		} else {
+			morningSportakHtml.setStyleName("s2-mismatch");
+		}
+
 		final HTML fulltimeHtml = new HTML((fulltime?i18n.yes():i18n.no())+"&nbsp;&nbsp;");
-		// TODO color yes/no green/red
-		fulltimeHtml.setStyleName("mf-progressHtml");
+		if(fulltime) {
+			fulltimeHtml.setStyleName("s2-match");
+		} else {
+			fulltimeHtml.setStyleName("s2-mismatch");			
+		}
 		
 		setWidget(numRows, 0, button);
 		setWidget(numRows, 1, mailHtml);
 		setWidget(numRows, 2, womanHtml);
 		setWidget(numRows, 3, editorHtml);
 		setWidget(numRows, 4, sportakHtml);
-		setWidget(numRows, 5, fulltimeHtml);
+		setWidget(numRows, 5, morningSportakHtml);
+		setWidget(numRows, 6, fulltimeHtml);
 	}
 
 	public void removeRow() {
