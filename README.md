@@ -3,6 +3,20 @@ Finds a solution to fitting employees with preferences in a schedule for
 shifts-based operation.
 
 
+# Overview
+Employees management:
+
+[![Employees Management](http://mindforger.com/project/s2/s2-employees.png "Employees Management")](http://mindforger.com/project/s2/s2-employees.png)
+
+Period preferences management:
+
+...
+
+Solution management:
+
+...
+
+
 
 ## Functional Specification
 Employee roles:
@@ -69,15 +83,16 @@ Rules:
       * *MUST:* editor continuity counts for 1 + 3 (Friday + weekend) = 4 shifts
         in job (TODO)
       * *SHOULD:* editor to have same staffer and sportak in continuity (TODO)
-   * *MUST:* employee cannot have more than one shift in a day (there must be
-     at least 8 hours between two shifts served by the same employee) (TODO)
+   * *MUST:* employee cannot have more than one shift in a day
+   * *MUST:* there must be at least 8 hours between two shifts served by the
+     same employee (night shift cannot be followed by morning) (TODO)
    * *MUST:* if employee serves afternoon shift, then first shift it may serve
      is morning 8AM (6AM and 7AM CANNOT be served by this employee) (TODO)
    * *MUST:* if employee serves on Saturday and Sunday then it CANNOT serve on Monday (TODO)
    * *MUST:* if employee serves night shift, then it CANNOT serve morning shift
      next day (TODO)
    * *SHOULD:* if employee has any shift in 5 consecutive days, then it SHOULD get
-     one day FREE (TODO)
+     one day FREE
    * Fulltime employee jobs:
       * *MUST:* job shifts = workdays * 8 / 7.5
          * *MUST:* on even months round job shifts float up, on odd months down (TODO)
