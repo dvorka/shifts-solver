@@ -386,11 +386,11 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			if(ee.isEditor()) {
 				lastMonthEditorListBox.addItem(""+ee.getFullName());		
 			}
-			if(ee.getKey().equals(periodPreferences.getKey())) {
+			if(ee.getKey().equals(periodPreferences.getLastMonthEditor())) {
 				idx=lastMonthEditorListBox.getItemCount()-1;
+				lastMonthEditorListBox.setSelectedIndex(idx);
 			}
 		}
-		lastMonthEditorListBox.setSelectedIndex(idx);
 		
 		refreshPreferencesTable(preferencesTable);
 	}
@@ -534,7 +534,6 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 				ctx.getStatusLine().showError(e.getMessage()); // TODO i18n
 				ctx.getRia().showPeriodPreferencesEditPanel();
 			} catch(RuntimeException e) {
-				// TODO throw my solver exception to distinguish
 				ctx.getStatusLine().showError("Solver failed: "+e.getMessage());
 				GWT.log("Solver failed:", e);
 				ctx.getRia().showPeriodPreferencesEditPanel();

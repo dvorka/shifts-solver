@@ -3,6 +3,7 @@ Finds a solution to fitting employees with preferences in a schedule for
 shifts-based operation.
 
 
+
 # Overview
 Employees management:
 
@@ -117,33 +118,22 @@ Backend:
 
 ## Plan
 The implementation plan:
-   * employee preferences:
-      * CRUD (edit and load in panels + store to RIA state)
-
-   * server side persistence
 
    * solver
-      * strategy: try to build schedule w/o need to backtrack, smart allocation and know
-        what to do; backtrack to be used only in situations when you cannot allocate wisely
-      * prune as soon as possible
+      * strategy:
+         * try to build schedule w/o need to backtrack
+         * smart allocation and capacity anticipation
+         * jobs for month - do I have enough?
          * calculate capacity: editors, nights, sports, ...
+         * backtracking to be used only in situations when you cannot allocate wisely
          * allocate user and ensure it wont fail (failure is last option causing backtrack)
            e.g. make sure editor has 5 shifts capacity when assigned on Friday afternoon
-         * jobs for month - do I have enough?
       * weekend: show editor A+M in table & eliminate same day shifts check
-      * incorporate NEGATIVE preferences conditions to solver as additional constraints
       * incorporate POSITIVE preferences in solver (do 2 cycles of employees
         and remember it in solution: want employees for day and THEN don't
         care employees)
-      * if no solution found, report deepest cause i.e. day where is the problem
-        e.g. day 23, afternoon shift, editor role.
       * national holidays panel, CRUD and solver logic
 
    * authentication and authorization
-
-Readme:
-   * S2 specification: rules
-   * screenshots of main panels
-   * link to live demo version
 
 ---

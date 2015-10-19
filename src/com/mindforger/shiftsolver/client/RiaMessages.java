@@ -36,4 +36,19 @@ public interface RiaMessages extends Messages {
 	String savingPeriodPreferences();
 	String solution();
 	String solutions();
+	String save();
+	String cancel();
+	String discardChanges();
+	String delete();
+	String firstName();
+	String familyName();
+	String email();
+	String morningSportak();
+	String nextSolution();
+	String backToPreferences();
+	String year();
+	String month();
+	String job();
+	String shifts();
+	String exceptionSolutionNotFoundStepLimitExceeded(long stepsLimit, int d, String shiftType, String role);
 }

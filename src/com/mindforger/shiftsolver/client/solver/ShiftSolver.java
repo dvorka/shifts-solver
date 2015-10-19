@@ -127,6 +127,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		PeriodPreferencesCapacity capacity = new PeriodPreferencesCapacity();
 		capacity.calculate(periodPreferences, employeeAllocations.values());
 		capacity.printCapacity();
+		capacity.isCapacitySufficient();
 		
 		if(!solveDay(1, result).isSolutionFound()) {
 			// NO SOLUTION exists for this team and requirements
@@ -1163,7 +1164,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		if(steps>STEPS_LIMIT) {
 			int failedOnDay=d;
 			throw new ShiftSolverException(
-					"Solution didn't found in "+STEPS_LIMIT+" steps, depth "+d+", "+shiftType+", "+role+")",
+					i18n.exceptionSolutionNotFoundStepLimitExceeded(STEPS_LIMIT,d,shiftType,role),
 					failedOnDay,
 					failedOnMaxDepth,
 					failedOnShiftType,

@@ -61,7 +61,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 	private FlowPanel newButtonPanel(final RiaContext ctx) {
 		FlowPanel buttonPanel=new FlowPanel();
 
-		Button solveButton=new Button("Next Solution"); // TODO i18n
+		Button solveButton=new Button(i18n.nextSolution());
 		solveButton.setStyleName("mf-button");
 		solveButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -81,25 +81,26 @@ public class PeriodSolutionViewPanel extends FlexTable {
 	      		}
 			}
 		});		
-		buttonPanel.add(solveButton);
+		// TODO buttonPanel.add(solveButton);
 		
-		Button saveButton=new Button("Save"); // TODO i18n
+		Button saveButton=new Button(i18n.save());
 		saveButton.setStyleName("mf-button");
 		saveButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				// TODO save solution
 			}
 		});		
-		buttonPanel.add(saveButton);
-		Button cancelButton=new Button("Cancel"); // TODO i18n
-		cancelButton.setStyleName("mf-buttonLooser");
-		cancelButton.setTitle("Discard changes"); // TODO i18n
-		cancelButton.addClickHandler(new ClickHandler() {
+		// TODO buttonPanel.add(saveButton);
+		
+		Button backButton=new Button(i18n.backToPreferences());
+		backButton.setStyleName("mf-buttonLooser");
+		backButton.setTitle("Return back to period preferences"); // TODO i18n
+		backButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				ctx.getRia().showSolutionsTable();
+				ctx.getRia().showPeriodPreferencesEditPanel();
 			}
 		});		
-		buttonPanel.add(cancelButton);
+		buttonPanel.add(backButton);
 		
 		return buttonPanel;
 	}
@@ -109,12 +110,12 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		
 		yearListBox = new TextBox();
 		yearListBox.setEnabled(false);
-		yearListBox.setTitle("Year"); // TODO i18n
+		yearListBox.setTitle(i18n.year());
 		flowPanel.add(yearListBox);
 		
 		monthListBox = new TextBox();
 		monthListBox.setEnabled(false);
-		monthListBox.setTitle("Month"); // TODO i18n
+		monthListBox.setTitle(i18n.month());
 		flowPanel.add(monthListBox);
 		
 		return flowPanel;
@@ -133,13 +134,13 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		table.removeAllRows();
 		
 		if(solution!=null && solution.getDays()!=null && solution.getDays().size()>0) {
-			HTML html = new HTML("Employee"); // TODO i18n
+			HTML html = new HTML(i18n.employee());
 			// TODO allow sorting the table by employee name
 			// setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
 			table.setWidget(0, 0, html);
-			html = new HTML("Job"); // TODO i18n
+			html = new HTML(i18n.job());
 			table.setWidget(0, 1, html);			
-			html = new HTML("Shifts"); // TODO i18n
+			html = new HTML(i18n.shifts());
 			table.setWidget(0, 2, html);
 
 			PeriodPreferences preferences = ctx.getState().getPeriodPreferences(solution.getDlouhanKey());
@@ -222,6 +223,8 @@ public class PeriodSolutionViewPanel extends FlexTable {
 			}
 			table.setWidget(0, i+2, html);
 		}
+		
+		// TODO change HTML to button that will allow to edit solution; click rotates meaningful employee allocation/shift
 				
 		HTML html;
 		for(int c=0; c<monthDays; c++) {
@@ -405,8 +408,4 @@ public class PeriodSolutionViewPanel extends FlexTable {
 			shiftsScheduleHtml.setVisible(false);
 		}
 	}
-
-	private void riaToObject() {
-		// VIEW only for now
-	}	
 }

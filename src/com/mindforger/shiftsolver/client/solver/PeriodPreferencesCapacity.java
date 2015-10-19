@@ -8,39 +8,23 @@ import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
 public class PeriodPreferencesCapacity {
 	
-	/*
-		count what's needed > then try to fill it just using capacity (use morning sportaks, ...)
-
-		ranni sportaci (pricist ke sportakum) + pocitadlo kapacity na preference stranku
-		check capacity button
-		disable solve?
-	 */
+	// TODO check capacity button
+	// TODO add check to solver > exit on fail w/ exception
 	
 	int neededEditorShifts;
-	int neededSportakShifts;
 	int neededDroneShifts;
+	int neededMorningSportakShifts;
+	int neededSportakShifts;
 	
 	int haveEditorShifts;
 	int haveDroneShifts;
+	int haveMorningSportakShifts;
 	int haveSportakShifts;
 	
 	public PeriodPreferencesCapacity() {
 	}
 	
-	public void calculate(PeriodPreferences preferences, Collection<EmployeeAllocation> allocations) {		
-		haveEditorShifts=haveDroneShifts=haveSportakShifts=0;
-		for(EmployeeAllocation a:allocations) {
-			if(a.employee.isEditor()) {
-				haveEditorShifts+=a.shiftsToGet;
-				haveDroneShifts+=a.shiftsToGet;
-			} else {
-				if(a.employee.isSportak()) {
-					haveSportakShifts+=a.shiftsToGet;					
-				} else {
-					haveDroneShifts+=a.shiftsToGet;					
-				}
-			}
-		}
+	public void calculate(PeriodPreferences preferences, Collection<EmployeeAllocation> allocations) {
 		
 		neededEditorShifts=neededDroneShifts=neededSportakShifts=0;		
 		int dow=preferences.getStartWeekDay()-1;
@@ -48,7 +32,8 @@ public class PeriodPreferencesCapacity {
 			if(dow!=0 && dow!=6) {
 				neededEditorShifts+=2;
 				neededDroneShifts+=8;
-				neededSportakShifts+=2;
+				neededMorningSportakShifts+=1;
+				neededSportakShifts+=1;
 			} else {
 				neededEditorShifts+=2;
 				neededDroneShifts+=3;
@@ -57,24 +42,66 @@ public class PeriodPreferencesCapacity {
 			dow++;
 			dow=dow%7;
 		}
-
+		
+		haveEditorShifts=haveDroneShifts=haveSportakShifts=0;
+		for(EmployeeAllocation a:allocations) {
+			if(a.employee.isEditor()) {
+				haveEditorShifts+=a.shiftsToGet;
+				haveDroneShifts+=a.shiftsToGet;
+			} else {
+				if(a.employee.isMorningSportak()) {
+					haveMorningSportakShifts+=a.shiftsToGet;
+				} else {
+					if(a.employee.isSportak()) {
+						haveSportakShifts+=a.shiftsToGet;					
+					} else {
+						haveDroneShifts+=a.shiftsToGet;			
+					}					
+				}
+			}
+		}
+		
+		if(haveMorningSportakShifts>=neededMorningSportakShifts) {
+			haveMorningSportakShifts=neededMorningSportakShifts;
+			haveDroneShifts+=haveMorningSportakShifts-neededMorningSportakShifts;
+		}
+		if(haveEditorShifts>=neededEditorShifts) {
+			haveEditorShifts=neededEditorShifts;
+			haveDroneShifts+=haveEditorShifts-neededEditorShifts;
+		}		
 	}
 
 	public boolean isCapacitySufficient() {
-		return 
-				(haveEditorShifts<neededEditorShifts) &&
-				(haveDroneShifts<neededDroneShifts) &&
-				(haveSportakShifts<neededSportakShifts);
+		if((haveEditorShifts>=neededEditorShifts) &&
+			(haveDroneShifts>=neededDroneShifts) &&
+			(haveMorningSportakShifts>=neededMorningSportakShifts) &&
+			(haveSportakShifts>=neededSportakShifts)) {
+				return true;
+		} else {
+			throw new ShiftSolverException(
+					"Insufficient capacity for "+
+						(haveEditorShifts<neededEditorShifts?"editor ":"")+
+						(haveDroneShifts<neededDroneShifts?"drone ":"")+
+						(haveMorningSportakShifts<neededMorningSportakShifts?"morning sportak":"")+
+						(haveSportakShifts<neededSportakShifts?" sportak":""), 
+					0, 
+					0, 
+					"X", 
+					"X");
+		}
 	}
-	
+
 	public void printCapacity() {
-		ShiftSolverLogger.debug("     Period capacity (HAVE >= NEEDED):");
-		ShiftSolverLogger.debug("       editor  : "+haveEditorShifts+"x"+neededEditorShifts+" "
-				+(haveEditorShifts<neededEditorShifts?"FAIL":""));
-		ShiftSolverLogger.debug("       drone   : "+haveDroneShifts+"x"+neededDroneShifts+" "
-				+(haveDroneShifts<neededDroneShifts?"FAIL":""));
-		ShiftSolverLogger.debug("       sportak  : "+haveSportakShifts+"x"+neededSportakShifts+" "
-				+(haveSportakShifts<neededSportakShifts?"FAIL":""));
+		ShiftSolverLogger.debug("Period capacity (HAVE >= NEEDED):");
+		ShiftSolverLogger.debug("  "+(haveEditorShifts<neededEditorShifts?"FAIL":" OK ")+" editor   : "
+				+haveEditorShifts+">="+neededEditorShifts);
+		ShiftSolverLogger.debug("  "+(haveDroneShifts<neededDroneShifts?"FAIL":" OK ")+" drone    : "
+				+haveDroneShifts+">="+neededDroneShifts);
+		ShiftSolverLogger.debug("  "+(haveDroneShifts<neededDroneShifts?"FAIL":" OK ")+" m sportak: "
+				+haveMorningSportakShifts+">="+neededMorningSportakShifts);
+		ShiftSolverLogger.debug("  "+(haveSportakShifts<neededSportakShifts?"FAIL":" OK ")+" sportak  : "
+				+haveSportakShifts+">="+neededSportakShifts);
+		ShiftSolverLogger.debug("");
 	}
 	
 	public void printEmployeeAllocations(int day, List<EmployeeAllocation> allocations) {

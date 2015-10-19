@@ -13,9 +13,6 @@ import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.shared.model.Employee;
 
 public class EmployeeEditPanel extends FlexTable {
-
-	private RiaMessages i18n;
-	private RiaContext ctx;
 	
 	private TextBox firstNameTextBox;
 	private TextBox familyNameTextBox;
@@ -29,13 +26,12 @@ public class EmployeeEditPanel extends FlexTable {
 	private Employee employee;
 
 	public EmployeeEditPanel(final RiaContext ctx) {
-		this.ctx=ctx;
-		this.i18n=ctx.getI18n();
+		RiaMessages i18n = ctx.getI18n();
 		
 		int numRows=0;
 		
 		FlowPanel buttonPanel=new FlowPanel();
-		Button saveButton=new Button("Save"); // TODO i18n
+		Button saveButton=new Button(i18n.save());
 		saveButton.setStyleName("mf-button");
 		saveButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -43,14 +39,14 @@ public class EmployeeEditPanel extends FlexTable {
 		    		ctx.getStatusLine().showProgress(ctx.getI18n().savingEmployee());
 		    		riaToObject();
 		      		ctx.getRia().saveEmployee(employee);
-		      		ctx.getStatusLine().showInfo("Employee '"+employee.getFullName()+"' saved");
+		      		ctx.getStatusLine().showInfo("Employee '"+employee.getFullName()+"' saved"); // TODO i18n
 				}
 			}
 		});		
 		buttonPanel.add(saveButton);
-		Button cancelButton=new Button("Cancel"); // TODO i18n
+		Button cancelButton=new Button(i18n.cancel());
 		cancelButton.setStyleName("mf-buttonLooser");
-		cancelButton.setTitle("Discard changes"); // TODO i18n
+		cancelButton.setTitle(i18n.discardChanges());
 		cancelButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if(employee!=null) {
@@ -60,7 +56,7 @@ public class EmployeeEditPanel extends FlexTable {
 			}
 		});		
 		buttonPanel.add(cancelButton);
-		Button deleteButton=new Button("Delete"); // TODO i18n
+		Button deleteButton=new Button(i18n.delete());
 		deleteButton.setStyleName("mf-button");
 		deleteButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -77,70 +73,47 @@ public class EmployeeEditPanel extends FlexTable {
 		cellFormatter.setColSpan(0, 0, 2);
 		setWidget(++numRows, 0, buttonPanel);
 		
-		// TODO i18n
-		HTML html = new HTML("First name");
-		// TODO css
-		html.setStyleName("mf-progressHtml");
+		HTML html = new HTML(i18n.firstName());
 		setWidget(++numRows, 0, html);
 		firstNameTextBox = new TextBox();
 		setWidget(numRows, 1, firstNameTextBox);
 				
-		// TODO i18n
-		html = new HTML("Family&nbsp;name");
-		// TODO css
-		html.setStyleName("mf-progressHtml");
+		html = new HTML(i18n.familyName());
 		setWidget(++numRows, 0, html);
 		familyNameTextBox = new TextBox();
 		setWidget(numRows, 1, familyNameTextBox);
 
-		// TODO i18n
-		html = new HTML("Email");
-		// TODO css
-		html.setStyleName("mf-progressHtml");
+		html = new HTML(i18n.email());
 		setWidget(++numRows, 0, html);
 		emailTextBox = new TextBox();
 		setWidget(numRows, 1, emailTextBox);
 		
-		// TODO i18n
-		html = new HTML("Female");
-		// TODO css
-		html.setStyleName("mf-progressHtml");
+		html = new HTML(i18n.female());
 		setWidget(++numRows, 0, html);
 		femaleCheckbox = new CheckBox();
 		femaleCheckbox.setValue(false);
 		setWidget(numRows, 1, femaleCheckbox);
 
-		// TODO i18n
-		html = new HTML("Editor");
-		// TODO css
-		html.setStyleName("mf-progressHtml");
+		html = new HTML(i18n.editor());
 		setWidget(++numRows, 0, html);
 		editorCheckbox = new CheckBox();
 		editorCheckbox.setValue(false);
 		setWidget(numRows, 1, editorCheckbox);
 
-		// TODO i18n
-		html = new HTML("Sportak");
-		// TODO css
+		html = new HTML(i18n.sportak());
 		html.setStyleName("mf-progressHtml");
 		setWidget(++numRows, 0, html);
 		sportakCheckbox = new CheckBox();
 		sportakCheckbox.setValue(false);
 		setWidget(numRows, 1, sportakCheckbox);
 
-		// TODO i18n
-		html = new HTML("Morning sportak");
-		// TODO css
-		html.setStyleName("mf-progressHtml");
+		html = new HTML(i18n.morningSportak());
 		setWidget(++numRows, 0, html);
 		morningSportakCheckbox = new CheckBox();
 		morningSportakCheckbox.setValue(false);
 		setWidget(numRows, 1, morningSportakCheckbox);
 		
-		// TODO i18n
-		html = new HTML("Fulltime");
-		// TODO css
-		html.setStyleName("mf-progressHtml");
+		html = new HTML(i18n.fulltime());
 		setWidget(++numRows, 0, html);
 		fulltimeCheckbox = new CheckBox();
 		fulltimeCheckbox.setValue(false);

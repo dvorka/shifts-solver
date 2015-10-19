@@ -4,21 +4,14 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
 import com.mindforger.shiftsolver.client.RiaContext;
-import com.mindforger.shiftsolver.client.RiaMessages;
 
 public class SolverProgressPanel extends FlexTable implements SolverProgressPanels {
-
-	private RiaMessages i18n;
-	private RiaContext ctx;
 	
 	private TextBox currentSolutionPercentProgressTextBox;
 	private TextBox solutionsCount;
 	private TextBox bestSolutionScore;
 	
-	public SolverProgressPanel(final RiaContext ctx) {
-		this.ctx=ctx;
-		this.i18n=ctx.getI18n();
-						
+	public SolverProgressPanel(final RiaContext ctx) {						
 		HTML html;
 		
 		html = new HTML("Current solution progress");
