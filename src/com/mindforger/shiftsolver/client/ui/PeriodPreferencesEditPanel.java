@@ -264,6 +264,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 					yesNoDontcare = new YesNoDontcareButton();					
 				}
 				if(dayPreference!=null) {
+					yesNoDontcare.setKey(dayPreference.getKey());
 					switch(r) {
 					case CHECK_DAY:
 						if(dayPreference.isHoliDay()) {
@@ -409,6 +410,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 					if(yesNoDontcareButton.getYesNoValue()>0) {
 						if(dayPreference==null) {
 							dayPreference=new DayPreference();
+							dayPreference.setKey(yesNoDontcareButton.getKey());
 							dayPreference.setYear(periodPreferences.getYear());
 							dayPreference.setMonth(periodPreferences.getMonth());
 							dayPreference.setDay(c);

@@ -21,7 +21,8 @@ public class GaeEmployeeDayPreferenceBean  implements Serializable, GaeBean {
 	private Key key;
 
 	@Persistent
-	private String periodPreferencesKey;
+	private GaePeriodPreferencesBean periodPreferences;
+	
 	@Persistent
 	private String employeeKey;
 	
@@ -69,12 +70,12 @@ public class GaeEmployeeDayPreferenceBean  implements Serializable, GaeBean {
 		return key;
 	}
 
-	public String getPeriodPreferencesKey() {
-		return periodPreferencesKey;
+	public GaePeriodPreferencesBean getGaePeriodPreferencesBean() {
+		return periodPreferences;
 	}
 
-	public void setPeriodPreferencesKey(String periodPreferencesKey) {
-		this.periodPreferencesKey = periodPreferencesKey;
+	public void setGaePeriodPreferencesBean(GaePeriodPreferencesBean periodPreferences) {
+		this.periodPreferences = periodPreferences;
 	}
 
 	public int getYear() {
@@ -217,53 +218,55 @@ public class GaeEmployeeDayPreferenceBean  implements Serializable, GaeBean {
 		this.isHoliDay = isHoliDay;
 	}
 
-	public void fromPojo(DayPreference e) {
-		key=ServerUtils.stringToKey(e.getKey());
+	public void fromPojo(DayPreference p) {
+		key=ServerUtils.stringToKey(p.getKey());
 		
-		year=e.getYear();
-		month=e.getMonth();
-		day=e.getDay();
+		year=p.getYear();
+		month=p.getMonth();
+		day=p.getDay();
 
-		isHoliDay=e.isHoliDay();
+		isHoliDay=p.isHoliDay();
 		
-		noDay=e.isNoDay();
-		noMorning6=e.isNoMorning6();
-		noMorning7=e.isNoMorning7();
-		noMorning8=e.isNoMorning8();
-		noAfternoon=e.isNoAfternoon();
-		noNight=e.isNoNight();
+		noDay=p.isNoDay();
+		noMorning6=p.isNoMorning6();
+		noMorning7=p.isNoMorning7();
+		noMorning8=p.isNoMorning8();
+		noAfternoon=p.isNoAfternoon();
+		noNight=p.isNoNight();
 		
-		yesDay=e.isYesDay();
-		yesMorning6=e.isYesMorning6();
-		yesMorning7=e.isYesMorning7();
-		yesMorning8=e.isYesMorning8();
-		yesAfternoon=e.isYesAfternoon();
-		yesNight=e.isYesNight();
+		yesDay=p.isYesDay();
+		yesMorning6=p.isYesMorning6();
+		yesMorning7=p.isYesMorning7();
+		yesMorning8=p.isYesMorning8();
+		yesAfternoon=p.isYesAfternoon();
+		yesNight=p.isYesNight();
 	}
 	
 	public DayPreference toPojo() {
-		DayPreference e=new DayPreference();
+		DayPreference p=new DayPreference();
 		
-		e.setYear(year);
-		e.setMonth(month);
-		e.setDay(day);
+		p.setKey(ServerUtils.keyToString(key));
 		
-		e.setHoliDay(isHoliDay);
+		p.setYear(year);
+		p.setMonth(month);
+		p.setDay(day);
 		
-		e.setNoDay(noDay);
-		e.setNoMorning6(noMorning6);
-		e.setNoMorning7(noMorning7);
-		e.setNoMorning8(noMorning8);
-		e.setNoAfternoon(noAfternoon);
-		e.setNoNight(noNight);
+		p.setHoliDay(isHoliDay);
 		
-		e.setYesDay(yesDay);
-		e.setYesMorning6(yesMorning6);
-		e.setYesMorning7(yesMorning7);
-		e.setYesMorning8(yesMorning8);
-		e.setYesAfternoon(yesAfternoon);
-		e.setYesNight(yesNight);
+		p.setNoDay(noDay);
+		p.setNoMorning6(noMorning6);
+		p.setNoMorning7(noMorning7);
+		p.setNoMorning8(noMorning8);
+		p.setNoAfternoon(noAfternoon);
+		p.setNoNight(noNight);
+		
+		p.setYesDay(yesDay);
+		p.setYesMorning6(yesMorning6);
+		p.setYesMorning7(yesMorning7);
+		p.setYesMorning8(yesMorning8);
+		p.setYesAfternoon(yesAfternoon);
+		p.setYesNight(yesNight);
 				
-		return e;
+		return p;
 	}	
 }

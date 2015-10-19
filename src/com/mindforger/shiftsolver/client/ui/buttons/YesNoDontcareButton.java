@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.Button;
 public class YesNoDontcareButton extends Button {
 
 	private int value;
+	private String key;
 	
 	public YesNoDontcareButton() {
 		value=0;
@@ -39,5 +40,13 @@ public class YesNoDontcareButton extends Button {
 	
 	public int getYesNoValue() {
 		return value%3;
+	}
+
+	public void setKey(String key) {
+		this.key=key;
+	}
+
+	public String getKey() {
+		return key;
 	}
 }

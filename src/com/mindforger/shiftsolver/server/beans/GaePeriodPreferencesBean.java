@@ -1,7 +1,12 @@
 package com.mindforger.shiftsolver.server.beans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import javax.jdo.annotations.Element;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
@@ -10,6 +15,8 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 import com.mindforger.shiftsolver.server.ServerUtils;
+import com.mindforger.shiftsolver.shared.model.DayPreference;
+import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
@@ -34,7 +41,9 @@ public class GaePeriodPreferencesBean implements Serializable, GaeBean {
 	@Persistent
 	String lastMonthEditor; 
 	
-	// private Map<String,EmployeePreferences> employeeToPreferences;
+	@Persistent(mappedBy="periodPreferences")
+	@Element(dependent = "true")
+	List<GaeEmployeeDayPreferenceBean> dayPreferences;
 	
 	public GaePeriodPreferencesBean() {		
 	}
@@ -95,6 +104,14 @@ public class GaePeriodPreferencesBean implements Serializable, GaeBean {
 	public void setLastMonthEditor(String lastMonthEditor) {
 		this.lastMonthEditor = lastMonthEditor;
 	}
+	
+	public List<GaeEmployeeDayPreferenceBean> getDayPreferences() {
+		return dayPreferences;
+	}
+
+	public void setDayPreferences(List<GaeEmployeeDayPreferenceBean> dayPreferences) {
+		this.dayPreferences = dayPreferences;
+	}
 
 	public void fromPojo(PeriodPreferences e) {
 		key=ServerUtils.stringToKey(e.getKey());
@@ -104,17 +121,52 @@ public class GaePeriodPreferencesBean implements Serializable, GaeBean {
 		startWeekDay=e.getStartWeekDay();
 		year=e.getYear();
 		lastMonthEditor=e.getLastMonthEditor();
+		
+		if(dayPreferences!=null) {
+			dayPreferences.clear();
+		} else {
+			dayPreferences=new ArrayList<GaeEmployeeDayPreferenceBean>();			
+		}
+		for(String employeeKey:e.getEmployeeToPreferences().keySet()) {
+			EmployeePreferences employeePreferences = e.getEmployeeToPreferences().get(employeeKey);
+			if(employeePreferences!=null) {
+				if(employeePreferences.getPreferences()!=null) {
+					for(DayPreference dp:employeePreferences.getPreferences()) {
+						GaeEmployeeDayPreferenceBean dpb = new GaeEmployeeDayPreferenceBean();
+						dpb.fromPojo(dp);
+						dpb.setEmployeeKey(employeeKey);
+						dayPreferences.add(dpb);
+					}
+				}
+			}
+		}
 	}
 	
 	public PeriodPreferences toPojo() {
-		PeriodPreferences e=new PeriodPreferences();
-		e.setKey(ServerUtils.keyToString(key));
-		e.setMonth(month);
-		e.setMonthDays(monthDays);
-		e.setMonthWorkDays(monthWorkDays);
-		e.setStartWeekDay(startWeekDay);
-		e.setYear(year);
-		e.setLastMonthEditor(lastMonthEditor);
-		return e;
+		PeriodPreferences periodPreferences=new PeriodPreferences();
+		periodPreferences.setKey(ServerUtils.keyToString(key));
+		periodPreferences.setMonth(month);
+		periodPreferences.setMonthDays(monthDays);
+		periodPreferences.setMonthWorkDays(monthWorkDays);
+		periodPreferences.setStartWeekDay(startWeekDay);
+		periodPreferences.setYear(year);
+		periodPreferences.setLastMonthEditor(lastMonthEditor);
+		
+		if(dayPreferences!=null && !dayPreferences.isEmpty()) {
+			Map<String, EmployeePreferences> map = new HashMap<String,EmployeePreferences>();
+			periodPreferences.setEmployeeToPreferences(map);
+			for(GaeEmployeeDayPreferenceBean dp:dayPreferences) {
+				String employeeKey = dp.getEmployeeKey();
+				EmployeePreferences employeePreferences;
+				if((employeePreferences=map.get(employeeKey))==null) {
+					employeePreferences = new EmployeePreferences();
+					map.put(employeeKey, employeePreferences);
+				}
+				DayPreference dayPreference = dp.toPojo();
+				employeePreferences.addPreference(dayPreference);
+			}
+		}
+		
+		return periodPreferences;
 	}
 }
