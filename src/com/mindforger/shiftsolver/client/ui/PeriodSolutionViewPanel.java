@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.Utils;
+import com.mindforger.shiftsolver.client.solver.PublicHolidays;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
@@ -37,9 +38,12 @@ public class PeriodSolutionViewPanel extends FlexTable {
 	private int solutionNumber;
 	private HTML shiftsScheduleHtml;
 	
+	private PublicHolidays publicHolidays;
+	
 	public PeriodSolutionViewPanel(final RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
+		this.publicHolidays=new PublicHolidays();
 		
 		FlowPanel buttonPanel = newButtonPanel(ctx);
 		setWidget(0, 0, buttonPanel);
@@ -208,7 +212,12 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		for (int i = 0; i<monthDays; i++) {
 			// TODO append Mon...Sun to the number; weekend to have different color
 			HTML html = new HTML(""+(i+1)+Utils.getDayLetter(i+1, preferences.getStartWeekDay()));
-			if(Utils.isWeekend(i+1, preferences.getStartWeekDay())) {
+			if(Utils.isWeekend(i+1, preferences.getStartWeekDay())
+					|| publicHolidays.isHolidays(
+							preferences.getYear(), 
+							preferences.getMonth(), 
+							i)) 
+			{
 				html.addStyleName("s2-weekendDay");
 			}
 			table.setWidget(0, i+2, html);

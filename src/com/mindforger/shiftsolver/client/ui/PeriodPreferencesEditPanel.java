@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.Utils;
+import com.mindforger.shiftsolver.client.solver.PublicHolidays;
 import com.mindforger.shiftsolver.client.solver.ShiftSolverException;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.client.ui.buttons.YesNoDontcareButton;
@@ -48,6 +49,8 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 	
 	private PeriodPreferences periodPreferences;
 
+	private PublicHolidays publicHolidays;
+
 	private static final int CHECK_DAY=1;
 	private static final int CHECK_MORNING_6=2;
 	private static final int CHECK_MORNING_7=3;
@@ -58,6 +61,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 	public PeriodPreferencesEditPanel(final RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
+		this.publicHolidays=new PublicHolidays();
 		this.preferenceButtons=new HashMap<String,List<YesNoDontcareButton>>();
 		
 		FlowPanel buttonPanel = newButtonPanel(ctx);
@@ -235,7 +239,12 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			HTML html = new HTML(""+i+Utils.getDayLetter(i, periodPreferences.getStartWeekDay()));
 			//html.addStyleName("mf-progressHtml");
 			employeePrefsTable.setWidget(0, i, html);				
-			if(Utils.isWeekend(i, periodPreferences.getStartWeekDay())) {
+			if(Utils.isWeekend(i, periodPreferences.getStartWeekDay())
+					|| publicHolidays.isHolidays(
+							periodPreferences.getYear(), 
+							periodPreferences.getMonth(), 
+							i)) 
+			{
 				html.addStyleName("s2-weekendDay");
 			}
 		}
@@ -534,14 +543,16 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 	}
 
 	private void handleDateListboxChange() {
-		PeriodPreferences p=new PeriodPreferences(periodPreferences.getYear(), periodPreferences.getMonth());
+		int y=yearListBox.getSelectedIndex()+YEAR;
+		int m=monthListBox.getSelectedIndex()+1;
+		PeriodPreferences p=new PeriodPreferences(y,m);
 		ctx.getService().setDaysWorkdaysStartDay(p, new AsyncCallback<PeriodPreferences>() {					
 			@Override
 			public void onSuccess(PeriodPreferences result) {
 				periodPreferences.setMonthDays(result.getMonthDays());
 				periodPreferences.setStartWeekDay(result.getStartWeekDay());
 				periodPreferences.setMonthWorkDays(result.getMonthWorkDays());
-				refresh(result);
+				refresh(periodPreferences);
 			}
 			@Override
 			public void onFailure(Throwable caught) {

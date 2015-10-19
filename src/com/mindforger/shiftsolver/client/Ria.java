@@ -229,7 +229,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				}
 
 				@Override
-				public void onSuccess(Void result) {		
+				public void onSuccess(Void result) {
 					PeriodPreferences[] array = ctx.getState().getPeriodPreferencesArray();
 					if(array!=null) {
 						if(ctx.getState().getPeriodPreferences(preferences.getKey())==null) {			
