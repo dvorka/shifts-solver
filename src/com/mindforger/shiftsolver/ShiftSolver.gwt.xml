@@ -10,7 +10,9 @@
 
   <!-- http://www.gwtproject.org/doc/latest/DevGuideI18nLocale.html -->
   <!-- http:// ... ?locale=cs -->
-  <extend-property name="locale" values="cs"/>
+  <!-- extend-property name="locale" values="cs"/ -->
+  <!-- extend-property name="locale" values="cs"/ -->
+  <!-- set-property-fallback name="locale" value="en"/ -->
 
   <source path='client'/>
   <source path='shared'/>
