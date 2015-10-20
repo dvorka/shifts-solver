@@ -10,7 +10,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
-import com.mindforger.shiftsolver.client.GreetingServiceAsync;
+import com.mindforger.shiftsolver.client.ShiftSolverServiceAsync;
 import com.mindforger.shiftsolver.client.Ria;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
@@ -21,11 +21,6 @@ import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
 public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 	
-	@Deprecated
-	public static final String HTML_MENU_SECTION_PREFIX="<div class=\"mf-leftMenuItemSection\">";
-	@Deprecated
-	public static final String HTML_MENU_SECTION_POSTFIX="</div>";
-
 	public static final String HTML_MENU_DELIMITER = "<div class='mf-leftMenuHr'></div>";
 	
 	private RiaContext ctx;
@@ -40,7 +35,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 
 	private Ria ria;
 	private RiaMessages i18n;
-	private GreetingServiceAsync service;
+	private ShiftSolverServiceAsync service;
 
 	public LeftMenubar(final RiaContext ctx) {
 		this.ctx=ctx;

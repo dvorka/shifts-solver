@@ -6,8 +6,8 @@ import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.service.RiaBootImageBean;
 
-@RemoteServiceRelativePath("greet")
-public interface GreetingService extends RemoteService {
+@RemoteServiceRelativePath("s2")
+public interface ShiftSolverService extends RemoteService {
 
 	PeriodPreferences setDaysWorkdaysStartDay(PeriodPreferences periodPreferences);
 	

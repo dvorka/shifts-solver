@@ -79,10 +79,10 @@ public class PeriodPreferencesCapacity {
 				return true;
 		} else {
 			throw new ShiftSolverException(
-					"Insufficient capacity for "+
-						(haveEditorShifts<neededEditorShifts?"editor ":"")+
-						(haveDroneShifts<neededDroneShifts?"drone ":"")+
-						(haveMorningSportakShifts<neededMorningSportakShifts?"morning sportak":"")+
+					"Insufficient capacity for role(s):"+
+						(haveEditorShifts<neededEditorShifts?"editor /":"")+
+						(haveDroneShifts<neededDroneShifts?"drone /":"")+
+						(haveMorningSportakShifts<neededMorningSportakShifts?"morning sportak /":"")+
 						(haveSportakShifts<neededSportakShifts?" sportak":""), 
 					0, 
 					0, 

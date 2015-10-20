@@ -3,7 +3,7 @@ package com.mindforger.shiftsolver.server;
 import java.util.Calendar;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.mindforger.shiftsolver.client.GreetingService;
+import com.mindforger.shiftsolver.client.ShiftSolverService;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.service.RiaBootImageBean;
@@ -11,11 +11,11 @@ import com.mindforger.shiftsolver.shared.service.UserBean;
 import com.mindforger.shiftsolver.shared.service.UserSettingsBean;
 
 @SuppressWarnings("serial")
-public class GreetingServiceImpl extends RemoteServiceServlet implements GreetingService {
+public class ShiftSolverServiceImpl extends RemoteServiceServlet implements ShiftSolverService {
 
 	private Persistence persistence;
 		
-	public GreetingServiceImpl() {
+	public ShiftSolverServiceImpl() {
 		persistence = new GaePersistence();
 	}
 

@@ -5,7 +5,7 @@ import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.service.RiaBootImageBean;
 
-public interface GreetingServiceAsync {
+public interface ShiftSolverServiceAsync {
 
 	void setDaysWorkdaysStartDay(PeriodPreferences periodPreferences, AsyncCallback<PeriodPreferences> callback);
 	

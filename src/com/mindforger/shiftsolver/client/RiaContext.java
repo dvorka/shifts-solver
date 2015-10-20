@@ -39,7 +39,7 @@ public class RiaContext implements ShiftSolverConstants {
 	private RiaMessages i18n;
 	
 	// server
-	private GreetingServiceAsync service;
+	private ShiftSolverServiceAsync service;
 	
 	// solver
 	private ShiftSolver solver;
@@ -69,7 +69,7 @@ public class RiaContext implements ShiftSolverConstants {
 		this.ria=ria;
 		
 		i18n=GWT.create(RiaMessages.class);		
-		service=GWT.create(GreetingService.class);		
+		service=GWT.create(ShiftSolverService.class);		
 		fieldVerifier=new FieldVerifier();
 		state=new RiaState();
 		solverProgressPanel=new SolverProgressPanel(this);
@@ -92,7 +92,7 @@ public class RiaContext implements ShiftSolverConstants {
 		return i18n;
 	}
 
-	public GreetingServiceAsync getService() {
+	public ShiftSolverServiceAsync getService() {
 		return service;
 	}
 
