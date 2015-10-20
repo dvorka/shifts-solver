@@ -1,5 +1,8 @@
 package com.mindforger.shiftsolver.solver;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -21,6 +24,14 @@ public class ShiftSolverTest {
 
 	public ShiftSolverTest() {		
 		solver = new ShiftSolver();
+						
+		// log to file
+		try {
+			PrintStream out=new PrintStream(new File("/tmp/s2.txt"));
+			ShiftSolverLogger.init(out);
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
 	public void testRiaBigDataSolutionFirst() {

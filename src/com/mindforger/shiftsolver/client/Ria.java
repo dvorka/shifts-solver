@@ -8,6 +8,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
+import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.service.RiaBootImageBean;
@@ -26,8 +27,12 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 	}
 		
 	public void onModuleLoad() {
-		// debugging in GWT super dev mode ensuring that exception is thrown on consoel
-		//GWT.setUncaughtExceptionHandler(new GwtJavascriptClientExceptionHander());	
+		if(DEBUG) {
+			// log to standard output
+			ShiftSolverLogger.init(System.out);
+			// debugging in GWT super dev mode ensuring that exception is thrown on console
+			GWT.setUncaughtExceptionHandler(new GwtJavascriptClientExceptionHander());				
+		}
 
 		RootPanel statusPanel = RootPanel.get(CONTAINER_STATUS_LINE);
 		statusPanel.add(ctx.getStatusLine());

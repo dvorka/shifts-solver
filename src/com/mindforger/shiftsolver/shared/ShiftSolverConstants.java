@@ -4,6 +4,8 @@ public interface ShiftSolverConstants {
 
 	String CODENAME="ShiftSolver";
 	
+	boolean DEBUG=false;
+	
 	// roles
 	int ROOT=0;
 	int ROLE_EDITOR=1;
