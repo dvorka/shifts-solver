@@ -15,16 +15,17 @@ public interface ShiftSolverConstants {
 	int NO_SHIFT = 0;	
 	int SHIFT_MORNING=1;
 	int SHIFT_MORNING_6=2;
-	int SHIFT_MORNING_7=3;
-	int SHIFT_MORNING_8=4;
-	int SHIFT_AFTERNOON=5;
-	int SHIFT_NIGHT=6;
+	int SHIFT_MORNING_7=4;
+	int SHIFT_MORNING_8=8;
+	int SHIFT_AFTERNOON=16;
+	int SHIFT_NIGHT=32;
 	
 	// URLs                                                        
     String BASE_URL = "http://shiftsolver.appspot.com";
     String GRAVATAR_BASE_URL = "http://www.gravatar.com/avatar/";
 	
 	// HTML
+	String CONTAINER_TITLE_LOGO="solverTitleLogo";
 	String CONTAINER_STATUS_LINE="solverStatusLineContainer";
 	String CONTAINER_MENU="solverLeftMenuContainer";
 	String CONTAINER_PAGE_TITLE= "pageTitleContainer";

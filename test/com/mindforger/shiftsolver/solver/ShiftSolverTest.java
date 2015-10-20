@@ -42,6 +42,7 @@ public class ShiftSolverTest {
 				showSolution(preferences, solution, state.getEmployees());				
 			} catch(Exception e) {
 				ShiftSolverLogger.debug("\nERROR: "+e.getMessage());
+				e.printStackTrace();
 			}
 		}
 	}

@@ -76,7 +76,7 @@ Rules:
    * *MUST:* fulltime employee to serve on Sunday night (TODO)
    * *SHOULD:* editor to serve on Sunday night (TODO)
    * *MUST:* employee birthday is marked as NO preference
-   * *MUST:* national holidays are solved in the same way as Sunday (TODO)
+   * *MUST:* national holidays are solved in the same way as Sunday (IN PROGRESS)
    * Editor Friday to Sunday continuity:
       * *MUST:* particular editor to serve Friday afternoon + Saturday morning
         and afternoon + Sunday morning and afternoon shifts
@@ -85,17 +85,17 @@ Rules:
       * *SHOULD:* editor to have same staffer and sportak in continuity (TODO)
    * *MUST:* employee cannot have more than one shift in a day
    * *MUST:* there must be at least 8 hours between two shifts served by the
-     same employee (night shift cannot be followed by morning) (TODO)
-   * *MUST:* if employee serves afternoon shift, then first shift it may serve
-     is morning 8AM (6AM and 7AM CANNOT be served by this employee) (TODO)
-   * *MUST:* if employee serves on Saturday and Sunday then it CANNOT serve on Monday (TODO)
-   * *MUST:* if employee serves night shift, then it CANNOT serve morning shift
-     next day (TODO)
-   * *SHOULD:* if employee has any shift in 5 consecutive days, then it SHOULD get
-     one day FREE
+     same employee
+      * *MUST:* if employee serves afternoon shift, then first shift it may serve
+        is morning 8AM (6AM and 7AM CANNOT be served by this employee)
+      * *MUST:* if employee serves night shift, then it CANNOT serve morning shift
+        next day
+      * *MUST:* if employee serves on Saturday and Sunday then it CANNOT serve on
+        Monday (TODO)
+      * *SHOULD:* if employee has any shift in 5 consecutive days, then it SHOULD get
+        one day FREE
    * Fulltime employee jobs:
       * *MUST:* job shifts = workdays * 8 / 7.5
-         * *MUST:* on even months round job shifts float up, on odd months down (TODO)
       * *MUST:* fulltime employee must get max shifts +/-1 shift
       * *MUST:* 2 night shifts in month at most
       * *MUST:* if employee has holidays on workday, then it adds 1 to her/his

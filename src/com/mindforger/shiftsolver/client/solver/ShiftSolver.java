@@ -310,7 +310,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		
 		if(findEditorForWeekendMorning(previousEditor, daySolution)!=null) {
 			debugDown(d, "MORNING", "EDITOR", -1);
-			employeeAllocations.get(previousEditor.getKey()).assign(d, false);					
+			employeeAllocations.get(previousEditor.getKey()).assign(d, SHIFT_MORNING);					
 			daySolution.getWeekendMorningShift().editor=previousEditor;
 			BacktrackFor backtrackFor=assignWeekendMorningDrone6am(d, daySolution, result, isHolidays);
 			if(backtrackFor.isSolutionFound()) {
@@ -318,11 +318,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "MORNING", "EDITOR*");		
-					employeeAllocations.get(previousEditor.getKey()).unassign(false);
+					employeeAllocations.get(previousEditor.getKey()).unassign(SHIFT_MORNING);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(previousEditor.getKey()).unassign(false);
+			employeeAllocations.get(previousEditor.getKey()).unassign(SHIFT_MORNING);
 		}
 		debugUp(d, "MORNING", "EDITOR"); 
 		//daySolution.getWeekendAfternoonShift().editor=null;
@@ -336,7 +336,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWeekendMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "DRONE", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_6);					
 			daySolution.getWeekendMorningShift().drone6am=lastAssignee;
 			BacktrackFor backtrackFor=assignWeekendMorningSportak(d, daySolution, result, isHolidays);
 			if(backtrackFor.isSolutionFound()) {
@@ -344,11 +344,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "MORNING", "DRONE*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_6);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_6);
 		}
 		debugUp(d, "MORNING", "DRONE"); 
 		//daySolution.getWeekendMorningShift().drone6am=null;
@@ -362,7 +362,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findSportakForWeekendMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "SPORTAK", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING);			
 			daySolution.getWeekendMorningShift().sportak=lastAssignee;
 			BacktrackFor backtrackFor=assignWeekendAfternoonEditor(d, daySolution, result, isHolidays);
 			if(backtrackFor.isSolutionFound()) {
@@ -370,11 +370,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "MORNING", "SPORTAK*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING);
 		}
 		debugUp(d, "MORNING", "SPORTAK");		
 		//daySolution.getWeekendMorningShift().sportak=null;
@@ -387,7 +387,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		Employee lastEditor=daySolution.getWeekendMorningShift().editor;
 		if((findEditorForWeekendAfternoon(lastEditor, daySolution))!=null) {
 			debugDown(d, "AFTERNOON", "EDITOR", -1);
-			employeeAllocations.get(lastEditor.getKey()).assign(d, false);					
+			employeeAllocations.get(lastEditor.getKey()).assign(d, SHIFT_AFTERNOON);					
 			daySolution.getWeekendAfternoonShift().editor=lastEditor;
 			BacktrackFor backtrackFor=assignWeekendAfternoonDrone(d, daySolution, result, isHolidays);
 			if(backtrackFor.isSolutionFound()) {
@@ -395,11 +395,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "AFTERNOON", "EDITOR*");		
-					employeeAllocations.get(lastEditor.getKey()).unassign(false);
+					employeeAllocations.get(lastEditor.getKey()).unassign(SHIFT_AFTERNOON);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastEditor.getKey()).unassign(false);
+			employeeAllocations.get(lastEditor.getKey()).unassign(SHIFT_AFTERNOON);
 		}
 		debugUp(d, "AFTERNOON", "EDITOR"); 
 		//daySolution.getWeekendAfternoonShift().editor=null;
@@ -413,7 +413,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWeekendAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "STAFFER", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
 			daySolution.getWeekendAfternoonShift().drone=lastAssignee;
 			BacktrackFor backtrackFor=assignWeekendAfternoonSportak(d, daySolution, result, isHolidays);
 			if(backtrackFor.isSolutionFound()) {
@@ -421,11 +421,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "AFTERNOON", "STAFFER*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 		}
 		debugUp(d, "AFTERNOON", "STAFFER"); 
 		//daySolution.getWeekendAfternoonShift().drone=null;
@@ -439,7 +439,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findSportakForWeekendAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "SPORTAK", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
 			daySolution.getWeekendAfternoonShift().sportak=lastAssignee;
 			BacktrackFor backtrackFor=assignWeekendNightDrone(d, daySolution, result, isHolidays);
 			if(backtrackFor.isSolutionFound()) {
@@ -447,11 +447,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "AFTERNOON", "SPORTAK*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 		}
 		debugUp(d, "AFTERNOON", "SPORTAK"); 
 		//daySolution.getWeekendAfternoonShift().sportak=null;
@@ -466,7 +466,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWeekendNight(employees, daySolution, lastAssignee, isHolidays))!=null) {
 			debugDown(d, "NIGHT", "STAFFER", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, true);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_NIGHT);					
 			daySolution.getNightShift().drone=lastAssignee;
 			BacktrackFor backtrackFor=solveDay(d+1, result);
 			if(backtrackFor.isSolutionFound()) {
@@ -474,11 +474,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "NIGHT", "STAFFER*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(true);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_NIGHT);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(true);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_NIGHT);
 		}
 		debugUp(d, "NIGHT", "STAFFER");
 		//daySolution.getNightShift().drone=null;
@@ -493,7 +493,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findEditorForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "EDITOR", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING);					
 			daySolution.getWorkdayMorningShift().editor=lastAssignee;
 			BacktrackFor backtrackFor=assignWorkdayMorningDrone6am(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
@@ -501,11 +501,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "MORNING", "EDITOR*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING);
 		}
 		debugUp(d, "MORNING", "EDITOR"); 
 		//daySolution.getWorkdayMorningShift().editor=null;
@@ -519,7 +519,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "DRONE6AM", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_6);					
 			daySolution.getWorkdayMorningShift().drone6am=lastAssignee;
 			BacktrackFor backtrackFor=assignWorkdayMorningDrone7am(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
@@ -527,11 +527,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "MORNING", "DRONE6AM*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_6);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_6);
 		}
 		debugUp(d, "MORNING", "DRONE6AM"); 
 		//daySolution.getWorkdayMorningShift().drone6am=null;
@@ -545,7 +545,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "DRONE7AM", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_7);					
 			daySolution.getWorkdayMorningShift().drone7am=lastAssignee;
 			BacktrackFor backtrackFor=assignWorkdayMorningDrone8am(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
@@ -553,11 +553,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "MORNING", "DRONE7AM*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_7);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_7);
 		}
 		debugUp(d, "MORNING", "DRONE7AM"); 
 		//daySolution.getWorkdayMorningShift().drone7am=null;
@@ -571,7 +571,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "DRONE8AM", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_8);					
 			daySolution.getWorkdayMorningShift().drone8am=lastAssignee;
 			BacktrackFor backtrackFor=assignWorkdayMorningSportak(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
@@ -579,11 +579,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "MORNING", "DRONE8AM*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_8);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_8);
 		}
 		debugUp(d, "MORNING", "DRONE8AM"); 
 		//daySolution.getWorkdayMorningShift().drone8am=null;
@@ -597,7 +597,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findSportakForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "SPORTAK", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING);			
 			daySolution.getWorkdayMorningShift().sportak=lastAssignee;
 			BacktrackFor backtrackFor=assignWorkdayAfternoonEditor(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
@@ -605,11 +605,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "MORNING", "SPORTAK*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING);
 		}
 		debugUp(d, "MORNING", "SPORTAK"); 
 		//daySolution.getWorkdayMorningShift().sportak=null;
@@ -624,7 +624,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findEditorForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "EDITOR", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
 			daySolution.getWorkdayAfternoonShift().editor=lastAssignee;
 			BacktrackFor backtrackFor=assignWorkdayAfternoonDrone1(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
@@ -632,11 +632,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "AFTERNOON", "EDITOR*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 		}
 		debugUp(d, "AFTERNOON", "EDITOR"); 
 		//daySolution.getWorkdayAfternoonShift().editor=null;
@@ -650,7 +650,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "DRONE1", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
 			daySolution.getWorkdayAfternoonShift().drones[0]=lastAssignee;
 			BacktrackFor backtrackFor=assignWorkdayAfternoonDrone2(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
@@ -658,11 +658,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "AFTERNOON", "DRONE1*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 		}
 		debugUp(d, "AFTERNOON", "DRONE1"); 
 		//daySolution.getWorkdayAfternoonShift().drones[0]=null;
@@ -676,7 +676,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "DRONE2", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);			
 			daySolution.getWorkdayAfternoonShift().drones[1]=lastAssignee;
 			BacktrackFor backtrackFor=assignWorkdayAfternoonDrone3(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
@@ -684,11 +684,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "AFTERNOON", "DRONE2*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 		}
 		debugUp(d, "AFTERNOON", "DRONE2"); 
 		//daySolution.getWorkdayAfternoonShift().drones[1]=null;
@@ -702,7 +702,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "DRONE3", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
 			daySolution.getWorkdayAfternoonShift().drones[2]=lastAssignee;
 			BacktrackFor backtrackFor=assignWorkdayAfternoonDrone4(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
@@ -710,11 +710,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "AFTERNOON", "DRONE3*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 		}
 		debugUp(d, "AFTERNOON", "DRONE3"); 
 		//daySolution.getWorkdayAfternoonShift().drones[2]=null;
@@ -728,7 +728,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "DRONE4", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
 			daySolution.getWorkdayAfternoonShift().drones[3]=lastAssignee;
 			BacktrackFor backtrackFor=assignWorkdayAfternoonSportak(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
@@ -736,11 +736,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "AFTERNOON", "DRONE4*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 		}
 		debugUp(d, "AFTERNOON", "DRONE4"); 
 		//daySolution.getWorkdayAfternoonShift().drones[3]=null;
@@ -754,7 +754,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findSportakForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "SPORTAK", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, false);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
 			daySolution.getWorkdayAfternoonShift().sportak=lastAssignee;
 			BacktrackFor backtrackFor=assignWorkdayNightDrone(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
@@ -762,11 +762,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "AFTERNOON", "SPORTAK*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(false);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 		}
 		debugUp(d, "AFTERNOON", "SPORTAK"); 
 		//daySolution.getWorkdayAfternoonShift().sportak=null;
@@ -781,7 +781,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 		List<Employee> es=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayNight(es, daySolution, lastAssignee))!=null) {
 			debugDown(d, "NIGHT", "DRONE", c++);
-			employeeAllocations.get(lastAssignee.getKey()).assign(d, true);					
+			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_NIGHT);					
 			daySolution.getNightShift().drone=lastAssignee;
 			BacktrackFor backtrackFor=solveDay(d+1, result);
 			if(backtrackFor.isSolutionFound()) {
@@ -789,11 +789,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
 					debugUp(d, "NIGHT", "DRONE*");		
-					employeeAllocations.get(lastAssignee.getKey()).unassign(true);
+					employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_NIGHT);
 					return backtrackFor;
 				}
 			}
-			employeeAllocations.get(lastAssignee.getKey()).unassign(true);
+			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_NIGHT);
 		}
 		debugUp(d, "NIGHT", "DRONE");
 		//daySolution.getNightShift().drone=null;
@@ -845,7 +845,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 			Employee e=es.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(e.isSportak()) {
-					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), SHIFT_AFTERNOON)) {
 						if(!getDayPreference(e, daySolution).isNoAfternoon()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak WORK AFTERNOON");
 							return e;
@@ -863,7 +863,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
-					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), SHIFT_AFTERNOON)) {
 						if(!getDayPreference(e, daySolution).isNoAfternoon()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff WORK AFTERNOON");
 							return e;
@@ -882,11 +882,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(e.isEditor()) {
 					if(!getDayPreference(e, daySolution).isNoAfternoon()) {
-						if(daySolution.getWeekday()==Calendar.FRIDAY && employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false, 5, false)) {
+						if(daySolution.getWeekday()==Calendar.FRIDAY && employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), SHIFT_AFTERNOON, 5, false)) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor WORK FRIDAY AFTERNOON -> SUNDAY");
 							return e;
 						} else {						
-							if(daySolution.getWeekday()!=Calendar.FRIDAY && employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
+							if(daySolution.getWeekday()!=Calendar.FRIDAY && employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), SHIFT_AFTERNOON)) {
 								ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor WORK AFTERNOON");
 								return e;
 							}
@@ -904,7 +904,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(e.isSportak() || e.isMorningSportak()) {
-					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), SHIFT_MORNING)) {
 						if(!getDayPreference(e, daySolution).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak WORK MORNING");
 							return e;
@@ -922,7 +922,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
-					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), SHIFT_MORNING)) {
 						if(!getDayPreference(e, daySolution).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff WORK MORNING");
 							return e;
@@ -940,7 +940,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(e.isEditor()) {
-					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), SHIFT_MORNING)) {
 						if(!getDayPreference(e, daySolution).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor WORK MORNING");
 							return e;							
@@ -963,7 +963,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 					 ||
 				   (daySolution.getWeekday()==Calendar.FRIDAY && !e.isFulltime()))
 				  ) {
-					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), true)) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), SHIFT_NIGHT)) {
 						if(!getDayPreference(e, daySolution).isNoNight()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff WORK NIGHT");
 							return e;
@@ -981,7 +981,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(e.isSportak()) {
-					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), SHIFT_AFTERNOON)) {
 						if(!getDayPreference(e, daySolution).isNoAfternoon()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak WEEKEND AFTERNOON");
 							return e;
@@ -999,7 +999,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
-					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), SHIFT_AFTERNOON)) {
 						if(!getDayPreference(e, daySolution).isNoAfternoon()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff WEEKEND AFTERNOON");
 							return e;
@@ -1012,7 +1012,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 	}
 
 	private Employee findEditorForWeekendAfternoon(Employee e, DaySolution daySolution) {
-		if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false, 1, true)) {
+		if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), SHIFT_AFTERNOON, 1, true)) {
 			if(!getDayPreference(e, daySolution).isNoAfternoon()) {
 				ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor WEEKEND AFTERNOON");
 				return e;
@@ -1033,7 +1033,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {				
 				if(!e.isSportak()) {
-					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), true)) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), SHIFT_NIGHT)) {
 						if(!getDayPreference(e, daySolution).isNoNight()) {
 							// part time on Saturday night, full time on Sunday night
 							if(daySolution.getWeekday()==Calendar.SATURDAY && !e.isFulltime()) {
@@ -1059,7 +1059,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(e.isSportak()) {
-					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
+					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), SHIFT_MORNING)) {
 						if(!getDayPreference(e, daySolution).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak WEEKEND MORNING");
 							return e;
@@ -1077,7 +1077,8 @@ public class ShiftSolver implements ShiftSolverConstants {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
 				if(!e.isEditor() && !e.isSportak()) {
-					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
+					EmployeeAllocation employeeAllocation = employeeAllocations.get(e.getKey());
+					if(employeeAllocation.hasCapacity(daySolution.getDay(), SHIFT_MORNING)) {
 						if(!getDayPreference(e, daySolution).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff WEEKEND MORNING");
 							return e;
@@ -1090,7 +1091,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 	}
 
 	private Employee findEditorForWeekendMorning(Employee e, DaySolution daySolution) {
-		if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), false)) {
+		if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), SHIFT_MORNING)) {
 			if(!getDayPreference(e, daySolution).isNoMorning6()) {
 				ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as editor WEEKEND MORNING");
 				return e;

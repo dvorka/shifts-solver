@@ -439,6 +439,14 @@ public class Utils {
 		e.setFulltime(true);
 		team.addEmployee(e);
 		
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Mr.");
+		e.setFamilyname("X");
+		e.setSportak(true);
+		e.setFulltime(true);
+		team.addEmployee(e);
+		
 		/*
 		 * fulltime
 		 */

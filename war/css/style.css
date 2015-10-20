@@ -2652,6 +2652,13 @@ html>body .gwt-MenuBarPopup {
 
 /* S2 > latest style overrides */
 
+.s2-titleLogo {
+	font-family: arial, sans-serif; 
+	font-weight: bolder; 
+	font-size: 25px; 
+	margin-left: 5px;"
+}
+
 .s2-titleCodename {
 	color: #356AA0;
 }
