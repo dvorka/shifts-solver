@@ -39,11 +39,9 @@ import com.mindforger.shiftsolver.shared.model.shifts.WorkdayMorningShift;
  *    > count jobs for all roles and compare it with people you have > fail even without calling any depth if e.g. not enough sportaks
  *  - iterate only sportaks for sportak, editors for editor (not all)
  */
-// Split to solver work to show progress
-// http://www.gwtproject.org/doc/latest/DevGuideCodingBasicsDelayed.html
-public class ShiftSolver implements ShiftSolverConstants {
+public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer {
 	
-	public static long STEPS_LIMIT=3000000;
+	public long stepsLimit=3000000;
 	
 	private static long sequence=0;
 
@@ -53,7 +51,11 @@ public class ShiftSolver implements ShiftSolverConstants {
 	private PeriodPreferences preferences;
 	private List<Employee> employees;
 	private Map<String,EmployeeAllocation> employeeAllocations;
+	private Employee lastMonthEditor;
 
+	private boolean enforceAfternoonTo8am;
+	private boolean enforceNightToAfternoon;
+	
 	private long steps;
 	private int depth;
 	private int failedOnMaxDepth;
@@ -64,13 +66,13 @@ public class ShiftSolver implements ShiftSolverConstants {
 
 	private SolverProgressPanels solverProgressPanel;
 
-	private Employee lastMonthEditor;
-
 	private PublicHolidays publicHolidays;
 	
 	public ShiftSolver() {
 		this.solverProgressPanel=new DebugSolverPanel();
 		this.publicHolidays=new PublicHolidays();
+		this.enforceAfternoonTo8am=true;
+		this.enforceNightToAfternoon=true;
 	}
 	
 	public ShiftSolver(final RiaContext ctx) {
@@ -1041,7 +1043,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 								ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff WEEKEND NIGHT (Saturday part time)");
 								return e;						
 							} else {
-								if(isHolidays || daySolution.getWeekday()==Calendar.SUNDAY && e.isFulltime()) {
+								if(isHolidays || (daySolution.getWeekday()==Calendar.SUNDAY && e.isFulltime())) {
 									ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as staff WEEKEND NIGHT (Sunday fulltime");
 									return e;															
 								}
@@ -1128,7 +1130,7 @@ public class ShiftSolver implements ShiftSolverConstants {
 					failedOnRole);										
 		}
 		
-		if(steps>STEPS_LIMIT) {
+		if(steps>stepsLimit) {
 			throw new ShiftSolverException(
 					"Steps exceeded - depth "+d+", "+shiftType+", "+role,
 					d,
@@ -1161,14 +1163,35 @@ public class ShiftSolver implements ShiftSolverConstants {
 
 		depth--;
 		
-		if(steps>STEPS_LIMIT) {
+		if(steps>stepsLimit) {
 			int failedOnDay=d;
 			throw new ShiftSolverException(
-					i18n.exceptionSolutionNotFoundStepLimitExceeded(STEPS_LIMIT,d,shiftType,role),
+					i18n.exceptionSolutionNotFoundStepLimitExceeded(stepsLimit,d,shiftType,role),
 					failedOnDay,
 					failedOnMaxDepth,
 					failedOnShiftType,
 					failedOnRole);
 		}
-	}	
+	}
+	
+	public boolean isEnforceAfternoonTo8am() {
+		return enforceAfternoonTo8am;
+	}
+
+	public void setEnforceAfternoonTo8am(boolean enforceAfternoonTo8am) {
+		this.enforceAfternoonTo8am = enforceAfternoonTo8am;
+	}
+
+	public boolean isEnforceNightToAfternoon() {
+		return enforceNightToAfternoon;
+	}
+
+	public void setEnforceNightToAfternoon(boolean enforceNightToAfternoon) {
+		this.enforceNightToAfternoon = enforceNightToAfternoon;
+	}
+
+	@Override
+	public void setIterationsLimit(long limit) {
+		this.stepsLimit=limit;
+	}
 }

@@ -29,7 +29,7 @@ public class DebugSolverPanel implements SolverProgressPanels {
 			this.progress=(progress==null?this.progress:progress);
 			this.steps=(steps==null?this.steps:steps);
 			
-			ShiftSolverLogger.debug("PROGRESS: "+this.progress+"% "+this.steps+" steps");			
+			System.out.println("PROGRESS: "+this.progress+"% "+this.steps+" steps");			
 		}
 	}
 }

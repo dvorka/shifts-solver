@@ -134,6 +134,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 	}
 	
 	public void showHome() {
+		ctx.getHomePanel().refresh(ctx.getSolver());
 		ria.showHome();
 		switchOfAllButtons();
 		homeButton.setStyleName("mf-menuButtonOn");

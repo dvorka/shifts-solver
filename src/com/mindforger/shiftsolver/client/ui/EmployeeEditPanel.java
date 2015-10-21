@@ -101,7 +101,6 @@ public class EmployeeEditPanel extends FlexTable {
 		setWidget(numRows, 1, editorCheckbox);
 
 		html = new HTML(i18n.sportak());
-		html.setStyleName("mf-progressHtml");
 		setWidget(++numRows, 0, html);
 		sportakCheckbox = new CheckBox();
 		sportakCheckbox.setValue(false);

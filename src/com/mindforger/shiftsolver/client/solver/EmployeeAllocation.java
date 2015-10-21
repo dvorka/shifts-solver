@@ -21,6 +21,9 @@ public class EmployeeAllocation {
 	public List<Integer> shiftTypesOnDays;
 	public int nights;
 	
+	public boolean enforceAfternoonTo8am;
+	public boolean enforceNightToAfternoon;
+	
 	public EmployeeAllocation(Employee employee, PeriodPreferences preferences) {
 		this.employee=employee;
 		this.shifts=0;
@@ -86,16 +89,22 @@ public class EmployeeAllocation {
 		if(shiftsOnDays.size()>0) {
 			int yesterday=day-1;
 			if(shiftsOnDays.get(shiftsOnDays.size()-1)==yesterday) {
-				if(shiftTypesOnDays.get(shiftTypesOnDays.size()-1) == ShiftSolverConstants.SHIFT_NIGHT
-						&&
-				   (shiftType == ShiftSolverConstants.SHIFT_AFTERNOON || shiftType == ShiftSolverConstants.SHIFT_NIGHT)) 
+				if(!enforceNightToAfternoon
+					 ||						
+				   (shiftTypesOnDays.get(shiftTypesOnDays.size()-1) == ShiftSolverConstants.SHIFT_NIGHT
+					  &&
+				   (shiftType == ShiftSolverConstants.SHIFT_AFTERNOON || shiftType == ShiftSolverConstants.SHIFT_NIGHT))) 
 				{					
-					if(shiftTypesOnDays.get(shiftTypesOnDays.size()-1) == ShiftSolverConstants.SHIFT_AFTERNOON
+					if(enforceAfternoonTo8am
+					     ||
+					   (shiftTypesOnDays.get(shiftTypesOnDays.size()-1) == ShiftSolverConstants.SHIFT_AFTERNOON
 							&&
 					   (editorWeekendContinuity ||
+					    shiftType == ShiftSolverConstants.SHIFT_MORNING ||
 					    shiftType == ShiftSolverConstants.SHIFT_MORNING_8 || 
 					    shiftType == ShiftSolverConstants.SHIFT_AFTERNOON || 
-					    shiftType == ShiftSolverConstants.SHIFT_NIGHT)) {					
+					    shiftType == ShiftSolverConstants.SHIFT_NIGHT))) 
+					{					
 						// OK
 					} else {
 						return false;
