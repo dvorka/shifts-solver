@@ -64,6 +64,8 @@ public class PeriodPreferencesCapacity {
 		if(haveMorningSportakShifts>=neededMorningSportakShifts) {
 			haveMorningSportakShifts=neededMorningSportakShifts;
 			haveDroneShifts+=haveMorningSportakShifts-neededMorningSportakShifts;
+		} else {
+			// nothing to reallocate
 		}
 		if(haveEditorShifts>=neededEditorShifts) {
 			haveEditorShifts=neededEditorShifts;
@@ -74,7 +76,8 @@ public class PeriodPreferencesCapacity {
 	public boolean isCapacitySufficient() {
 		if((haveEditorShifts>=neededEditorShifts) &&
 			(haveDroneShifts>=neededDroneShifts) &&
-			(haveMorningSportakShifts>=neededMorningSportakShifts) &&
+			// ... morning portaks are here just to help sportaks
+			// (haveMorningSportakShifts>=neededMorningSportakShifts) && 
 			(haveSportakShifts>=neededSportakShifts)) {
 				return true;
 		} else {

@@ -58,6 +58,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 	
 	private long steps;
 	private int depth;
+	private int failedOnMaxDay;
 	private int failedOnMaxDepth;
 	private String failedOnShiftType;
 	private String failedOnRole;
@@ -134,7 +135,13 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		if(!solveDay(1, result).isSolutionFound()) {
 			// NO SOLUTION exists for this team and requirements
 			ShiftSolverLogger.debug("NO SOLUTION EXISTS!");
-			return null;
+			throw new ShiftSolverException(
+					"No solution exist for these employees and their preferences!",
+					failedOnMaxDay,
+					failedOnMaxDepth,
+					failedOnShiftType,
+					failedOnRole
+					);
 		} else {
 			for(String key:employeeAllocations.keySet()) {
 				result.addEmployeeJob(
@@ -175,7 +182,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			bestScore=calculateSolutionScore(result);
 			// TODO bestSolution=
 			solverProgressPanel.refresh(
-					"100", 
+					(failedOnMaxDay==-1?"":""+failedOnMaxDay),
 					(failedOnMaxDepth==-1?"":""+failedOnMaxDepth),
 					(failedOnRole==null?"":failedOnRole),
 					(failedOnShiftType==null?"":failedOnShiftType),
@@ -1142,6 +1149,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 	}
 
 	private void clearFailedOn() {
+		failedOnMaxDay=-1;
 		failedOnMaxDepth=-1;
 		failedOnShiftType=null;
 		failedOnRole=null;
@@ -1151,6 +1159,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		ShiftSolverLogger.debug("   <<< BACKTRACK UP - failed for day/shift/role "+d+"-"+shiftType+"-"+role+" ("+(steps++)+" steps, depth: "+depth+")");
 
 		if(failedOnMaxDepth<depth) {
+			failedOnMaxDay=d;
 			failedOnMaxDepth=depth;
 			failedOnShiftType=shiftType;
 			failedOnRole=role;						
@@ -1164,10 +1173,9 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		depth--;
 		
 		if(steps>stepsLimit) {
-			int failedOnDay=d;
 			throw new ShiftSolverException(
 					i18n.exceptionSolutionNotFoundStepLimitExceeded(stepsLimit,d,shiftType,role),
-					failedOnDay,
+					failedOnMaxDay,
 					failedOnMaxDepth,
 					failedOnShiftType,
 					failedOnRole);
