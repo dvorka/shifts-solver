@@ -1,7 +1,7 @@
 package com.mindforger.shiftsolver.client.solver;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
@@ -49,7 +49,7 @@ public class PeriodPreferencesCapacity {
 				haveEditorShifts+=a.shiftsToGet;
 				haveDroneShifts+=a.shiftsToGet;
 			} else {
-				if(a.employee.isMorningSportak()) {
+				if(a.employee.isMortak()) {
 					haveMorningSportakShifts+=a.shiftsToGet;
 				} else {
 					if(a.employee.isSportak()) {
@@ -87,6 +87,7 @@ public class PeriodPreferencesCapacity {
 						(haveDroneShifts<neededDroneShifts?"drone / ":"")+
 						(haveMorningSportakShifts<neededMorningSportakShifts?"morning sportak / ":"")+
 						(haveSportakShifts<neededSportakShifts?" sportak":""), 
+					new ArrayList<EmployeeAllocation>(),
 					0, 
 					0, 
 					"X", 
@@ -105,31 +106,5 @@ public class PeriodPreferencesCapacity {
 		ShiftSolverLogger.debug("  "+(haveSportakShifts<neededSportakShifts?"FAIL":" OK ")+" sportak  : "
 				+haveSportakShifts+">="+neededSportakShifts);
 		ShiftSolverLogger.debug("");
-	}
-	
-	public void printEmployeeAllocations(int day, List<EmployeeAllocation> allocations) {
-		ShiftSolverLogger.debug("     Employee allocations ("+allocations.size()+"):");
-		for(EmployeeAllocation a:allocations) {
-			String fullShifts=a.shifts<a.shiftsToGet?"<":(a.shifts==a.shiftsToGet?"!":"X");
-			String fullNights=a.nights<2?"<":(a.nights==2?"!":"X");
-			ShiftSolverLogger.debug(
-					"       "+
-					fullShifts+fullNights+
-					" "+
-					(fullShifts.equals("!")?"!!!":
-						(a.hadShiftsLast5Days(day)?"123":
-							(a.hadShiftToday(day)?"ttt":"...")))+
-					" "+
-					(a.employee.isEditor()?"editor    ":
-						(a.employee.isSportak()?"sportak   ":
-							(a.employee.isMorningSportak()?"am-sportak":"drone     ")))+
-					" "+
-					(a.employee.isFulltime()?"FULL":"PART")+
-					" "+
-					a.employee.getFullName()+" "+
-						"jobs: "+a.shifts+"/"+a.shiftsToGet+" ("+(a.shiftsToGet-a.shifts)+") "+
-						"nights: "+a.nights+"/"+(a.employee.isFulltime()?"2":"X")+" ("+(2-a.nights)+")"
-					);
-		}		
-	}
+	}	
 }

@@ -2,9 +2,11 @@ package com.mindforger.shiftsolver.client.solver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
+import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
 import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
@@ -23,6 +25,9 @@ public class EmployeeAllocation {
 	
 	public boolean enforceAfternoonTo8am;
 	public boolean enforceNightToAfternoon;
+	
+	private EmployeeAllocation() {		
+	}
 	
 	public EmployeeAllocation(Employee employee, PeriodPreferences preferences) {
 		this.employee=employee;
@@ -54,6 +59,32 @@ public class EmployeeAllocation {
 		}
 	}
 
+	public EmployeeAllocation clone() {
+		EmployeeAllocation clone=new EmployeeAllocation();
+		clone.employee=employee;
+		clone.shiftsToGet=shiftsToGet;
+		clone.shifts=shifts;
+		clone.enforceAfternoonTo8am=enforceAfternoonTo8am;
+		clone.enforceNightToAfternoon=enforceNightToAfternoon;
+		clone.shiftsOnDays=new ArrayList<Integer>(shiftsOnDays);
+		clone.shiftTypesOnDays=new ArrayList<Integer>(shiftTypesOnDays);
+		return clone;
+	}
+
+	public static List<EmployeeAllocation> clone(Map<String,EmployeeAllocation> employeeAllocations) {
+		return employeeAllocations==null?new ArrayList<EmployeeAllocation>():clone(new ArrayList<EmployeeAllocation>(employeeAllocations.values()));
+	}
+	
+	public static List<EmployeeAllocation> clone(List<EmployeeAllocation> employeeAllocations) {
+		List<EmployeeAllocation> result=new ArrayList<EmployeeAllocation>();
+		if(employeeAllocations!=null && !employeeAllocations.isEmpty()) {
+			for(EmployeeAllocation employeeAllocation:employeeAllocations) {
+				result.add(employeeAllocation.clone());
+			}
+		}
+		return result;
+	}
+	
 	public void assign(int day, int shiftType) {
 		shiftsOnDays.add(day);
 		shiftTypesOnDays.add(shiftType);
@@ -160,5 +191,31 @@ public class EmployeeAllocation {
 
 	private boolean hasCapacity(int capacityNeeded) {
 		return shiftsToGet>0 && shiftsToGet>=(shifts+capacityNeeded);
+	}
+
+	public static void printEmployeeAllocations(int day, List<EmployeeAllocation> allocations) {
+		ShiftSolverLogger.debug("     Employee allocations ("+allocations.size()+"):");
+		for(EmployeeAllocation a:allocations) {
+			String fullShifts=a.shifts<a.shiftsToGet?"<":(a.shifts==a.shiftsToGet?"!":"X");
+			String fullNights=a.nights<2?"<":(a.nights==2?"!":"X");
+			ShiftSolverLogger.debug(
+					"       "+
+					fullShifts+fullNights+
+					" "+
+					(fullShifts.equals("!")?"!!!":
+						(a.hadShiftsLast5Days(day)?"123":
+							(a.hadShiftToday(day)?"ttt":"...")))+
+					" "+
+					(a.employee.isEditor()?"editor    ":
+						(a.employee.isSportak()?"sportak   ":
+							(a.employee.isMortak()?"am-sportak":"drone     ")))+
+					" "+
+					(a.employee.isFulltime()?"FULL":"PART")+
+					" "+
+					a.employee.getFullName()+" "+
+						"jobs: "+a.shifts+"/"+a.shiftsToGet+" ("+(a.shiftsToGet-a.shifts)+") "+
+						"nights: "+a.nights+"/"+(a.employee.isFulltime()?"2":"X")+" ("+(2-a.nights)+")"
+					);
+		}		
 	}
 }

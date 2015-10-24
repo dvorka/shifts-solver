@@ -1,7 +1,6 @@
 package com.mindforger.shiftsolver.client.solver;
 
 import com.mindforger.shiftsolver.client.ui.SolverProgressPanels;
-import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
 
 public class DebugSolverPanel implements SolverProgressPanels {
 	

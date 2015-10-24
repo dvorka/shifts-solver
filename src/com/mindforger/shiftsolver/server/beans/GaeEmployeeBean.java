@@ -154,7 +154,7 @@ public class GaeEmployeeBean implements Serializable, GaeBean {
 		editor=e.isEditor();
 		female=e.isFemale();
 		fulltime=e.isFulltime();
-		morningSportak=e.isMorningSportak();
+		morningSportak=e.isMortak();
 		sportak=e.isSportak();
 	}
 	

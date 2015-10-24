@@ -2695,6 +2695,10 @@ html>body .gwt-MenuBarPopup {
 	background-color: #FF8; 	
 }
 
+.s2-busy {
+	color: #990000;	
+}
+
 .s2-match {
 	color: #005500;	
 	font-weight: bolder;
@@ -2750,5 +2754,30 @@ html>body .gwt-MenuBarPopup {
 .s2-homeSettingsLabel {
 	font-weight: bolder;
 }
+
+.s2-solTable {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: collapse;
+}
+.s2-solTable td {
+  border: 1px solid #ccc;
+}
+
+.s2-solBlack {
+	background-color: #000;
+	color: #FFF;
+}
+.s2-solMorning {
+	background-color: #EEE;
+}
+.s2-solAfternoon {
+	background-color: #DDD;
+}
+.s2-solNight {
+	background-color: #BBB;
+}
+
 
 /** EOF **/

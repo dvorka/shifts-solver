@@ -140,4 +140,16 @@ public class PeriodSolution implements Serializable {
 			}
 		}
 	}
+
+	// TODO inefficient iterations > create map
+	public DaySolution getSolutionForDay(int i) {
+		if(days!=null && days.size()>=i) {
+			for(DaySolution ds:days) {
+				if(ds.getDay()==i) {
+					return ds;
+				}
+			}
+		}
+		return null;
+	}
 }

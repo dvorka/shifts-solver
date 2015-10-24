@@ -1,6 +1,5 @@
 package com.mindforger.shiftsolver.client.ui;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -9,7 +8,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.Utils;
@@ -29,16 +27,16 @@ public class PeriodSolutionViewPanel extends FlexTable {
 
 	private TableSortCriteria sortCriteria;
 	private boolean sortIsAscending;
-	
-	private TextBox yearListBox;
-	private TextBox monthListBox;
-	private FlexTable preferencesTable;
-	
-	private PeriodSolution solution;
-	private int solutionNumber;
-	private HTML shiftsScheduleHtml;
-	
+
 	private PublicHolidays publicHolidays;
+	private PeriodSolution solution;
+	
+	private HTML yearMonthHtml;
+	private FlexTable scheduleTable;
+	private FlexTable shiftsTable;
+	private FlexTable allocationsTable;
+	private PeriodPreferences preferences;
+	
 	
 	public PeriodSolutionViewPanel(final RiaContext ctx) {
 		this.ctx=ctx;
@@ -47,41 +45,31 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		
 		FlowPanel buttonPanel = newButtonPanel(ctx);
 		setWidget(0, 0, buttonPanel);
+		getFlexCellFormatter().setColSpan(0, 0, 5);
 		
 		FlowPanel datePanel = newDatePanel();
 		setWidget(1, 0, datePanel);
+		getFlexCellFormatter().setColSpan(1, 0, 5);
 		
-		preferencesTable = newPreferencesTable();
-		setWidget(2, 0, preferencesTable);
+		scheduleTable = newScheduleTable();
+		setWidget(2, 0, scheduleTable);
 		
-		shiftsScheduleHtml=new HTML("");
-		setWidget(3, 0, shiftsScheduleHtml);
+		shiftsTable = newShiftsTable();
+		setWidget(3, 0, shiftsTable);
+	}
+	
+	private void showScheduleTable() {
+		scheduleTable.setVisible(true);
+		shiftsTable.setVisible(false);
 	}
 
+	private void showShiftsTable() {
+		scheduleTable.setVisible(false);
+		shiftsTable.setVisible(true);
+	}
+	
 	private FlowPanel newButtonPanel(final RiaContext ctx) {
 		FlowPanel buttonPanel=new FlowPanel();
-
-		Button solveButton=new Button(i18n.nextSolution());
-		solveButton.setStyleName("mf-button");
-		solveButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				ctx.getStatusLine().showInfo("Building solution #"+(solutionNumber+1));
-				PeriodPreferences preferences = ctx.getState().getPeriodPreferences(solution.getDlouhanKey());				
-				//Employee[] employees = ctx.getState().getEmployees();
-				//Utils.shuffleArray(employees);
-				solution = ctx.getSolver().solve(Arrays.asList(ctx.getState().getEmployees()), preferences, ++solutionNumber);
-				if(solution!=null) {
-		    		ctx.getStatusLine().showInfo("Found solution #"+(solutionNumber+1));
-					objectToRia(solution);
-		      		ctx.getRia().showSolutionViewPanel();
-	      		} else {
-		    		ctx.getStatusLine().showError("No other solution exists!");
-		    		objectToRia(null);
-		      		ctx.getRia().showSolutionViewPanel();
-	      		}
-			}
-		});		
-		// TODO buttonPanel.add(solveButton);
 		
 		Button saveButton=new Button(i18n.save());
 		saveButton.setStyleName("mf-button");
@@ -91,12 +79,40 @@ public class PeriodSolutionViewPanel extends FlexTable {
 			}
 		});		
 		// TODO buttonPanel.add(saveButton);
-		
+
+		Button shiftsButton=new Button("Show Shifts");
+		shiftsButton.setStyleName("mf-buttonLooser");
+		shiftsButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				showShiftsTable();
+			}
+		});		
+		buttonPanel.add(shiftsButton);
+
+		Button scheduleButton=new Button("Show Schedule");
+		scheduleButton.setStyleName("mf-buttonLooser");
+		scheduleButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				showScheduleTable();
+			}
+		});		
+		buttonPanel.add(scheduleButton);
+
+		Button allocationButton=new Button("Show Allocation");
+		allocationButton.setStyleName("mf-buttonLooser");
+		allocationButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				// TODO
+			}
+		});		
+		//buttonPanel.add(allocationButton);
+				
 		Button backButton=new Button(i18n.backToPreferences());
 		backButton.setStyleName("mf-buttonLooser");
 		backButton.setTitle("Return back to period preferences"); // TODO i18n
 		backButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
+				ctx.getStatusLine().clear();
 				ctx.getRia().showPeriodPreferencesEditPanel();
 			}
 		});		
@@ -106,48 +122,42 @@ public class PeriodSolutionViewPanel extends FlexTable {
 	}
 
 	private FlowPanel newDatePanel() {
-		FlowPanel flowPanel=new FlowPanel();
-		
-		yearListBox = new TextBox();
-		yearListBox.setEnabled(false);
-		yearListBox.setTitle(i18n.year());
-		flowPanel.add(yearListBox);
-		
-		monthListBox = new TextBox();
-		monthListBox.setEnabled(false);
-		monthListBox.setTitle(i18n.month());
-		flowPanel.add(monthListBox);
-		
+		FlowPanel flowPanel=new FlowPanel();		
+		yearMonthHtml = new HTML();
+		yearMonthHtml.setTitle(i18n.year());
+		flowPanel.add(yearMonthHtml);
 		return flowPanel;
 	}
 	
-	private FlexTable newPreferencesTable() {
+	private FlexTable newScheduleTable() {
 		FlexTable table = new FlexTable();
-		table.setStyleName("mf-growsTable");
-
-		table.removeAllRows();
-				
+		table.removeAllRows();				
 		return table;		
 	}
 
-	private void refreshPreferencesTable(FlexTable table, PeriodSolution solution) {		
+	private FlexTable newShiftsTable() {
+		FlexTable table = new FlexTable();
+		table.setStyleName("mf-growsTable");
 		table.removeAllRows();
-		
+		return table;		
+	}
+	
+	private void refreshScheduleTable() {		
+		scheduleTable.removeAllRows();
+				
 		if(solution!=null && solution.getDays()!=null && solution.getDays().size()>0) {
 			HTML html = new HTML(i18n.employee());
 			// TODO allow sorting the table by employee name
 			// setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
-			table.setWidget(0, 0, html);
+			scheduleTable.setWidget(0, 0, html);
 			html = new HTML(i18n.job());
-			table.setWidget(0, 1, html);			
+			scheduleTable.setWidget(0, 1, html);			
 			html = new HTML(i18n.shifts());
-			table.setWidget(0, 2, html);
-
-			PeriodPreferences preferences = ctx.getState().getPeriodPreferences(solution.getDlouhanKey());
+			scheduleTable.setWidget(0, 2, html);
 			
 			for(Employee employee:ctx.getState().getEmployees()) {
 				addEmployeeRow(
-						preferencesTable,
+						scheduleTable,
 						solution,
 						preferences,
 						employee, 
@@ -290,9 +300,156 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		}		
 	}
 
-	public void refreshShiftsHtml(PeriodSolution solution) {
-		StringBuffer s=new StringBuffer();
+	public void refreshShiftsTable() {
+		shiftsTable.removeAllRows();
+		
+		if(solution!=null && solution.getDays()!=null && solution.getDays().size()>0) {		
 
+		// table title
+		int row=0;		
+		shiftsTable.setWidget(row, 0, new HTML("Shifts"));
+		shiftsTable.setWidget(row, 1, new HTML("Monday"));
+		shiftsTable.setWidget(row, 2, new HTML("Tuesday"));
+		shiftsTable.setWidget(row, 3, new HTML("Wednesday"));
+		shiftsTable.setWidget(row, 4, new HTML("Thursday"));
+		shiftsTable.setWidget(row, 5, new HTML("Friday"));
+		shiftsTable.setWidget(row, 6, new HTML("Shifts"));
+		shiftsTable.setWidget(row, 7, new HTML("Saturday"));
+		shiftsTable.setWidget(row, 8, new HTML("Sunday"));
+		for(int ii=0; ii<=8; ii++) {
+			shiftsTable.getCellFormatter().setStyleName(row, ii, "s2-solBlack");				
+		}
+
+		// week
+		int columnOf1stDay=preferences.getStartWeekDay()==0?1:(8-preferences.getStartWeekDay());
+		int c;
+		int day=1, oldDay;
+		
+		int weeks=6;
+		int nextWeekRow;
+		for(int w=1; w<=weeks && day<=preferences.getMonthDays(); w++) {
+			// week title
+			c=1;
+			row++;
+			oldDay=day;
+			shiftsTable.setWidget(row, 0, new HTML("Week "+w));
+			shiftsTable.setWidget(row, 1, new HTML(c>=columnOf1stDay?""+day++:""));
+			shiftsTable.setWidget(row, 2, new HTML(c>=columnOf1stDay?""+day++:""));
+			shiftsTable.setWidget(row, 3, new HTML(c>=columnOf1stDay?""+day++:""));
+			shiftsTable.setWidget(row, 4, new HTML(c>=columnOf1stDay?""+day++:""));
+			shiftsTable.setWidget(row, 5, new HTML(c>=columnOf1stDay?""+day++:""));
+			shiftsTable.setWidget(row, 6, new HTML(" "));
+			shiftsTable.setWidget(row, 7, new HTML(c>=columnOf1stDay?""+day++:""));
+			shiftsTable.setWidget(row, 8, new HTML(c>=columnOf1stDay?""+day++:""));
+			for(int ii=0; ii<=8; ii++) {
+				shiftsTable.getCellFormatter().setStyleName(row, ii, "s2-solBlack");				
+			}
+			day=oldDay;			
+
+			// week body
+			int r=++row;
+			for(int ii=0; ii<13; ii++) {
+				shiftsTable.getCellFormatter().setStyleName(r+ii, 0, "s2-solBlack");				
+			}
+			shiftsTable.setWidget(r++, 0, new HTML("Morning Editor<BR>6:00-14:00"));
+			shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>6:00-14:30"));
+			shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>7:00-15:30"));
+			shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>7:00-15:30"));
+			shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>8:00-16:30"));
+			shiftsTable.setWidget(r++, 0, new HTML("Morning Sportak<BR>7:00-15:30"));		
+			shiftsTable.setWidget(r++, 0, new HTML("Afternoon Editor<BR>14:00-22:30"));
+			shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
+			shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
+			shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
+			shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
+			shiftsTable.setWidget(r++, 0, new HTML("Afternoon Sportak<BR>15:00-23:30"));
+			shiftsTable.setWidget(r++, 0, new HTML("Night Staffer<BR>22:00-6:30"));
+			nextWeekRow=r;
+
+			r=row;
+			int cc;
+			for(cc=columnOf1stDay; cc<=5 && day<=preferences.getMonthDays(); cc++, day++) {
+				if(day>0) {
+					DaySolution ds=solution.getSolutionForDay(day);
+					if(ds!=null) {
+						if(ds.isWorkday()) {
+							shiftsTable.setWidget(r-1+1, cc, new HTML(ds.getWorkdayMorningShift().editor.getFullName()));
+							shiftsTable.getCellFormatter().setStyleName(r-1+1, cc, "s2-solMorning");				
+							shiftsTable.setWidget(r-1+2, cc, new HTML(ds.getWorkdayMorningShift().drone6am.getFullName()));
+							shiftsTable.setWidget(r-1+3, cc, new HTML(ds.getWorkdayMorningShift().drone7am.getFullName()));
+							shiftsTable.setWidget(r-1+4, cc, new HTML(ds.getWorkdayMorningShift().drone8am.getFullName()));
+							shiftsTable.setWidget(r-1+5, cc, new HTML("MISSING"));
+							shiftsTable.setWidget(r-1+6, cc, new HTML(ds.getWorkdayMorningShift().sportak.getFullName()));
+							shiftsTable.setWidget(r-1+7, cc, new HTML(ds.getWorkdayAfternoonShift().editor.getFullName()));
+							shiftsTable.getCellFormatter().setStyleName(r-1+7, cc, "s2-solAfternoon");				
+							shiftsTable.setWidget(r-1+8, cc, new HTML(ds.getWorkdayAfternoonShift().drones[0].getFullName()));
+							shiftsTable.setWidget(r-1+9, cc, new HTML(ds.getWorkdayAfternoonShift().drones[1].getFullName()));
+							shiftsTable.setWidget(r-1+10, cc, new HTML(ds.getWorkdayAfternoonShift().drones[2].getFullName()));
+							shiftsTable.setWidget(r-1+11, cc, new HTML(ds.getWorkdayAfternoonShift().drones[3].getFullName()));
+							shiftsTable.setWidget(r-1+12, cc, new HTML(ds.getWorkdayAfternoonShift().sportak.getFullName()));
+							shiftsTable.setWidget(r-1+13, cc, new HTML(ds.getNightShift().drone.getFullName()));																		
+							shiftsTable.getCellFormatter().setStyleName(r-1+13, cc, "s2-solNight");				
+						} else {
+							shiftsTable.setWidget(r-1+1, cc, new HTML(ds.getWeekendMorningShift().editor.getFullName()));
+							shiftsTable.setWidget(r-1+2, cc, new HTML(ds.getWeekendMorningShift().drone6am.getFullName()));
+							shiftsTable.setWidget(r-1+3, cc, new HTML(""));
+							shiftsTable.setWidget(r-1+4, cc, new HTML(""));
+							shiftsTable.setWidget(r-1+5, cc, new HTML(""));
+							shiftsTable.setWidget(r-1+6, cc, new HTML(ds.getWeekendMorningShift().sportak.getFullName()));
+							shiftsTable.setWidget(r-1+7, cc, new HTML(ds.getWeekendAfternoonShift().editor.getFullName()));
+							shiftsTable.setWidget(r-1+8, cc, new HTML(ds.getWeekendAfternoonShift().drone.getFullName()));
+							shiftsTable.setWidget(r-1+9, cc, new HTML(""));
+							shiftsTable.setWidget(r-1+10, cc, new HTML(""));
+							shiftsTable.setWidget(r-1+11, cc, new HTML(""));
+							shiftsTable.setWidget(r-1+12, cc, new HTML(ds.getWeekendAfternoonShift().sportak.getFullName()));
+							shiftsTable.setWidget(r-1+13, cc, new HTML(ds.getNightShift().drone.getFullName()));																		
+						}
+					}
+				}
+				columnOf1stDay=6;
+			}
+			
+			r=row;
+			for(int ii=0; ii<7; ii++) {
+				shiftsTable.getCellFormatter().setStyleName(r+ii, 6, "s2-solBlack");				
+			}
+			shiftsTable.setWidget(r++, 6, new HTML("Morning Editor<BR>6:00-14:00"));
+			shiftsTable.setWidget(r++, 6, new HTML("Morning Staffer<BR>6:00-14:30"));
+			shiftsTable.setWidget(r++, 6, new HTML("Morning Sportak<BR>7:00-15:30"));
+			shiftsTable.setWidget(r++, 6, new HTML("Afternoon Editor<BR>14:00-20:30"));
+			shiftsTable.setWidget(r++, 6, new HTML("Afternoon Staffer<BR>14:00-22:30"));
+			shiftsTable.setWidget(r++, 6, new HTML("Afternoon Sportak<BR>15:00-23:30"));
+			shiftsTable.setWidget(r++, 6, new HTML("Nigt Staffer<BR>22:00-6:30"));
+
+			r=row;
+			
+			for(cc=columnOf1stDay; cc<=7 && day<=preferences.getMonthDays(); cc++, day++) {
+				if(day>0) {
+					DaySolution ds=solution.getSolutionForDay(day);
+					if(ds!=null) {
+						shiftsTable.setWidget(r+1-1, cc+1, new HTML(ds.getWeekendMorningShift().editor.getFullName()));
+						shiftsTable.setWidget(r+2-1, cc+1, new HTML(ds.getWeekendMorningShift().drone6am.getFullName()));
+						shiftsTable.setWidget(r+3-1, cc+1, new HTML(ds.getWeekendMorningShift().sportak.getFullName()));
+						shiftsTable.setWidget(r+4-1, cc+1, new HTML(ds.getWeekendAfternoonShift().editor.getFullName()));
+						shiftsTable.setWidget(r+5-1, cc+1, new HTML(ds.getWeekendAfternoonShift().drone.getFullName()));
+						shiftsTable.setWidget(r+6-1, cc+1, new HTML(ds.getWeekendAfternoonShift().sportak.getFullName()));
+						shiftsTable.setWidget(r+7-1, cc+1, new HTML(ds.getNightShift().drone.getFullName()));
+					}
+				}
+			}
+			
+			columnOf1stDay=1;
+			row=nextWeekRow;
+		}
+				
+		// TODO obsolete
+		//StringBuffer s = createShiftsHtml(solution);		
+		//shiftsTable.setWidget(0, 0, new HTML(s.toString()));
+		}
+	}
+
+	private StringBuffer createShiftsHtml(PeriodSolution solution) {
+		StringBuffer s=new StringBuffer();
 		s.append("<br><b>Shifts Schedule:</b><br>");
 		List<DaySolution> days = solution.getDays();
 		s.append("<ul>");
@@ -359,8 +516,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 			s.append("</ul>");
 		}
 		s.append("</ul>");
-		
-		shiftsScheduleHtml.setHTML(s.toString());
+		return s;
 	}
 	
 	public void refresh(PeriodSolution solution) {
@@ -372,9 +528,9 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		}
 
 		this.solution=solution;
-		this.solutionNumber=0;
+		this.preferences = ctx.getState().getPeriodPreferences(solution.getDlouhanKey());
 		
-		objectToRia(solution);
+		objectToRia();
 	}
 	
 	public void setSortingCriteria(TableSortCriteria criteria, boolean sortIsAscending) {
@@ -390,22 +546,19 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		return sortIsAscending;
 	}
 	
-	private void objectToRia(PeriodSolution periodSolution) {
-		if(periodSolution!=null) {
-			yearListBox.setVisible(true);
-			monthListBox.setVisible(true);
-			preferencesTable.setVisible(true);
-			shiftsScheduleHtml.setVisible(true);
+	private void objectToRia() {
+		if(solution!=null) {
+			yearMonthHtml.setVisible(true);
+			scheduleTable.setVisible(true);
+			shiftsTable.setVisible(false);
 			
-			yearListBox.setText(""+periodSolution.getYear());
-			monthListBox.setText(""+periodSolution.getMonth());			
-			refreshPreferencesTable(preferencesTable, periodSolution);
-			refreshShiftsHtml(periodSolution);			
+			yearMonthHtml.setHTML("Solution for: "+solution.getYear()+"/"+solution.getMonth());
+			refreshScheduleTable();
+			refreshShiftsTable();			
 		} else {
-			yearListBox.setVisible(false);
-			monthListBox.setVisible(false);
-			preferencesTable.setVisible(false);
-			shiftsScheduleHtml.setVisible(false);
+			yearMonthHtml.setVisible(false);
+			scheduleTable.setVisible(false);
+			shiftsTable.setVisible(false);
 		}
 	}
 }

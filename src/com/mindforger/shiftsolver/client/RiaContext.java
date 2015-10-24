@@ -13,6 +13,7 @@ import com.mindforger.shiftsolver.client.ui.PeriodPreferencesEditPanel;
 import com.mindforger.shiftsolver.client.ui.PeriodPreferencesTable;
 import com.mindforger.shiftsolver.client.ui.PeriodSolutionTable;
 import com.mindforger.shiftsolver.client.ui.PeriodSolutionViewPanel;
+import com.mindforger.shiftsolver.client.ui.SolverNoSolutionPanel;
 import com.mindforger.shiftsolver.client.ui.SolverProgressPanel;
 import com.mindforger.shiftsolver.client.ui.StatusLine;
 import com.mindforger.shiftsolver.client.ui.menu.LeftMenubar;
@@ -59,20 +60,22 @@ public class RiaContext implements ShiftSolverConstants {
 	private PeriodSolutionTable periodSolutionTable;
 	private PeriodSolutionViewPanel periodSolutionViewPanel;
 	private SolverProgressPanel solverProgressPanel;
+	private SolverNoSolutionPanel solverNoSolutionPanel;
 	
 	// data
 	private RiaState state;
 	
-	private Set<Object> initialized=new HashSet<Object>();
+	private Set<Object> initialized;
 	
 	public RiaContext(Ria ria) {
 		this.ria=ria;
+
+		initialized=new HashSet<Object>();
 		
 		i18n=GWT.create(RiaMessages.class);		
 		service=GWT.create(ShiftSolverService.class);		
 		fieldVerifier=new FieldVerifier();
 		state=new RiaState();
-		solverProgressPanel=new SolverProgressPanel(this);
 		solver=new ShiftSolver(this);
 		
 		// UI
@@ -86,6 +89,8 @@ public class RiaContext implements ShiftSolverConstants {
 		periodPreferencesEditPanel=new PeriodPreferencesEditPanel(this);
 		periodSolutionTable=new PeriodSolutionTable(this);
 		periodSolutionViewPanel=new PeriodSolutionViewPanel(this);
+		solverProgressPanel=new SolverProgressPanel(this);
+		solverNoSolutionPanel=new SolverNoSolutionPanel(this);
 	}
 
 	public RiaMessages getI18n() {
@@ -178,5 +183,13 @@ public class RiaContext implements ShiftSolverConstants {
 
 	public ShiftSolver getSolver() {
 		return solver;
+	}
+
+	public SolverNoSolutionPanel getSolverNoSolutionPanel() {
+		return solverNoSolutionPanel;
+	}
+
+	public void setSolverNoSolutionPanel(SolverNoSolutionPanel solverNoSolutionPanel) {
+		this.solverNoSolutionPanel = solverNoSolutionPanel;
 	}
 }

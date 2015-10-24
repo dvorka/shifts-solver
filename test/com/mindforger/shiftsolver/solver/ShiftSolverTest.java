@@ -9,7 +9,6 @@ import java.util.Arrays;
 import com.mindforger.shiftsolver.client.RiaState;
 import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
-import com.mindforger.shiftsolver.client.solver.PeriodPreferencesCapacity;
 import com.mindforger.shiftsolver.client.solver.ShiftSolver;
 import com.mindforger.shiftsolver.server.ServerUtils;
 import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
@@ -78,8 +77,7 @@ public class ShiftSolverTest {
 		} else {
 			System.out.println("Solution exists!");
 			ShiftSolverLogger.debug("- CAPACITY ---------------------------------------------------------------");
-			new PeriodPreferencesCapacity()
-				.printEmployeeAllocations(31,new ArrayList<EmployeeAllocation>(solver.getEmployeeAllocations().values()));
+			EmployeeAllocation.printEmployeeAllocations(31,new ArrayList<EmployeeAllocation>(solver.getEmployeeAllocations().values()));
 
 			ShiftSolverLogger.debug("- SOLUTION ---------------------------------------------------------------");
 			solution.printSchedule();

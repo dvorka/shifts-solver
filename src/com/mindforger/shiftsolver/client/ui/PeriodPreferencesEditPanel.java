@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.Utils;
+import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
 import com.mindforger.shiftsolver.client.solver.PublicHolidays;
 import com.mindforger.shiftsolver.client.solver.ShiftSolverException;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
@@ -196,11 +197,9 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		table.removeAllRows();
 		preferenceButtons.clear();
 
-		HTML html = new HTML("Employee"); // TODO i18n
-		// TODO allow sorting the table by employee name
-		// setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
+		HTML html = new HTML(i18n.employee());
 		table.setWidget(0, 0, html);
-		html = new HTML("Preferences"); // TODO i18n
+		html = new HTML(i18n.periodPreferences());
 		table.setWidget(0, 1, html);
 
 		EmployeePreferences employeePreferences;
@@ -528,11 +527,19 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 					ctx.getRia().showSolutionViewPanel();  			
 				} else {
 					ctx.getStatusLine().showError("No solution exists for these employees and their preferences!");
-					ctx.getRia().showPeriodPreferencesEditPanel();
+					ctx.getSolverNoSolutionPanel().refresh(
+							ctx.getSolver().getFailedWithEmployeeAllocations(),
+							1,
+							periodPreferences);
+					ctx.getRia().showSolverNoSolutionPanel();
 				}		    			
 			} catch(ShiftSolverException e) {
-				ctx.getStatusLine().showError(e.getMessage()); // TODO i18n
-				ctx.getRia().showPeriodPreferencesEditPanel();
+				ctx.getStatusLine().showError(e.getMessage());
+				ctx.getSolverNoSolutionPanel().refresh(
+						e.getFailedOnEmloyeeAllocations(),
+						e.getFailedOnDay(),
+						periodPreferences);
+				ctx.getRia().showSolverNoSolutionPanel();
 			} catch(RuntimeException e) {
 				ctx.getStatusLine().showError("Solver failed: "+e.getMessage());
 				GWT.log("Solver failed:", e);

@@ -59,8 +59,7 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 		default:
 			comparator=new ComparatorEmployeeByName(sortIsAscending);
 			break;
-		}
-		
+		}		
 		Arrays.sort(result, comparator);
 		
 		removeAllRows();
@@ -78,7 +77,7 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 						result[i].isFemale(),
 						result[i].isEditor(),
 						result[i].isSportak(),
-						result[i].isMorningSportak(),
+						result[i].isMortak(),
 						result[i].isFulltime());
 			}			
 		}

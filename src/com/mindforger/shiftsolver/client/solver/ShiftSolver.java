@@ -58,13 +58,16 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 	
 	private long steps;
 	private int depth;
+	private int solutionsCount;
+	private int bestScore;
+
 	private int failedOnMaxDay;
 	private int failedOnMaxDepth;
 	private String failedOnShiftType;
 	private String failedOnRole;
-	private int solutionsCount;
-	private int bestScore;
+	private List<EmployeeAllocation> failedWithEmployeeAllocations;
 
+	// TODO make it failure panel
 	private SolverProgressPanels solverProgressPanel;
 
 	private PublicHolidays publicHolidays;
@@ -90,6 +93,10 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 
 	public Map<String, EmployeeAllocation> getEmployeeAllocations() {
 		return employeeAllocations;
+	}
+
+	public List<EmployeeAllocation> getFailedWithEmployeeAllocations() {
+		return failedWithEmployeeAllocations;
 	}
 	
 	public PeriodSolution solve(Team team, PeriodPreferences periodPreferences, int solutionNumber) {
@@ -137,6 +144,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			ShiftSolverLogger.debug("NO SOLUTION EXISTS!");
 			throw new ShiftSolverException(
 					"No solution exist for these employees and their preferences!",
+					failedWithEmployeeAllocations,
 					failedOnMaxDay,
 					failedOnMaxDepth,
 					failedOnShiftType,
@@ -295,6 +303,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 					} else {
 						throw new ShiftSolverException(
 								"Workday in weekend? "+daySolution.getWeekday()+" - "+Utils.getDayLetter(d, preferences.getStartWeekDay()),
+								failedWithEmployeeAllocations,
 								d,
 								failedOnMaxDepth,
 								failedOnShiftType,
@@ -309,8 +318,10 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 				// TODO editor should be friday afternoon editor (verify on Friday that editor has capacity for 3 shifts)
 				//      PROBLEM:  if friday/saturday is in different month, there is no way to ensure editor continuity (Friday afternoon + Sat + Sun)
 				//      SOLUTION: simply introduce a field like year/month where from dropbox you can choose friday editor
+
 				throw new ShiftSolverException(
 						"Unable to load editor from previous day as don't have previous month",
+						failedWithEmployeeAllocations,						
 						d,
 						failedOnMaxDepth,
 						failedOnShiftType,
@@ -821,6 +832,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			}
 			throw new ShiftSolverException(
 					"Employee "+lastAssignee.getFullName()+" found!",
+					failedWithEmployeeAllocations,					
 					-1,
 					failedOnMaxDepth,
 					failedOnShiftType,
@@ -913,7 +925,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		for(int i=lastIndex; i<employees.size(); i++) {
 			Employee e=employees.get(i);
 			if(!daySolution.isEmployeeAllocatedToday(e.getKey())) {
-				if(e.isSportak() || e.isMorningSportak()) {
+				if(e.isSportak() || e.isMortak()) {
 					if(employeeAllocations.get(e.getKey()).hasCapacity(daySolution.getDay(), SHIFT_MORNING)) {
 						if(!getDayPreference(e, daySolution).isNoMorning6()) {
 							ShiftSolverLogger.debug("  Assigning "+e.getFullName()+" as sportak WORK MORNING");
@@ -1131,6 +1143,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 					"LOOP DETECTED ("+count+">"+employees.size()+"="+employeeAllocations.size()+") "
 					+ "when assigning WORKDAY/WEEKEND-"+ shiftType+"-"+ role+" for day "+d
 					+" and solution number #"+solutionsCount,
+					failedWithEmployeeAllocations,
 					d,
 					failedOnMaxDepth,
 					failedOnShiftType,
@@ -1140,6 +1153,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		if(steps>stepsLimit) {
 			throw new ShiftSolverException(
 					"Steps exceeded - depth "+d+", "+shiftType+", "+role,
+					failedWithEmployeeAllocations,
 					d,
 					failedOnMaxDepth,
 					failedOnShiftType,
@@ -1153,6 +1167,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		failedOnMaxDepth=-1;
 		failedOnShiftType=null;
 		failedOnRole=null;
+		failedWithEmployeeAllocations=null;
 	}
 	
 	private void debugUp(int d, String shiftType, String role) {
@@ -1162,19 +1177,19 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			failedOnMaxDay=d;
 			failedOnMaxDepth=depth;
 			failedOnShiftType=shiftType;
-			failedOnRole=role;						
+			failedOnRole=role;
+			failedWithEmployeeAllocations=EmployeeAllocation.clone(employeeAllocations);
 		}
 
 		ShiftSolverLogger.debug("     BOTTOM CAUSE - failed for depth/shift/role "+failedOnMaxDepth+"-"+failedOnShiftType+"-"+failedOnRole);
-		PeriodPreferencesCapacity capacity
-			=new PeriodPreferencesCapacity();
-				capacity.printEmployeeAllocations(d,new ArrayList<EmployeeAllocation>(employeeAllocations.values()));		
+		EmployeeAllocation.printEmployeeAllocations(d,new ArrayList<EmployeeAllocation>(employeeAllocations.values()));		
 
 		depth--;
 		
 		if(steps>stepsLimit) {
 			throw new ShiftSolverException(
 					i18n.exceptionSolutionNotFoundStepLimitExceeded(stepsLimit,d,shiftType,role),
+					failedWithEmployeeAllocations,
 					failedOnMaxDay,
 					failedOnMaxDepth,
 					failedOnShiftType,

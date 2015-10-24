@@ -113,7 +113,7 @@ public class Employee implements Serializable  {
 		this.birthdayDay = birthdayDay;
 	}
 
-	public boolean isMorningSportak() {
+	public boolean isMortak() {
 		return morningSportak;
 	}
 

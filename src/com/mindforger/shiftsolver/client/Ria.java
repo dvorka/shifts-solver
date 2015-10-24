@@ -56,6 +56,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				RootPanel solutionTable = RootPanel.get(CONTAINER_SOLUTION_TABLE);
 				RootPanel solutionViewPanel = RootPanel.get(CONTAINER_SOLUTION_VIEW);
 				RootPanel solverProgressPanel = RootPanel.get(CONTAINER_SOLVER_PROGRESS);
+				RootPanel solverNoSolutionPanel= RootPanel.get(CONTAINER_SOLVER_NO_SOLUTION);
 
 				pageTitlePanel.add(ctx.getPageTitlePanel());
 				menuPanel.add(ctx.getMenu());
@@ -67,6 +68,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				solutionTable.add(ctx.getSolutionTable());
 				solutionViewPanel.add(ctx.getSolutionViewPanel());
 				solverProgressPanel.add(ctx.getSolverProgressPanel());
+				solverNoSolutionPanel.add(ctx.getSolverNoSolutionPanel());
 
 				showHome();
 
@@ -103,6 +105,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 	private void hideAllContainers() {
 		ctx.getPageTitlePanel().setHTML("");
 		
+		RootPanel.get(CONTAINER_HOME).setVisible(false);		
 		RootPanel.get(CONTAINER_EMPLOYEES_TABLE).setVisible(false);
 		RootPanel.get(CONTAINER_EMPLOYEE_EDITOR).setVisible(false);
 		RootPanel.get(CONTAINER_DLOUHAN_TABLE).setVisible(false);
@@ -110,7 +113,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		RootPanel.get(CONTAINER_SOLUTION_TABLE).setVisible(false);
 		RootPanel.get(CONTAINER_SOLUTION_VIEW).setVisible(false);
 		RootPanel.get(CONTAINER_SOLVER_PROGRESS).setVisible(false);		
-		RootPanel.get(CONTAINER_HOME).setVisible(false);		
+		RootPanel.get(CONTAINER_SOLVER_NO_SOLUTION).setVisible(false);		
 	}
 	
 	public void showHome() {
@@ -316,5 +319,11 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		hideAllContainers();
 		ctx.getPageTitlePanel().setHTML("Solver Progress"); // TODO i18n
 		RootPanel.get(CONTAINER_SOLVER_PROGRESS).setVisible(true);
+	}
+
+	public void showSolverNoSolutionPanel() {
+		hideAllContainers();
+		ctx.getPageTitlePanel().setHTML("No Solution"); // TODO i18n
+		RootPanel.get(CONTAINER_SOLVER_NO_SOLUTION).setVisible(true);
 	}
 }

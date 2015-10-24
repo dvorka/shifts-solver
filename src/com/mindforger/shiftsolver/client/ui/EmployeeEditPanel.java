@@ -140,7 +140,7 @@ public class EmployeeEditPanel extends FlexTable {
 		emailTextBox.setText(employee.getEmail());
 		femaleCheckbox.setValue(employee.isFemale());
 		sportakCheckbox.setValue(employee.isSportak());
-		morningSportakCheckbox.setValue(employee.isMorningSportak());
+		morningSportakCheckbox.setValue(employee.isMortak());
 		editorCheckbox.setValue(employee.isEditor());
 		fulltimeCheckbox.setValue(employee.isFulltime());
 	}
