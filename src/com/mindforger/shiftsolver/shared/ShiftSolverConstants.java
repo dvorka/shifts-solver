@@ -54,5 +54,4 @@ public interface ShiftSolverConstants {
 	String CSS_SHIFT_MORNING="s2-shiftMorning";
 	String CSS_SHIFT_AFTERNOON="s2-shiftAfternoon";
 	String CSS_SHIFT_NIGHT="s2-shiftNight";
-
 }

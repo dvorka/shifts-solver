@@ -2755,27 +2755,30 @@ html>body .gwt-MenuBarPopup {
 	font-weight: bolder;
 }
 
-.s2-solTable {
+.s2-solutionTable {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
   border-collapse: collapse;
 }
-.s2-solTable td {
+.s2-solutionTable td {
   border: 1px solid #ccc;
 }
 
-.s2-solBlack {
+.s2-solutionTableBlack {
 	background-color: #000;
 	color: #FFF;
 }
-.s2-solMorning {
+.s2-solutionTableYellow {
+	background-color: #FF6;	
+}
+.s2-solutionTableMorning {
 	background-color: #EEE;
 }
-.s2-solAfternoon {
+.s2-solutionTableAfternoon {
 	background-color: #DDD;
 }
-.s2-solNight {
+.s2-solutionTableNight {
 	background-color: #BBB;
 }
 

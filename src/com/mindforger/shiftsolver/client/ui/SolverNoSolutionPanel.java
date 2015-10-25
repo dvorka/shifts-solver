@@ -25,6 +25,7 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 
 	private RiaMessages i18n;
 	private RiaContext ctx;
+	private boolean showButtonsPanel;
 
 	private TableSortCriteria sortCriteria;
 	private boolean sortIsAscending;
@@ -33,10 +34,11 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 	private List<EmployeeAllocation> employeeAllocations;
 	private int failday;
 	
-	public SolverNoSolutionPanel(RiaContext ctx) {
+	public SolverNoSolutionPanel(RiaContext ctx, boolean showButtonsPanel) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
 		this.sortCriteria=TableSortCriteria.BY_NAME;
+		this.showButtonsPanel=showButtonsPanel;
 	}
 	
 	public void init() {
@@ -70,7 +72,9 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 		Collections.sort(employeeAllocations, comparator);
 		
 		removeAllRows();
-		setWidget(0,0,newButtonPanel(ctx));
+		if(showButtonsPanel) {
+			setWidget(0,0,newButtonPanel(ctx));
+		}
 		getFlexCellFormatter().setColSpan(0, 0, 8);
 		addRows(employeeAllocations, failday);		
 	}

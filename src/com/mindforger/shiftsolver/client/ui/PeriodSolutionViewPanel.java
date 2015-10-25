@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.Utils;
+import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
 import com.mindforger.shiftsolver.client.solver.PublicHolidays;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
@@ -34,8 +35,12 @@ public class PeriodSolutionViewPanel extends FlexTable {
 	private HTML yearMonthHtml;
 	private FlexTable scheduleTable;
 	private FlexTable shiftsTable;
-	private FlexTable allocationsTable;
+	private SolverNoSolutionPanel allocationsTable;
 	private PeriodPreferences preferences;
+	Button scheduleButton;
+	Button shiftsButton;
+	Button allocationButton;
+	private List<EmployeeAllocation> allocations;
 	
 	
 	public PeriodSolutionViewPanel(final RiaContext ctx) {
@@ -56,16 +61,36 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		
 		shiftsTable = newShiftsTable();
 		setWidget(3, 0, shiftsTable);
+		
+		allocationsTable = new SolverNoSolutionPanel(ctx, false);
+		setWidget(4, 0, allocationsTable);
 	}
 	
 	private void showScheduleTable() {
 		scheduleTable.setVisible(true);
 		shiftsTable.setVisible(false);
+		allocationsTable.setVisible(false);
+		shiftsButton.setVisible(true);
+		scheduleButton.setVisible(false);
+		allocationButton.setVisible(true);
 	}
 
 	private void showShiftsTable() {
 		scheduleTable.setVisible(false);
 		shiftsTable.setVisible(true);
+		allocationsTable.setVisible(false);
+		shiftsButton.setVisible(false);
+		scheduleButton.setVisible(true);
+		allocationButton.setVisible(true);
+	}
+
+	private void showAllocationsTable() {
+		scheduleTable.setVisible(false);
+		shiftsTable.setVisible(false);
+		allocationsTable.setVisible(true);
+		shiftsButton.setVisible(true);
+		scheduleButton.setVisible(true);
+		allocationButton.setVisible(false);
 	}
 	
 	private FlowPanel newButtonPanel(final RiaContext ctx) {
@@ -78,18 +103,9 @@ public class PeriodSolutionViewPanel extends FlexTable {
 				// TODO save solution
 			}
 		});		
-		// TODO buttonPanel.add(saveButton);
+		buttonPanel.add(saveButton);
 
-		Button shiftsButton=new Button("Show Shifts");
-		shiftsButton.setStyleName("mf-buttonLooser");
-		shiftsButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				showShiftsTable();
-			}
-		});		
-		buttonPanel.add(shiftsButton);
-
-		Button scheduleButton=new Button("Show Schedule");
+		scheduleButton = new Button("Schedule");
 		scheduleButton.setStyleName("mf-buttonLooser");
 		scheduleButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -98,18 +114,27 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		});		
 		buttonPanel.add(scheduleButton);
 
-		Button allocationButton=new Button("Show Allocation");
+		shiftsButton = new Button("Shifts");
+		shiftsButton.setStyleName("mf-buttonLooser");
+		shiftsButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				showShiftsTable();
+			}
+		});		
+		buttonPanel.add(shiftsButton);
+		
+		allocationButton = new Button("Employee Allocation");
 		allocationButton.setStyleName("mf-buttonLooser");
 		allocationButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				// TODO
+				showAllocationsTable();
 			}
 		});		
-		//buttonPanel.add(allocationButton);
+		buttonPanel.add(allocationButton);
 				
 		Button backButton=new Button(i18n.backToPreferences());
 		backButton.setStyleName("mf-buttonLooser");
-		backButton.setTitle("Return back to period preferences"); // TODO i18n
+		backButton.setTitle("Return back to period preferences");
 		backButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				ctx.getStatusLine().clear();
@@ -137,7 +162,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 
 	private FlexTable newShiftsTable() {
 		FlexTable table = new FlexTable();
-		table.setStyleName("mf-growsTable");
+		table.setStyleName("s2-solutionTable");
 		table.removeAllRows();
 		return table;		
 	}
@@ -300,226 +325,167 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		}		
 	}
 
-	public void refreshShiftsTable() {
+	private void refreshAllocationsTable() {
+		allocationsTable.refresh(allocations, 100, preferences);
+	}
+	
+	private void refreshShiftsTable() {
 		shiftsTable.removeAllRows();
-		
+
 		if(solution!=null && solution.getDays()!=null && solution.getDays().size()>0) {		
 
-		// table title
-		int row=0;		
-		shiftsTable.setWidget(row, 0, new HTML("Shifts"));
-		shiftsTable.setWidget(row, 1, new HTML("Monday"));
-		shiftsTable.setWidget(row, 2, new HTML("Tuesday"));
-		shiftsTable.setWidget(row, 3, new HTML("Wednesday"));
-		shiftsTable.setWidget(row, 4, new HTML("Thursday"));
-		shiftsTable.setWidget(row, 5, new HTML("Friday"));
-		shiftsTable.setWidget(row, 6, new HTML("Shifts"));
-		shiftsTable.setWidget(row, 7, new HTML("Saturday"));
-		shiftsTable.setWidget(row, 8, new HTML("Sunday"));
-		for(int ii=0; ii<=8; ii++) {
-			shiftsTable.getCellFormatter().setStyleName(row, ii, "s2-solBlack");				
-		}
-
-		// week
-		int columnOf1stDay=preferences.getStartWeekDay()==0?1:(8-preferences.getStartWeekDay());
-		int c;
-		int day=1, oldDay;
-		
-		int weeks=6;
-		int nextWeekRow;
-		for(int w=1; w<=weeks && day<=preferences.getMonthDays(); w++) {
-			// week title
-			c=1;
-			row++;
-			oldDay=day;
-			shiftsTable.setWidget(row, 0, new HTML("Week "+w));
-			shiftsTable.setWidget(row, 1, new HTML(c>=columnOf1stDay?""+day++:""));
-			shiftsTable.setWidget(row, 2, new HTML(c>=columnOf1stDay?""+day++:""));
-			shiftsTable.setWidget(row, 3, new HTML(c>=columnOf1stDay?""+day++:""));
-			shiftsTable.setWidget(row, 4, new HTML(c>=columnOf1stDay?""+day++:""));
-			shiftsTable.setWidget(row, 5, new HTML(c>=columnOf1stDay?""+day++:""));
-			shiftsTable.setWidget(row, 6, new HTML(" "));
-			shiftsTable.setWidget(row, 7, new HTML(c>=columnOf1stDay?""+day++:""));
-			shiftsTable.setWidget(row, 8, new HTML(c>=columnOf1stDay?""+day++:""));
+			// table title
+			int row=0;		
+			shiftsTable.setWidget(row, 0, new HTML("Shifts"));
+			shiftsTable.setWidget(row, 1, new HTML("Monday"));
+			shiftsTable.setWidget(row, 2, new HTML("Tuesday"));
+			shiftsTable.setWidget(row, 3, new HTML("Wednesday"));
+			shiftsTable.setWidget(row, 4, new HTML("Thursday"));
+			shiftsTable.setWidget(row, 5, new HTML("Friday"));
+			shiftsTable.setWidget(row, 6, new HTML("Shifts"));
+			shiftsTable.setWidget(row, 7, new HTML("Saturday"));
+			shiftsTable.setWidget(row, 8, new HTML("Sunday"));
 			for(int ii=0; ii<=8; ii++) {
-				shiftsTable.getCellFormatter().setStyleName(row, ii, "s2-solBlack");				
+				shiftsTable.getCellFormatter().setStyleName(row, ii, "s2-solutionTableBlack");				
 			}
-			day=oldDay;			
 
-			// week body
-			int r=++row;
-			for(int ii=0; ii<13; ii++) {
-				shiftsTable.getCellFormatter().setStyleName(r+ii, 0, "s2-solBlack");				
-			}
-			shiftsTable.setWidget(r++, 0, new HTML("Morning Editor<BR>6:00-14:00"));
-			shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>6:00-14:30"));
-			shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>7:00-15:30"));
-			shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>7:00-15:30"));
-			shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>8:00-16:30"));
-			shiftsTable.setWidget(r++, 0, new HTML("Morning Sportak<BR>7:00-15:30"));		
-			shiftsTable.setWidget(r++, 0, new HTML("Afternoon Editor<BR>14:00-22:30"));
-			shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
-			shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
-			shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
-			shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
-			shiftsTable.setWidget(r++, 0, new HTML("Afternoon Sportak<BR>15:00-23:30"));
-			shiftsTable.setWidget(r++, 0, new HTML("Night Staffer<BR>22:00-6:30"));
-			nextWeekRow=r;
+			// week
+			int columnOf1stDay=preferences.getStartWeekDay()==0?1:(8-preferences.getStartWeekDay());
+			int c;
+			int day=1, oldDay;
 
-			r=row;
-			int cc;
-			for(cc=columnOf1stDay; cc<=5 && day<=preferences.getMonthDays(); cc++, day++) {
-				if(day>0) {
-					DaySolution ds=solution.getSolutionForDay(day);
-					if(ds!=null) {
-						if(ds.isWorkday()) {
-							shiftsTable.setWidget(r-1+1, cc, new HTML(ds.getWorkdayMorningShift().editor.getFullName()));
-							shiftsTable.getCellFormatter().setStyleName(r-1+1, cc, "s2-solMorning");				
-							shiftsTable.setWidget(r-1+2, cc, new HTML(ds.getWorkdayMorningShift().drone6am.getFullName()));
-							shiftsTable.setWidget(r-1+3, cc, new HTML(ds.getWorkdayMorningShift().drone7am.getFullName()));
-							shiftsTable.setWidget(r-1+4, cc, new HTML(ds.getWorkdayMorningShift().drone8am.getFullName()));
-							shiftsTable.setWidget(r-1+5, cc, new HTML("MISSING"));
-							shiftsTable.setWidget(r-1+6, cc, new HTML(ds.getWorkdayMorningShift().sportak.getFullName()));
-							shiftsTable.setWidget(r-1+7, cc, new HTML(ds.getWorkdayAfternoonShift().editor.getFullName()));
-							shiftsTable.getCellFormatter().setStyleName(r-1+7, cc, "s2-solAfternoon");				
-							shiftsTable.setWidget(r-1+8, cc, new HTML(ds.getWorkdayAfternoonShift().drones[0].getFullName()));
-							shiftsTable.setWidget(r-1+9, cc, new HTML(ds.getWorkdayAfternoonShift().drones[1].getFullName()));
-							shiftsTable.setWidget(r-1+10, cc, new HTML(ds.getWorkdayAfternoonShift().drones[2].getFullName()));
-							shiftsTable.setWidget(r-1+11, cc, new HTML(ds.getWorkdayAfternoonShift().drones[3].getFullName()));
-							shiftsTable.setWidget(r-1+12, cc, new HTML(ds.getWorkdayAfternoonShift().sportak.getFullName()));
-							shiftsTable.setWidget(r-1+13, cc, new HTML(ds.getNightShift().drone.getFullName()));																		
-							shiftsTable.getCellFormatter().setStyleName(r-1+13, cc, "s2-solNight");				
-						} else {
-							shiftsTable.setWidget(r-1+1, cc, new HTML(ds.getWeekendMorningShift().editor.getFullName()));
-							shiftsTable.setWidget(r-1+2, cc, new HTML(ds.getWeekendMorningShift().drone6am.getFullName()));
-							shiftsTable.setWidget(r-1+3, cc, new HTML(""));
-							shiftsTable.setWidget(r-1+4, cc, new HTML(""));
-							shiftsTable.setWidget(r-1+5, cc, new HTML(""));
-							shiftsTable.setWidget(r-1+6, cc, new HTML(ds.getWeekendMorningShift().sportak.getFullName()));
-							shiftsTable.setWidget(r-1+7, cc, new HTML(ds.getWeekendAfternoonShift().editor.getFullName()));
-							shiftsTable.setWidget(r-1+8, cc, new HTML(ds.getWeekendAfternoonShift().drone.getFullName()));
-							shiftsTable.setWidget(r-1+9, cc, new HTML(""));
-							shiftsTable.setWidget(r-1+10, cc, new HTML(""));
-							shiftsTable.setWidget(r-1+11, cc, new HTML(""));
-							shiftsTable.setWidget(r-1+12, cc, new HTML(ds.getWeekendAfternoonShift().sportak.getFullName()));
-							shiftsTable.setWidget(r-1+13, cc, new HTML(ds.getNightShift().drone.getFullName()));																		
+			int weeks=6;
+			int nextWeekRow;
+			for(int w=1; w<=weeks && day<=preferences.getMonthDays(); w++) {
+				// week title
+				c=1;
+				row++;
+				oldDay=day;
+				shiftsTable.setWidget(row, 0, new HTML("Week"));
+				shiftsTable.setWidget(row, 1, new HTML(c>=columnOf1stDay && day<=preferences.getMonthDays()?""+day++:""));
+				shiftsTable.setWidget(row, 2, new HTML(c>=columnOf1stDay && day<=preferences.getMonthDays()?""+day++:""));
+				shiftsTable.setWidget(row, 3, new HTML(c>=columnOf1stDay && day<=preferences.getMonthDays()?""+day++:""));
+				shiftsTable.setWidget(row, 4, new HTML(c>=columnOf1stDay && day<=preferences.getMonthDays()?""+day++:""));
+				shiftsTable.setWidget(row, 5, new HTML(c>=columnOf1stDay && day<=preferences.getMonthDays()?""+day++:""));
+				shiftsTable.setWidget(row, 6, new HTML(" "));
+				shiftsTable.setWidget(row, 7, new HTML(c>=columnOf1stDay && day<=preferences.getMonthDays()?""+day++:""));
+				shiftsTable.setWidget(row, 8, new HTML(c>=columnOf1stDay && day<=preferences.getMonthDays()?""+day++:""));
+				for(int ii=0; ii<=8; ii++) {
+					shiftsTable.getCellFormatter().setStyleName(row, ii, "s2-solutionTableYellow");				
+				}
+				day=oldDay;			
+
+				// week body
+				int r=++row;
+				for(int ii=0; ii<13; ii++) {
+					shiftsTable.getCellFormatter().setStyleName(r+ii, 0, "s2-solutionTableBlack");				
+				}
+				shiftsTable.setWidget(r++, 0, new HTML("Morning Editor<BR>6:00-14:00"));
+				shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>6:00-14:30"));
+				shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>7:00-15:30"));
+				shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>7:00-15:30"));
+				shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>8:00-16:30"));
+				shiftsTable.setWidget(r++, 0, new HTML("Morning Sportak<BR>7:00-15:30"));		
+				shiftsTable.setWidget(r++, 0, new HTML("Afternoon Editor<BR>14:00-22:30"));
+				shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
+				shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
+				shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
+				shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
+				shiftsTable.setWidget(r++, 0, new HTML("Afternoon Sportak<BR>15:00-23:30"));
+				shiftsTable.setWidget(r++, 0, new HTML("Night Staffer<BR>22:00-6:30"));
+				nextWeekRow=r;
+
+				r=row;
+				int cc;
+				for(cc=columnOf1stDay; cc<=5 && day<=preferences.getMonthDays(); cc++, day++) {
+					if(day>0) {
+						DaySolution ds=solution.getSolutionForDay(day);
+						if(ds!=null) {
+							if(ds.isWorkday()) {
+								shiftsTable.setWidget(r-1+1, cc, new HTML(ds.getWorkdayMorningShift().editor.getFullName()));
+								shiftsTable.getCellFormatter().setStyleName(r-1+1, cc, "s2-solMorning");				
+								shiftsTable.setWidget(r-1+2, cc, new HTML(ds.getWorkdayMorningShift().drone6am.getFullName()));
+								shiftsTable.setWidget(r-1+3, cc, new HTML(ds.getWorkdayMorningShift().drone7am.getFullName()));
+								shiftsTable.setWidget(r-1+4, cc, new HTML(ds.getWorkdayMorningShift().drone8am.getFullName()));
+								shiftsTable.setWidget(r-1+5, cc, new HTML("MISSING"));
+								shiftsTable.setWidget(r-1+6, cc, new HTML(ds.getWorkdayMorningShift().sportak.getFullName()));
+								shiftsTable.setWidget(r-1+7, cc, new HTML(ds.getWorkdayAfternoonShift().editor.getFullName()));
+								shiftsTable.getCellFormatter().setStyleName(r-1+7, cc, "s2-solAfternoon");				
+								shiftsTable.setWidget(r-1+8, cc, new HTML(ds.getWorkdayAfternoonShift().drones[0].getFullName()));
+								shiftsTable.setWidget(r-1+9, cc, new HTML(ds.getWorkdayAfternoonShift().drones[1].getFullName()));
+								shiftsTable.setWidget(r-1+10, cc, new HTML(ds.getWorkdayAfternoonShift().drones[2].getFullName()));
+								shiftsTable.setWidget(r-1+11, cc, new HTML(ds.getWorkdayAfternoonShift().drones[3].getFullName()));
+								shiftsTable.setWidget(r-1+12, cc, new HTML(ds.getWorkdayAfternoonShift().sportak.getFullName()));
+								shiftsTable.setWidget(r-1+13, cc, new HTML(ds.getNightShift().drone.getFullName()));																		
+								shiftsTable.getCellFormatter().setStyleName(r-1+13, cc, "s2-solNight");				
+							} else {
+								shiftsTable.setWidget(r-1+1, cc, new HTML(ds.getWeekendMorningShift().editor.getFullName()));
+								shiftsTable.setWidget(r-1+2, cc, new HTML(ds.getWeekendMorningShift().drone6am.getFullName()));
+								shiftsTable.setWidget(r-1+3, cc, new HTML(""));
+								shiftsTable.setWidget(r-1+4, cc, new HTML(""));
+								shiftsTable.setWidget(r-1+5, cc, new HTML(""));
+								shiftsTable.setWidget(r-1+6, cc, new HTML(ds.getWeekendMorningShift().sportak.getFullName()));
+								shiftsTable.setWidget(r-1+7, cc, new HTML(ds.getWeekendAfternoonShift().editor.getFullName()));
+								shiftsTable.setWidget(r-1+8, cc, new HTML(ds.getWeekendAfternoonShift().drone.getFullName()));
+								shiftsTable.setWidget(r-1+9, cc, new HTML(""));
+								shiftsTable.setWidget(r-1+10, cc, new HTML(""));
+								shiftsTable.setWidget(r-1+11, cc, new HTML(""));
+								shiftsTable.setWidget(r-1+12, cc, new HTML(ds.getWeekendAfternoonShift().sportak.getFullName()));
+								shiftsTable.setWidget(r-1+13, cc, new HTML(ds.getNightShift().drone.getFullName()));																		
+							}
+						}
+					}
+					columnOf1stDay=6;
+				}
+
+				r=row;
+				for(int ii=0; ii<7; ii++) {
+					shiftsTable.getCellFormatter().setStyleName(r+ii, 6, "s2-solutionTableBlack");				
+				}
+				shiftsTable.setWidget(r++, 6, new HTML("Morning Editor<BR>6:00-14:00"));
+				shiftsTable.setWidget(r++, 6, new HTML("Morning Staffer<BR>6:00-14:30"));
+				shiftsTable.setWidget(r++, 6, new HTML("Morning Sportak<BR>7:00-15:30"));
+				shiftsTable.setWidget(r++, 6, new HTML("Afternoon Editor<BR>14:00-20:30"));
+				shiftsTable.setWidget(r++, 6, new HTML("Afternoon Staffer<BR>14:00-22:30"));
+				shiftsTable.setWidget(r++, 6, new HTML("Afternoon Sportak<BR>15:00-23:30"));
+				shiftsTable.setWidget(r++, 6, new HTML("Nigt Staffer<BR>22:00-6:30"));
+
+				r=row;
+
+				for(cc=columnOf1stDay; cc<=7 && day<=preferences.getMonthDays(); cc++, day++) {
+					if(day>0) {
+						DaySolution ds=solution.getSolutionForDay(day);
+						if(ds!=null) {
+							shiftsTable.setWidget(r+1-1, cc+1, new HTML(ds.getWeekendMorningShift().editor.getFullName()));
+							shiftsTable.setWidget(r+2-1, cc+1, new HTML(ds.getWeekendMorningShift().drone6am.getFullName()));
+							shiftsTable.setWidget(r+3-1, cc+1, new HTML(ds.getWeekendMorningShift().sportak.getFullName()));
+							shiftsTable.setWidget(r+4-1, cc+1, new HTML(ds.getWeekendAfternoonShift().editor.getFullName()));
+							shiftsTable.setWidget(r+5-1, cc+1, new HTML(ds.getWeekendAfternoonShift().drone.getFullName()));
+							shiftsTable.setWidget(r+6-1, cc+1, new HTML(ds.getWeekendAfternoonShift().sportak.getFullName()));
+							shiftsTable.setWidget(r+7-1, cc+1, new HTML(ds.getNightShift().drone.getFullName()));
 						}
 					}
 				}
-				columnOf1stDay=6;
-			}
-			
-			r=row;
-			for(int ii=0; ii<7; ii++) {
-				shiftsTable.getCellFormatter().setStyleName(r+ii, 6, "s2-solBlack");				
-			}
-			shiftsTable.setWidget(r++, 6, new HTML("Morning Editor<BR>6:00-14:00"));
-			shiftsTable.setWidget(r++, 6, new HTML("Morning Staffer<BR>6:00-14:30"));
-			shiftsTable.setWidget(r++, 6, new HTML("Morning Sportak<BR>7:00-15:30"));
-			shiftsTable.setWidget(r++, 6, new HTML("Afternoon Editor<BR>14:00-20:30"));
-			shiftsTable.setWidget(r++, 6, new HTML("Afternoon Staffer<BR>14:00-22:30"));
-			shiftsTable.setWidget(r++, 6, new HTML("Afternoon Sportak<BR>15:00-23:30"));
-			shiftsTable.setWidget(r++, 6, new HTML("Nigt Staffer<BR>22:00-6:30"));
 
-			r=row;
-			
-			for(cc=columnOf1stDay; cc<=7 && day<=preferences.getMonthDays(); cc++, day++) {
-				if(day>0) {
-					DaySolution ds=solution.getSolutionForDay(day);
-					if(ds!=null) {
-						shiftsTable.setWidget(r+1-1, cc+1, new HTML(ds.getWeekendMorningShift().editor.getFullName()));
-						shiftsTable.setWidget(r+2-1, cc+1, new HTML(ds.getWeekendMorningShift().drone6am.getFullName()));
-						shiftsTable.setWidget(r+3-1, cc+1, new HTML(ds.getWeekendMorningShift().sportak.getFullName()));
-						shiftsTable.setWidget(r+4-1, cc+1, new HTML(ds.getWeekendAfternoonShift().editor.getFullName()));
-						shiftsTable.setWidget(r+5-1, cc+1, new HTML(ds.getWeekendAfternoonShift().drone.getFullName()));
-						shiftsTable.setWidget(r+6-1, cc+1, new HTML(ds.getWeekendAfternoonShift().sportak.getFullName()));
-						shiftsTable.setWidget(r+7-1, cc+1, new HTML(ds.getNightShift().drone.getFullName()));
+				columnOf1stDay=1;
+				row=nextWeekRow-1;
+			}
+			for(row=0; row<shiftsTable.getRowCount(); row++) {
+				for(int column=0; column<=8; column++) {
+					try {
+						if(shiftsTable.getWidget(row, column)==null) {
+							shiftsTable.setWidget(row, column, new HTML(" "));
+						}
+					} catch(IndexOutOfBoundsException e) {
+						shiftsTable.setWidget(row, column, new HTML(" "));					
 					}
 				}
 			}
-			
-			columnOf1stDay=1;
-			row=nextWeekRow;
-		}
-				
-		// TODO obsolete
-		//StringBuffer s = createShiftsHtml(solution);		
-		//shiftsTable.setWidget(0, 0, new HTML(s.toString()));
+
 		}
 	}
 
-	private StringBuffer createShiftsHtml(PeriodSolution solution) {
-		StringBuffer s=new StringBuffer();
-		s.append("<br><b>Shifts Schedule:</b><br>");
-		List<DaySolution> days = solution.getDays();
-		s.append("<ul>");
-		for(DaySolution ds:days) {
-			s.append("<li>");
-			s.append((ds.isWorkday()?"Work":"Weekend") + " Day "+ ds.getDay() +":");
-			s.append("<ul>");
-			if(ds.isWorkday()) {
-				s.append("<li>");				
-				s.append("Morning:");
-				s.append("<ul>");
-				s.append("<li>    E "+ds.getWorkdayMorningShift().editor.getFullName());
-				s.append("<li>    D "+ds.getWorkdayMorningShift().drone6am.getFullName());
-				s.append("<li>    D "+ds.getWorkdayMorningShift().drone7am.getFullName());
-				s.append("<li>    D "+ds.getWorkdayMorningShift().drone8am.getFullName());
-				s.append("<li>    E "+ds.getWorkdayMorningShift().sportak.getFullName());
-				s.append("</ul>");
-				s.append("</li>");
-
-				s.append("<li>");
-				s.append("  Afternoon:");
-				s.append("<ul>");
-				s.append("<li>    E "+ds.getWorkdayAfternoonShift().editor.getFullName());
-				s.append("<li>    D "+ds.getWorkdayAfternoonShift().drones[0].getFullName());
-				s.append("<li>    D "+ds.getWorkdayAfternoonShift().drones[1].getFullName());
-				s.append("<li>    D "+ds.getWorkdayAfternoonShift().drones[2].getFullName());
-				s.append("<li>    D "+ds.getWorkdayAfternoonShift().drones[3].getFullName());
-				s.append("<li>    S "+ds.getWorkdayAfternoonShift().sportak.getFullName());
-				s.append("</ul>");
-				s.append("</li>");
-
-				s.append("<li>");
-				s.append("  Night:");
-				s.append("<ul>");
-				s.append("    <li>D "+ds.getNightShift().drone.getFullName());
-				s.append("</ul>");
-				s.append("</li>");
-			} else {		
-				s.append("<li>");
-				s.append("  Morning:");
-				s.append("<ul>");
-				s.append("<li>    E "+ds.getWeekendMorningShift().editor.getFullName());
-				s.append("<li>    D "+ds.getWeekendMorningShift().drone6am.getFullName());
-				s.append("<li>    E "+ds.getWeekendMorningShift().sportak.getFullName());
-				s.append("</ul>");
-				s.append("</li>");
-
-				s.append("<li>");				
-				s.append("  Afternoon:");
-				s.append("<ul>");
-				s.append("<li>    E "+ds.getWeekendAfternoonShift().editor.getFullName());
-				s.append("<li>    D "+ds.getWeekendAfternoonShift().drone.getFullName());
-				s.append("<li>    S "+ds.getWeekendAfternoonShift().sportak.getFullName());
-				s.append("</ul>");
-				s.append("</li>");
-
-				s.append("<li>");				
-				s.append("  Night:");
-				s.append("<ul>");
-				s.append("<li>    D "+ds.getNightShift().drone.getFullName());
-				s.append("</ul>");
-				s.append("</li>");
-			}
-			s.append("</ul>");
-		}
-		s.append("</ul>");
-		return s;
-	}
-	
-	public void refresh(PeriodSolution solution) {
+	public void refresh(PeriodSolution solution, List<EmployeeAllocation> allocations) {
 		if(solution==null) {
 			setVisible(false);
 			return;
@@ -528,6 +494,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		}
 
 		this.solution=solution;
+		this.allocations=allocations;
 		this.preferences = ctx.getState().getPeriodPreferences(solution.getDlouhanKey());
 		
 		objectToRia();
@@ -548,17 +515,20 @@ public class PeriodSolutionViewPanel extends FlexTable {
 	
 	private void objectToRia() {
 		if(solution!=null) {
-			yearMonthHtml.setVisible(true);
-			scheduleTable.setVisible(true);
-			shiftsTable.setVisible(false);
-			
 			yearMonthHtml.setHTML("Solution for: "+solution.getYear()+"/"+solution.getMonth());
+			yearMonthHtml.setVisible(true);
 			refreshScheduleTable();
-			refreshShiftsTable();			
+			refreshShiftsTable();
+			refreshAllocationsTable();
+			showScheduleTable();
 		} else {
 			yearMonthHtml.setVisible(false);
 			scheduleTable.setVisible(false);
 			shiftsTable.setVisible(false);
+			allocationsTable.setVisible(false);
+			shiftsButton.setVisible(false);
+			scheduleButton.setVisible(false);
+			allocationButton.setVisible(false);
 		}
 	}
 }

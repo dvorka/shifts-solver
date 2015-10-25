@@ -90,7 +90,7 @@ public class RiaContext implements ShiftSolverConstants {
 		periodSolutionTable=new PeriodSolutionTable(this);
 		periodSolutionViewPanel=new PeriodSolutionViewPanel(this);
 		solverProgressPanel=new SolverProgressPanel(this);
-		solverNoSolutionPanel=new SolverNoSolutionPanel(this);
+		solverNoSolutionPanel=new SolverNoSolutionPanel(this, true);
 	}
 
 	public RiaMessages getI18n() {
