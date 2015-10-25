@@ -2677,10 +2677,12 @@ html>body .gwt-MenuBarPopup {
 }
 
 .s2-male {
-	color: #000055;
+	background-color: #356AA0;
+	color: #FFF;
 }
 .s2-female {
-	color: #990000;	
+	background-color: #C91826;
+	color: #FFF;	
 }
 .s2-fulltime {
 	color: #000;
@@ -2700,11 +2702,11 @@ html>body .gwt-MenuBarPopup {
 }
 
 .s2-match {
-	color: #005500;	
+	color: #000;	
 	font-weight: bolder;
 }
 .s2-mismatch {
-	/* color: #990000; */
+	color: #CCC;
 }
 
 .s2-shiftFree {
@@ -2753,6 +2755,19 @@ html>body .gwt-MenuBarPopup {
 
 .s2-homeSettingsLabel {
 	font-weight: bolder;
+}
+
+.s2-tableHeadColumnButton {
+	background-color: #000;
+	color: #FFF;
+    width: 100%;
+    text-align: left;
+	font-weight: bolder;
+	
+	border-width: 0px;	
+
+	cursor: hand;
+    cursor: pointer;    
 }
 
 .s2-solutionTable {

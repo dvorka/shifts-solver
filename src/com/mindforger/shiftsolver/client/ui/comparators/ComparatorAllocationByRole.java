@@ -5,34 +5,33 @@ import java.util.Comparator;
 import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
 
 public class ComparatorAllocationByRole implements Comparator<EmployeeAllocation> {
-
-	private int descending; 
+	
+	private ComparatorEmployeeByEditor e;
+	private ComparatorEmployeeBySportak s;
+	private ComparatorEmployeeByMortak m;
 	
 	public ComparatorAllocationByRole(boolean descending) {
-		if(descending) {
-			this.descending=1;						
-		} else {
-			this.descending=-1;			
-		}
+		e=new ComparatorEmployeeByEditor(descending);
+		s=new ComparatorEmployeeBySportak(descending);
+		m=new ComparatorEmployeeByMortak(descending);
 	}
 
 	public int compare(EmployeeAllocation o1, EmployeeAllocation o2) {
 		if(o1!=null && o2!=null) {
-			int value;
-			if(o1.employee.isEditor()) {
-				value=1;
-			} else {
-				if(o1.employee.isSportak()) {
-					value=2;
-				} else {
-					if(o1.employee.isMortak()) {
-						value=3;
+			int result;
+			if((result=e.compare(o1.employee, o2.employee))==0) {
+				if((result=s.compare(o1.employee, o2.employee))==0) {
+					if((result=m.compare(o1.employee, o2.employee))==0) {
+						return 0;
 					} else {
-						value=4;
-					}					
-				}
+						return result;
+					}									
+				} else {
+					return result;
+				}				
+			} else {
+				return result;
 			}
-			return value*descending;
 		}
 		return 0;
 	}

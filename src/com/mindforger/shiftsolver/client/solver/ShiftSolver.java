@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dev.jjs.impl.CodeSplitter2.ParitionHeuristics;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.Utils;
@@ -41,6 +42,24 @@ import com.mindforger.shiftsolver.shared.model.shifts.WorkdayMorningShift;
  *  - iterate only sportaks for sportak, editors for editor (not all)
  */
 public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer {
+	public static final Employee FERDA;
+	
+	static {
+		// persist as NULL, set to Ferda on load 
+		FERDA=new Employee();
+		FERDA.setBirthdayDay(1);
+		FERDA.setBirthdayMonth(1);
+		FERDA.setBirthdayYear(1965);
+		FERDA.setEditor(true);
+		FERDA.setEmail("ferda@mraveniste.cz");
+		FERDA.setFamilyname("Mravenec");
+		FERDA.setFemale(false);
+		FERDA.setFirstname("Ferda");
+		FERDA.setFulltime(true);
+		FERDA.setKey("FERDAKEY");
+		FERDA.setMorningSportak(true);
+		FERDA.setSportak(true);
+	}
 	
 	public long stepsLimit=3000000;
 	
@@ -54,6 +73,8 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 	private Map<String,EmployeeAllocation> employeeAllocations;
 	private Employee lastMonthEditor;
 
+	private boolean partialSolution;
+	
 	private boolean enforceAfternoonTo8am;
 	private boolean enforceNightToAfternoon;
 	
@@ -78,6 +99,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		this.publicHolidays=new PublicHolidays();
 		this.enforceAfternoonTo8am=true;
 		this.enforceNightToAfternoon=true;
+		this.partialSolution=false;
 	}
 	
 	public ShiftSolver(final RiaContext ctx) {
@@ -89,7 +111,9 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 	public PeriodSolution solve(List<Employee> employees, PeriodPreferences periodPreferences, int solutionNumber) {
   		Team team=new Team();
   		team.addEmployees(employees);
-		return solve(team, periodPreferences, solutionNumber);
+		PeriodSolution result = solve(team, periodPreferences, solutionNumber);
+		partialSolution=false;
+		return result;
 	}	
 
 	public Map<String, EmployeeAllocation> getEmployeeAllocations() {
@@ -346,9 +370,16 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			}
 			employeeAllocations.get(previousEditor.getKey()).unassign(SHIFT_MORNING);
 		}
-		debugUp(d, "MORNING", "EDITOR"); 
-		//daySolution.getWeekendAfternoonShift().editor=null;
-		return new BacktrackFor(thisLevelRole);
+		// TODO this is a direction how to implement partial solver
+		if(partialSolution) {
+			employeeAllocations.get(FERDA.getKey()).assign(d, SHIFT_MORNING);					
+			daySolution.getWeekendMorningShift().editor=new Holder<Employee>(FERDA);
+			return assignWeekendMorningDrone6am(d, daySolution, result, isHolidays);
+		} else {
+			debugUp(d, "MORNING", "EDITOR"); 
+			//daySolution.getWeekendAfternoonShift().editor=null;
+			return new BacktrackFor(thisLevelRole);			
+		}
 	}
 	
 	private BacktrackFor assignWeekendMorningDrone6am(int d, DaySolution daySolution, PeriodSolution result, boolean isHolidays) {
@@ -1217,5 +1248,13 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 	@Override
 	public void setIterationsLimit(long limit) {
 		this.stepsLimit=limit;
+	}
+
+	public boolean isPartialSolution() {
+		return partialSolution;
+	}
+
+	public void setPartialSolution(boolean partialSolution) {
+		this.partialSolution = partialSolution;
 	}
 }

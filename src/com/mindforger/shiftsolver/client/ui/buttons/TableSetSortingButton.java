@@ -12,8 +12,7 @@ public class TableSetSortingButton extends Button {
 	public TableSetSortingButton(String text, final TableSortCriteria criteria, final SortableTable table, RiaContext ctx) {
 		setTitle(ctx.getI18n().clickToSort());
 		setText(text);
-		// TODO css
-		setStyleName("mf-growsTableHeadColumnButton");
+		setStyleName("s2-tableHeadColumnButton");
 		addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if(table.getSortingCriteria().equals(criteria)) {

@@ -9,7 +9,12 @@ import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.client.ui.buttons.TableSetSortingButton;
+import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeByEditor;
+import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeByFulltime;
+import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeByGender;
+import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeByMortak;
 import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeByName;
+import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeBySportak;
 import com.mindforger.shiftsolver.shared.model.Employee;
 
 public class EmployeesTable extends FlexTable implements SortableTable {
@@ -51,11 +56,21 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 			comparator=new ComparatorEmployeeByName(sortIsAscending);
 			break;
 		case BY_EDITOR:
-		case BY_EMAIL:
+			comparator=new ComparatorEmployeeByEditor(sortIsAscending);
+			break;
 		case BY_SPORTAK:
-		case BY_MORNING_SPORTAK:
+			comparator=new ComparatorEmployeeBySportak(sortIsAscending);
+			break;
 		case BY_GENDER:
-		case BY_TIMESTAMP:
+			comparator=new ComparatorEmployeeByGender(sortIsAscending);
+			break;
+		case BY_MORTAK:
+			comparator=new ComparatorEmployeeByMortak(sortIsAscending);
+			break;
+		case BY_FULLTIME:
+			comparator=new ComparatorEmployeeByFulltime(sortIsAscending);
+			break;
+		case BY_EMAIL:
 		default:
 			comparator=new ComparatorEmployeeByName(sortIsAscending);
 			break;
@@ -89,7 +104,7 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 		setWidget(0, 2, new TableSetSortingButton(i18n.gender(),TableSortCriteria.BY_GENDER, this, ctx));
 		setWidget(0, 3, new TableSetSortingButton(i18n.editor(),TableSortCriteria.BY_EDITOR, this, ctx));
 		setWidget(0, 4, new TableSetSortingButton(i18n.sportak(),TableSortCriteria.BY_SPORTAK, this, ctx));
-		setWidget(0, 5, new TableSetSortingButton(i18n.morningSportak(),TableSortCriteria.BY_MORNING_SPORTAK, this, ctx));
+		setWidget(0, 5, new TableSetSortingButton(i18n.morningSportak(),TableSortCriteria.BY_MORTAK, this, ctx));
 		setWidget(0, 6, new TableSetSortingButton(i18n.fulltime(),TableSortCriteria.BY_FULLTIME, this, ctx));
 	}
 		
@@ -122,9 +137,9 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 		
 		final HTML womanHtml = new HTML((woman?i18n.female():i18n.male())+"&nbsp;&nbsp;");
 		if(woman) {
-			womanHtml.setStyleName("s2-female");
+			womanHtml.setStyleName("s2-match");
 		} else {
-			womanHtml.setStyleName("s2-male");			
+			womanHtml.setStyleName("s2-mismatch");
 		}
 		
 		final HTML editorHtml = new HTML((editor?i18n.yes():i18n.no())+"&nbsp;&nbsp;");
