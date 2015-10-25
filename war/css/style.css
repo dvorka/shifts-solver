@@ -2782,5 +2782,23 @@ html>body .gwt-MenuBarPopup {
 	background-color: #BBB;
 }
 
+.s2-solutionTableMorningB {
+	background-color: #EEE;
+	border-width: 0px;
+	color: #000;
+  	cursor: hand;
+}
+.s2-solutionTableAfternoonB {
+	background-color: #DDD;
+	border-width: 0px;
+	color: #000;
+  	cursor: hand;
+}
+.s2-solutionTableNightB {
+	background-color: #BBB;
+	border-width: 0px;
+	color: #000;
+  	cursor: hand;
+}
 
 /** EOF **/

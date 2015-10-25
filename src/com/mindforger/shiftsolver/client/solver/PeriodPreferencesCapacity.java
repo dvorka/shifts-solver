@@ -84,8 +84,8 @@ public class PeriodPreferencesCapacity {
 			throw new ShiftSolverException(
 					"Insufficient capacity for role(s): "+
 						(haveEditorShifts<neededEditorShifts?"editor / ":"")+
-						(haveDroneShifts<neededDroneShifts?"drone / ":"")+
-						(haveMorningSportakShifts<neededMorningSportakShifts?"morning sportak / ":"")+
+						(haveDroneShifts<neededDroneShifts?"staffer / ":"")+
+						(haveMorningSportakShifts<neededMorningSportakShifts?"mortak / ":"")+
 						(haveSportakShifts<neededSportakShifts?" sportak":""), 
 					new ArrayList<EmployeeAllocation>(),
 					0, 
@@ -99,9 +99,9 @@ public class PeriodPreferencesCapacity {
 		ShiftSolverLogger.debug("Period capacity (HAVE >= NEEDED):");
 		ShiftSolverLogger.debug("  "+(haveEditorShifts<neededEditorShifts?"FAIL":" OK ")+" editor   : "
 				+haveEditorShifts+">="+neededEditorShifts);
-		ShiftSolverLogger.debug("  "+(haveDroneShifts<neededDroneShifts?"FAIL":" OK ")+" drone    : "
+		ShiftSolverLogger.debug("  "+(haveDroneShifts<neededDroneShifts?"FAIL":" OK ")+" staffer  : "
 				+haveDroneShifts+">="+neededDroneShifts);
-		ShiftSolverLogger.debug("  "+(haveDroneShifts<neededDroneShifts?"FAIL":" OK ")+" m sportak: "
+		ShiftSolverLogger.debug("  "+(haveDroneShifts<neededDroneShifts?"FAIL":" OK ")+" mortak   : "
 				+haveMorningSportakShifts+">="+neededMorningSportakShifts);
 		ShiftSolverLogger.debug("  "+(haveSportakShifts<neededSportakShifts?"FAIL":" OK ")+" sportak  : "
 				+haveSportakShifts+">="+neededSportakShifts);

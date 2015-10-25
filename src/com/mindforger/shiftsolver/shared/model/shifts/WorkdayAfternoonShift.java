@@ -2,29 +2,31 @@ package com.mindforger.shiftsolver.shared.model.shifts;
 
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.model.Employee;
+import com.mindforger.shiftsolver.shared.model.Holder;
 
 public class WorkdayAfternoonShift implements ShiftSolution {
 
-	public Employee editor;
-	public Employee[] drones;
-	public Employee sportak;
+	public Holder<Employee> editor;
+	public Holder<Employee>[] staffers;
+	public Holder<Employee> sportak;
 	
+	@SuppressWarnings("unchecked")
 	public WorkdayAfternoonShift() {
-		drones=new Employee[4];
+		staffers=new Holder[4];
 	}
 	
 	public int isEmployeeAllocated(String key) {
-		if(editor!=null && editor.getKey().equals(key)) {
+		if(editor!=null && editor.get().getKey().equals(key)) {
 			return ShiftSolverConstants.SHIFT_AFTERNOON;
 		}
-		if(drones!=null) {
-			for(Employee e:drones) {
-				if(e!=null && e.getKey().equals(key)) {
+		if(staffers!=null) {
+			for(Holder<Employee> e:staffers) {
+				if(e!=null && e.get().getKey().equals(key)) {
 					return ShiftSolverConstants.SHIFT_AFTERNOON;
 				}
 			}
 		}
-		if(sportak!=null && sportak.getKey().equals(key)) {
+		if(sportak!=null && sportak.get().getKey().equals(key)) {
 			return ShiftSolverConstants.SHIFT_AFTERNOON;
 		}
 		return ShiftSolverConstants.NO_SHIFT;		

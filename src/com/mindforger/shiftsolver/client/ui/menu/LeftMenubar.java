@@ -27,11 +27,12 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 	
 	HTML menuSectionsDelimiter;
 	
+	Button homeButton;
 	Button newEmployeeButton;
 	Button employeesButton;
 	Button newPeriodPreferencesButton;
 	Button periodPreferencesButton;
-	Button homeButton;
+	Button settingsButton;
 
 	private Ria ria;
 	private RiaMessages i18n;
@@ -96,7 +97,14 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 		});
 	    newPeriodPreferencesButton.setStyleName("mf-mrGuideButton");
 	    newPeriodPreferencesButton.addStyleName("mf-newGoalButton");
-				
+
+		settingsButton = new Button(i18n.settings(), new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				showSettings();
+			}
+		});
+		settingsButton.setStyleName("mf-menuButtonOff");
+	    
 		reinitialize();
 		setEmployeesCount(ctx.getState().getEmployees().length);
 		setPeriodPreferencesCount(ctx.getState().getPeriodPreferencesArray().length);
@@ -119,12 +127,17 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 
 		setWidget(row++, 0, newPeriodPreferencesButton);
 		setWidget(row++, 0, periodPreferencesButton);		
+
+		setWidget(row++, 0, new HTML(HTML_MENU_DELIMITER));			
+		
+		setWidget(row++, 0, settingsButton);
 	}
 	
 	private void switchOfAllButtons() {
-		employeesButton.setStyleName("mf-menuButtonOff");
 		homeButton.setStyleName("mf-menuButtonOff"); // mf-menuButtonOffCheatSheet
+		employeesButton.setStyleName("mf-menuButtonOff");
 		periodPreferencesButton.setStyleName("mf-menuButtonOff");
+		settingsButton.setStyleName("mf-menuButtonOff");
 	}
 	
 	public void showEmployeesTable() {
@@ -134,10 +147,17 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 	}
 	
 	public void showHome() {
-		ctx.getHomePanel().refresh(ctx.getSolver());
+		ctx.getHomePanel().refresh();
 		ria.showHome();
 		switchOfAllButtons();
 		homeButton.setStyleName("mf-menuButtonOn");
+	}
+	
+	public void showSettings() {
+		ctx.getSettingsPanel().refresh(ctx.getSolver());
+		ria.showSettings();
+		switchOfAllButtons();
+		settingsButton.setStyleName("mf-menuButtonOn");
 	}
 	
 	public void showPeriodPreferencesTable() {

@@ -2,24 +2,25 @@ package com.mindforger.shiftsolver.shared.model.shifts;
 
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.model.Employee;
+import com.mindforger.shiftsolver.shared.model.Holder;
 
 public class WeekendMorningShift implements ShiftSolution {
 
-	public Employee editor;
-	public Employee drone6am;
-	public Employee sportak;
+	public Holder<Employee> editor;
+	public Holder<Employee> staffer6am;
+	public Holder<Employee> sportak;
 
 	public WeekendMorningShift() {
 	}
 	
 	public int isEmployeeAllocated(String key) {
-		if(editor!=null && editor.getKey().equals(key)) {
+		if(editor!=null && editor.get().getKey().equals(key)) {
 			return ShiftSolverConstants.SHIFT_MORNING;
 		}
-		if(drone6am!=null && drone6am.getKey().equals(key)) {
+		if(staffer6am!=null && staffer6am.get().getKey().equals(key)) {
 			return ShiftSolverConstants.SHIFT_MORNING;
 		}
-		if(sportak!=null && sportak.getKey().equals(key)) {
+		if(sportak!=null && sportak.get().getKey().equals(key)) {
 			return ShiftSolverConstants.SHIFT_MORNING;
 		}
 		return ShiftSolverConstants.NO_SHIFT;		

@@ -1,6 +1,7 @@
 package com.mindforger.shiftsolver.client.solver;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,11 +9,13 @@ import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
 import com.mindforger.shiftsolver.shared.model.DayPreference;
+import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
+import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
-public class EmployeeAllocation {
+public class EmployeeAllocation implements ShiftSolverConstants {
 	
 	public Employee employee;
 	
@@ -86,17 +89,18 @@ public class EmployeeAllocation {
 	}
 	
 	public void assign(int day, int shiftType) {
-		shiftsOnDays.add(day);
-		shiftTypesOnDays.add(shiftType);
-		shifts++;
-				
 		if(shiftType==ShiftSolverConstants.SHIFT_NIGHT) {
 			if(employee.isFulltime() && nights>=2) {
-				throw new RuntimeException("Attemp to assign fulltime employee "+employee.getFullName()+" more than 2 night shifts (has "+nights+")");
+				nights++;				
+				// throw new RuntimeException("Attempt to assign fulltime employee "+employee.getFullName()+" more than 2 night shifts (has "+nights+")");
 			} else {
 				nights++;				
 			}
 		}
+		
+		shiftsOnDays.add(day);
+		shiftTypesOnDays.add(shiftType);
+		shifts++;
 	}
 	
 	public void unassign(int shiftType) {
@@ -193,6 +197,51 @@ public class EmployeeAllocation {
 		return shiftsToGet>0 && shiftsToGet>=(shifts+capacityNeeded);
 	}
 
+	public static List<EmployeeAllocation> calculateEmployeeAllocations(
+			PeriodPreferences preferences,
+			PeriodSolution solution,
+			List<Employee> employees) 
+	{
+		Map<String,EmployeeAllocation> eToA=new HashMap<String, EmployeeAllocation>();
+		for(Employee e:employees) {
+			eToA.put(e.getKey(), new EmployeeAllocation(e, preferences));
+		}
+		
+		for(int d=1; d<=preferences.getMonthDays(); d++) {
+			DaySolution ds = solution.getSolutionForDay(d);
+			if(ds!=null) {
+				if(ds.isWorkday()) {
+					eToA.get(ds.getWorkdayMorningShift().editor.get().getKey()).assign(d, SHIFT_MORNING);
+					eToA.get(ds.getWorkdayMorningShift().staffer6am.get().getKey()).assign(d, SHIFT_MORNING);
+					eToA.get(ds.getWorkdayMorningShift().staffer7am.get().getKey()).assign(d, SHIFT_MORNING);
+					eToA.get(ds.getWorkdayMorningShift().staffer8am.get().getKey()).assign(d, SHIFT_MORNING);
+					eToA.get(ds.getWorkdayMorningShift().sportak.get().getKey()).assign(d, SHIFT_MORNING);
+					
+					eToA.get(ds.getWorkdayAfternoonShift().editor.get().getKey()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWorkdayAfternoonShift().staffers[0].get().getKey()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWorkdayAfternoonShift().staffers[1].get().getKey()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWorkdayAfternoonShift().staffers[2].get().getKey()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWorkdayAfternoonShift().staffers[3].get().getKey()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWorkdayAfternoonShift().sportak.get().getKey()).assign(d, SHIFT_AFTERNOON);
+					
+					eToA.get(ds.getNightShift().staffer.get().getKey()).assign(d, SHIFT_NIGHT);
+					
+				} else {
+					eToA.get(ds.getWeekendMorningShift().editor.get().getKey()).assign(d, SHIFT_MORNING);
+					eToA.get(ds.getWeekendMorningShift().staffer6am.get().getKey()).assign(d, SHIFT_MORNING);
+					eToA.get(ds.getWeekendMorningShift().sportak.get().getKey()).assign(d, SHIFT_MORNING);
+
+					eToA.get(ds.getWeekendAfternoonShift().editor.get().getKey()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWeekendAfternoonShift().staffer.get().getKey()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWeekendAfternoonShift().sportak.get().getKey()).assign(d, SHIFT_AFTERNOON);
+
+					eToA.get(ds.getNightShift().staffer.get().getKey()).assign(d, SHIFT_NIGHT);
+				}
+			}
+		}
+		return new ArrayList<EmployeeAllocation>(eToA.values());
+	}
+	
 	public static void printEmployeeAllocations(int day, List<EmployeeAllocation> allocations) {
 		ShiftSolverLogger.debug("     Employee allocations ("+allocations.size()+"):");
 		for(EmployeeAllocation a:allocations) {
@@ -208,7 +257,7 @@ public class EmployeeAllocation {
 					" "+
 					(a.employee.isEditor()?"editor    ":
 						(a.employee.isSportak()?"sportak   ":
-							(a.employee.isMortak()?"am-sportak":"drone     ")))+
+							(a.employee.isMortak()?"am-sportak":"staffer     ")))+
 					" "+
 					(a.employee.isFulltime()?"FULL":"PART")+
 					" "+

@@ -49,6 +49,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				RootPanel pageTitlePanel = RootPanel.get(CONTAINER_PAGE_TITLE);
 				RootPanel menuPanel = RootPanel.get(CONTAINER_MENU);
 				RootPanel homePanel = RootPanel.get(CONTAINER_HOME);
+				RootPanel settingsPanel = RootPanel.get(CONTAINER_SETTINGS);
 				RootPanel employeesTablePanel = RootPanel.get(CONTAINER_EMPLOYEES_TABLE);
 				RootPanel employeeEditPanel = RootPanel.get(CONTAINER_EMPLOYEE_EDITOR);
 				RootPanel dlouhanTable = RootPanel.get(CONTAINER_DLOUHAN_TABLE);
@@ -69,6 +70,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				solutionViewPanel.add(ctx.getSolutionViewPanel());
 				solverProgressPanel.add(ctx.getSolverProgressPanel());
 				solverNoSolutionPanel.add(ctx.getSolverNoSolutionPanel());
+				settingsPanel.add(ctx.getSettingsPanel());
 
 				showHome();
 
@@ -114,6 +116,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		RootPanel.get(CONTAINER_SOLUTION_VIEW).setVisible(false);
 		RootPanel.get(CONTAINER_SOLVER_PROGRESS).setVisible(false);		
 		RootPanel.get(CONTAINER_SOLVER_NO_SOLUTION).setVisible(false);		
+		RootPanel.get(CONTAINER_SETTINGS).setVisible(false);		
 	}
 	
 	public void showHome() {
@@ -325,5 +328,12 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		hideAllContainers();
 		ctx.getPageTitlePanel().setHTML("No Solution"); // TODO i18n
 		RootPanel.get(CONTAINER_SOLVER_NO_SOLUTION).setVisible(true);
+	}
+
+	public void showSettings() {
+		hideAllContainers();
+		ctx.getPageTitlePanel().setHTML(i18n.settings());
+		RootPanel.get(CONTAINER_SETTINGS).setVisible(true);
+		ctx.getStatusLine().clear();		
 	}
 }

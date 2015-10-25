@@ -13,6 +13,7 @@ import com.mindforger.shiftsolver.client.ui.PeriodPreferencesEditPanel;
 import com.mindforger.shiftsolver.client.ui.PeriodPreferencesTable;
 import com.mindforger.shiftsolver.client.ui.PeriodSolutionTable;
 import com.mindforger.shiftsolver.client.ui.PeriodSolutionViewPanel;
+import com.mindforger.shiftsolver.client.ui.SettingsPanel;
 import com.mindforger.shiftsolver.client.ui.SolverNoSolutionPanel;
 import com.mindforger.shiftsolver.client.ui.SolverProgressPanel;
 import com.mindforger.shiftsolver.client.ui.StatusLine;
@@ -53,6 +54,7 @@ public class RiaContext implements ShiftSolverConstants {
 	private PageTitlePanel pageTitlePanel;
 	private LeftMenubar menu;
 	private HomePanel homePanel;
+	private SettingsPanel settingsPanel;
 	private EmployeesTable employeesTable;
 	private EmployeeEditPanel employeeEditPanel;
 	private PeriodPreferencesTable periodPreferencesTable;
@@ -83,6 +85,7 @@ public class RiaContext implements ShiftSolverConstants {
 		pageTitlePanel=new PageTitlePanel();
 		menu=new LeftMenubar(this);
 		homePanel=new HomePanel(this);
+		settingsPanel=new SettingsPanel(this);
 		employeesTable=new EmployeesTable(this);
 		employeeEditPanel=new EmployeeEditPanel(this);
 		periodPreferencesTable=new PeriodPreferencesTable(this);		
@@ -191,5 +194,13 @@ public class RiaContext implements ShiftSolverConstants {
 
 	public void setSolverNoSolutionPanel(SolverNoSolutionPanel solverNoSolutionPanel) {
 		this.solverNoSolutionPanel = solverNoSolutionPanel;
+	}
+
+	public SettingsPanel getSettingsPanel() {
+		if(!initialized.contains(settingsPanel)) {
+			initialized.add(settingsPanel);
+			settingsPanel.init();
+		}
+		return settingsPanel;
 	}
 }

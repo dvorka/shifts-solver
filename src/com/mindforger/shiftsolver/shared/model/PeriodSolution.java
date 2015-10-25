@@ -108,35 +108,35 @@ public class PeriodSolution implements Serializable {
 			ShiftSolverLogger.debug((ds.isWorkday()?"Work":"Weekend") + " Day "+ ds.getDay() +":");
 			if(ds.isWorkday()) {
 				ShiftSolverLogger.debug("  Morning:");
-				ShiftSolverLogger.debug("    E "+ds.getWorkdayMorningShift().editor.getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().drone6am.getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().drone7am.getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().drone8am.getFullName());
-				ShiftSolverLogger.debug("    E "+ds.getWorkdayMorningShift().sportak.getFullName());
+				ShiftSolverLogger.debug("    E "+ds.getWorkdayMorningShift().editor.get().getFullName());
+				ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().staffer6am.get().getFullName());
+				ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().staffer7am.get().getFullName());
+				ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().staffer8am.get().getFullName());
+				ShiftSolverLogger.debug("    E "+ds.getWorkdayMorningShift().sportak.get().getFullName());
 
 				ShiftSolverLogger.debug("  Afternoon:");
-				ShiftSolverLogger.debug("    E "+ds.getWorkdayAfternoonShift().editor.getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().drones[0].getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().drones[1].getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().drones[2].getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().drones[3].getFullName());
-				ShiftSolverLogger.debug("    S "+ds.getWorkdayAfternoonShift().sportak.getFullName());
+				ShiftSolverLogger.debug("    E "+ds.getWorkdayAfternoonShift().editor.get().getFullName());
+				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[0].get().getFullName());
+				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[1].get().getFullName());
+				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[2].get().getFullName());
+				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[3].get().getFullName());
+				ShiftSolverLogger.debug("    S "+ds.getWorkdayAfternoonShift().sportak.get().getFullName());
 
 				ShiftSolverLogger.debug("  Night:");
-				ShiftSolverLogger.debug("    D "+ds.getNightShift().drone.getFullName());
+				ShiftSolverLogger.debug("    D "+ds.getNightShift().staffer.get().getFullName());
 			} else {		
 				ShiftSolverLogger.debug("  Morning:");
-				ShiftSolverLogger.debug("    E "+ds.getWeekendMorningShift().editor.getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWeekendMorningShift().drone6am.getFullName());
-				ShiftSolverLogger.debug("    E "+ds.getWeekendMorningShift().sportak.getFullName());
+				ShiftSolverLogger.debug("    E "+ds.getWeekendMorningShift().editor.get().getFullName());
+				ShiftSolverLogger.debug("    D "+ds.getWeekendMorningShift().staffer6am.get().getFullName());
+				ShiftSolverLogger.debug("    E "+ds.getWeekendMorningShift().sportak.get().getFullName());
 
 				ShiftSolverLogger.debug("  Afternoon:");
-				ShiftSolverLogger.debug("    E "+ds.getWeekendAfternoonShift().editor.getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWeekendAfternoonShift().drone.getFullName());
-				ShiftSolverLogger.debug("    S "+ds.getWeekendAfternoonShift().sportak.getFullName());
+				ShiftSolverLogger.debug("    E "+ds.getWeekendAfternoonShift().editor.get().getFullName());
+				ShiftSolverLogger.debug("    D "+ds.getWeekendAfternoonShift().staffer.get().getFullName());
+				ShiftSolverLogger.debug("    S "+ds.getWeekendAfternoonShift().sportak.get().getFullName());
 
 				ShiftSolverLogger.debug("  Night:");
-				ShiftSolverLogger.debug("    D "+ds.getNightShift().drone.getFullName());
+				ShiftSolverLogger.debug("    D "+ds.getNightShift().staffer.get().getFullName());
 			}
 		}
 	}

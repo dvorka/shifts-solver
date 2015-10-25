@@ -17,6 +17,7 @@ import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
+import com.mindforger.shiftsolver.shared.model.Holder;
 import com.mindforger.shiftsolver.shared.model.Job;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
@@ -286,20 +287,20 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			previousDaySolution=result.getDays().get(result.getDays().size()-2);
 			if(isHolidays) {
 				if(previousDaySolution.getWeekday()==Calendar.SATURDAY) {
-					previousEditor=previousDaySolution.getWeekendMorningShift().editor;					
+					previousEditor=previousDaySolution.getWeekendMorningShift().editor.get();					
 				} else {
 					if(previousDaySolution.getWeekday()==Calendar.SATURDAY) {
-						previousEditor=previousDaySolution.getWeekendMorningShift().editor;						
+						previousEditor=previousDaySolution.getWeekendMorningShift().editor.get();						
 					} else {
-						previousEditor=previousDaySolution.getWorkdayAfternoonShift().editor;						
+						previousEditor=previousDaySolution.getWorkdayAfternoonShift().editor.get();						
 					}					
 				}
 			} else {
 				if(daySolution.getWeekday()==Calendar.SATURDAY) {
-					previousEditor=previousDaySolution.getWorkdayAfternoonShift().editor;				
+					previousEditor=previousDaySolution.getWorkdayAfternoonShift().editor.get();				
 				} else {
 					if(daySolution.getWeekday()==Calendar.SUNDAY) {
-						previousEditor=previousDaySolution.getWeekendMorningShift().editor;
+						previousEditor=previousDaySolution.getWeekendMorningShift().editor.get();
 					} else {
 						throw new ShiftSolverException(
 								"Workday in weekend? "+daySolution.getWeekday()+" - "+Utils.getDayLetter(d, preferences.getStartWeekDay()),
@@ -332,7 +333,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		if(findEditorForWeekendMorning(previousEditor, daySolution)!=null) {
 			debugDown(d, "MORNING", "EDITOR", -1);
 			employeeAllocations.get(previousEditor.getKey()).assign(d, SHIFT_MORNING);					
-			daySolution.getWeekendMorningShift().editor=previousEditor;
+			daySolution.getWeekendMorningShift().editor=new Holder<Employee>(previousEditor);
 			BacktrackFor backtrackFor=assignWeekendMorningDrone6am(d, daySolution, result, isHolidays);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -358,7 +359,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findDroneForWeekendMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "DRONE", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_6);					
-			daySolution.getWeekendMorningShift().drone6am=lastAssignee;
+			daySolution.getWeekendMorningShift().staffer6am=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=assignWeekendMorningSportak(d, daySolution, result, isHolidays);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -372,7 +373,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_6);
 		}
 		debugUp(d, "MORNING", "DRONE"); 
-		//daySolution.getWeekendMorningShift().drone6am=null;
+		//daySolution.getWeekendMorningShift().staffer6am=null;
 		return new BacktrackFor(thisLevelRole);
 	}
 
@@ -384,7 +385,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findSportakForWeekendMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "SPORTAK", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING);			
-			daySolution.getWeekendMorningShift().sportak=lastAssignee;
+			daySolution.getWeekendMorningShift().sportak=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=assignWeekendAfternoonEditor(d, daySolution, result, isHolidays);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -405,11 +406,11 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 	private BacktrackFor assignWeekendAfternoonEditor(int d, DaySolution daySolution, PeriodSolution result, boolean isHolidays) {
 		ShiftSolverLogger.debug(" Weekend Afternoon");
 		int thisLevelRole=ROLE_EDITOR;		
-		Employee lastEditor=daySolution.getWeekendMorningShift().editor;
+		Employee lastEditor=daySolution.getWeekendMorningShift().editor.get();
 		if((findEditorForWeekendAfternoon(lastEditor, daySolution))!=null) {
 			debugDown(d, "AFTERNOON", "EDITOR", -1);
 			employeeAllocations.get(lastEditor.getKey()).assign(d, SHIFT_AFTERNOON);					
-			daySolution.getWeekendAfternoonShift().editor=lastEditor;
+			daySolution.getWeekendAfternoonShift().editor=new Holder<Employee>(lastEditor);
 			BacktrackFor backtrackFor=assignWeekendAfternoonDrone(d, daySolution, result, isHolidays);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -435,7 +436,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findDroneForWeekendAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "STAFFER", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
-			daySolution.getWeekendAfternoonShift().drone=lastAssignee;
+			daySolution.getWeekendAfternoonShift().staffer=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=assignWeekendAfternoonSportak(d, daySolution, result, isHolidays);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -449,7 +450,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 		}
 		debugUp(d, "AFTERNOON", "STAFFER"); 
-		//daySolution.getWeekendAfternoonShift().drone=null;
+		//daySolution.getWeekendAfternoonShift().staffer=null;
 		return new BacktrackFor(thisLevelRole);
 	}
 	
@@ -461,7 +462,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findSportakForWeekendAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "SPORTAK", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
-			daySolution.getWeekendAfternoonShift().sportak=lastAssignee;
+			daySolution.getWeekendAfternoonShift().sportak=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=assignWeekendNightDrone(d, daySolution, result, isHolidays);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -488,7 +489,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findDroneForWeekendNight(employees, daySolution, lastAssignee, isHolidays))!=null) {
 			debugDown(d, "NIGHT", "STAFFER", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_NIGHT);					
-			daySolution.getNightShift().drone=lastAssignee;
+			daySolution.getNightShift().staffer=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=solveDay(d+1, result);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -502,7 +503,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_NIGHT);
 		}
 		debugUp(d, "NIGHT", "STAFFER");
-		//daySolution.getNightShift().drone=null;
+		//daySolution.getNightShift().staffer=null;
 		return new BacktrackFor(thisLevelRole);
 	}
 	
@@ -515,7 +516,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findEditorForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "EDITOR", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING);					
-			daySolution.getWorkdayMorningShift().editor=lastAssignee;
+			daySolution.getWorkdayMorningShift().editor=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=assignWorkdayMorningDrone6am(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -541,7 +542,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findDroneForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "DRONE6AM", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_6);					
-			daySolution.getWorkdayMorningShift().drone6am=lastAssignee;
+			daySolution.getWorkdayMorningShift().staffer6am=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=assignWorkdayMorningDrone7am(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -555,7 +556,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_6);
 		}
 		debugUp(d, "MORNING", "DRONE6AM"); 
-		//daySolution.getWorkdayMorningShift().drone6am=null;
+		//daySolution.getWorkdayMorningShift().staffer6am=null;
 		return new BacktrackFor(thisLevelRole);		
 	}
 
@@ -567,7 +568,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findDroneForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "DRONE7AM", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_7);					
-			daySolution.getWorkdayMorningShift().drone7am=lastAssignee;
+			daySolution.getWorkdayMorningShift().staffer7am=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=assignWorkdayMorningDrone8am(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -581,7 +582,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_7);
 		}
 		debugUp(d, "MORNING", "DRONE7AM"); 
-		//daySolution.getWorkdayMorningShift().drone7am=null;
+		//daySolution.getWorkdayMorningShift().staffer7am=null;
 		return new BacktrackFor(thisLevelRole);		
 	}
 
@@ -593,7 +594,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findDroneForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "DRONE8AM", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_8);					
-			daySolution.getWorkdayMorningShift().drone8am=lastAssignee;
+			daySolution.getWorkdayMorningShift().staffer8am=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=assignWorkdayMorningSportak(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -607,7 +608,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_8);
 		}
 		debugUp(d, "MORNING", "DRONE8AM"); 
-		//daySolution.getWorkdayMorningShift().drone8am=null;
+		//daySolution.getWorkdayMorningShift().staffer8am=null;
 		return new BacktrackFor(thisLevelRole);		
 	}
 	
@@ -619,7 +620,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findSportakForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "SPORTAK", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING);			
-			daySolution.getWorkdayMorningShift().sportak=lastAssignee;
+			daySolution.getWorkdayMorningShift().sportak=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=assignWorkdayAfternoonEditor(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -646,7 +647,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findEditorForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "EDITOR", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
-			daySolution.getWorkdayAfternoonShift().editor=lastAssignee;
+			daySolution.getWorkdayAfternoonShift().editor=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=assignWorkdayAfternoonDrone1(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -672,7 +673,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "DRONE1", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
-			daySolution.getWorkdayAfternoonShift().drones[0]=lastAssignee;
+			daySolution.getWorkdayAfternoonShift().staffers[0]=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=assignWorkdayAfternoonDrone2(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -686,7 +687,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 		}
 		debugUp(d, "AFTERNOON", "DRONE1"); 
-		//daySolution.getWorkdayAfternoonShift().drones[0]=null;
+		//daySolution.getWorkdayAfternoonShift().staffers[0]=null;
 		return new BacktrackFor(thisLevelRole);		
 	}
 		
@@ -698,7 +699,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "DRONE2", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);			
-			daySolution.getWorkdayAfternoonShift().drones[1]=lastAssignee;
+			daySolution.getWorkdayAfternoonShift().staffers[1]=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=assignWorkdayAfternoonDrone3(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -712,7 +713,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 		}
 		debugUp(d, "AFTERNOON", "DRONE2"); 
-		//daySolution.getWorkdayAfternoonShift().drones[1]=null;
+		//daySolution.getWorkdayAfternoonShift().staffers[1]=null;
 		return new BacktrackFor(thisLevelRole);		
 	}
 	
@@ -724,7 +725,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "DRONE3", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
-			daySolution.getWorkdayAfternoonShift().drones[2]=lastAssignee;
+			daySolution.getWorkdayAfternoonShift().staffers[2]=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=assignWorkdayAfternoonDrone4(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -738,7 +739,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 		}
 		debugUp(d, "AFTERNOON", "DRONE3"); 
-		//daySolution.getWorkdayAfternoonShift().drones[2]=null;
+		//daySolution.getWorkdayAfternoonShift().staffers[2]=null;
 		return new BacktrackFor(thisLevelRole);		
 	}
 	
@@ -750,7 +751,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findDroneForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "DRONE4", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
-			daySolution.getWorkdayAfternoonShift().drones[3]=lastAssignee;
+			daySolution.getWorkdayAfternoonShift().staffers[3]=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=assignWorkdayAfternoonSportak(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -764,7 +765,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_AFTERNOON);
 		}
 		debugUp(d, "AFTERNOON", "DRONE4"); 
-		//daySolution.getWorkdayAfternoonShift().drones[3]=null;
+		//daySolution.getWorkdayAfternoonShift().staffers[3]=null;
 		return new BacktrackFor(thisLevelRole);		
 	}
 
@@ -776,7 +777,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findSportakForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "SPORTAK", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
-			daySolution.getWorkdayAfternoonShift().sportak=lastAssignee;
+			daySolution.getWorkdayAfternoonShift().sportak=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=assignWorkdayNightDrone(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -803,7 +804,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		while((lastAssignee=findDroneForWorkdayNight(es, daySolution, lastAssignee))!=null) {
 			debugDown(d, "NIGHT", "DRONE", c++);
 			employeeAllocations.get(lastAssignee.getKey()).assign(d, SHIFT_NIGHT);					
-			daySolution.getNightShift().drone=lastAssignee;
+			daySolution.getNightShift().staffer=new Holder<Employee>(lastAssignee);
 			BacktrackFor backtrackFor=solveDay(d+1, result);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
@@ -817,7 +818,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			employeeAllocations.get(lastAssignee.getKey()).unassign(SHIFT_NIGHT);
 		}
 		debugUp(d, "NIGHT", "DRONE");
-		//daySolution.getNightShift().drone=null;
+		//daySolution.getNightShift().staffer=null;
 		return new BacktrackFor(thisLevelRole);		
 	}
 	
