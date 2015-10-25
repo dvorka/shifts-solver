@@ -78,25 +78,7 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 	private FlowPanel newButtonPanel(final RiaContext ctx) {
 		FlowPanel buttonPanel=new FlowPanel();
 
-		Button solveButton=new Button("Solve"); // TODO i18n
-		solveButton.setStyleName("mf-button");
-		solveButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				handleSolve(ctx, false);
-			}
-		});		
-		buttonPanel.add(solveButton);
-
-		Button shuffleAndSolveButton=new Button("Shuffle and Solve"); // TODO i18n
-		shuffleAndSolveButton.setStyleName("mf-button");
-		shuffleAndSolveButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				handleSolve(ctx, true);
-			}
-		});		
-		buttonPanel.add(shuffleAndSolveButton);
-		
-		Button saveButton=new Button("Save"); // TODO i18n
+		Button saveButton=new Button(i18n.save());
 		saveButton.setStyleName("mf-button");
 		saveButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -109,19 +91,26 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			}
 		});		
 		buttonPanel.add(saveButton);
-		Button cancelButton=new Button("Cancel"); // TODO i18n
-		cancelButton.setStyleName("mf-buttonLooser");
-		cancelButton.setTitle("Discard changes"); // TODO i18n
-		cancelButton.addClickHandler(new ClickHandler() {
+		
+		Button solveButton=new Button(i18n.solve());
+		solveButton.setStyleName("mf-button");
+		solveButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if(periodPreferences!=null) {
-					ctx.getPeriodPreferencesTable().refresh(ctx.getState().getPeriodPreferencesArray());
-		      		ctx.getRia().showPeriodPreferencesTable();
-				}
+				handleSolve(ctx, false);
 			}
 		});		
-		buttonPanel.add(cancelButton);
-		Button deleteButton=new Button("Delete"); // TODO i18n
+		buttonPanel.add(solveButton);
+
+		Button shuffleAndSolveButton=new Button(i18n.shuffleAndSolve());
+		shuffleAndSolveButton.setStyleName("mf-buttonLooser");
+		shuffleAndSolveButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				handleSolve(ctx, true);
+			}
+		});		
+		buttonPanel.add(shuffleAndSolveButton);
+
+		Button deleteButton=new Button(i18n.delete());
 		deleteButton.setStyleName("mf-button");
 		deleteButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -133,6 +122,19 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 			}
 		});		
 		buttonPanel.add(deleteButton);
+		
+		Button cancelButton=new Button(i18n.cancel());
+		cancelButton.setStyleName("mf-buttonLooser");
+		cancelButton.setTitle(i18n.discardChanges());
+		cancelButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if(periodPreferences!=null) {
+					ctx.getPeriodPreferencesTable().refresh(ctx.getState().getPeriodPreferencesArray());
+		      		ctx.getRia().showPeriodPreferencesTable();
+				}
+			}
+		});		
+		buttonPanel.add(cancelButton);
 		
 		return buttonPanel;
 	}

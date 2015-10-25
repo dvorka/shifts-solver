@@ -1,6 +1,7 @@
 package com.mindforger.shiftsolver.client;
 
 import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.safehtml.shared.SafeHtml;
 
 public interface RiaMessages extends Messages {
 
@@ -51,4 +52,8 @@ public interface RiaMessages extends Messages {
 	String job();
 	String shifts();
 	String exceptionSolutionNotFoundStepLimitExceeded(long stepsLimit, int d, String shiftType, String role);
+	String solve();
+	String shuffleAndSolve();
+	String schedule();
+	String employeesAllocation();
 }

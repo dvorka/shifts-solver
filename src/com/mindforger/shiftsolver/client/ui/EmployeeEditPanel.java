@@ -42,7 +42,21 @@ public class EmployeeEditPanel extends FlexTable {
 		      		ctx.getStatusLine().showInfo("Employee '"+employee.getFullName()+"' saved"); // TODO i18n
 				}
 			}
+		});
+		
+		Button deleteButton=new Button(i18n.delete());
+		deleteButton.setStyleName("mf-button");
+		deleteButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if(employee!=null) {
+		    		ctx.getStatusLine().showProgress(ctx.getI18n().deletingEmployee());
+		      		ctx.getRia().deleteEmployee(employee);
+		      		ctx.getStatusLine().showInfo("Employee '"+employee.getFullName()+"' deleted");
+				}
+			}
 		});		
+		buttonPanel.add(deleteButton);
+
 		buttonPanel.add(saveButton);
 		Button cancelButton=new Button(i18n.cancel());
 		cancelButton.setStyleName("mf-buttonLooser");
@@ -56,18 +70,6 @@ public class EmployeeEditPanel extends FlexTable {
 			}
 		});		
 		buttonPanel.add(cancelButton);
-		Button deleteButton=new Button(i18n.delete());
-		deleteButton.setStyleName("mf-button");
-		deleteButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				if(employee!=null) {
-		    		ctx.getStatusLine().showProgress(ctx.getI18n().deletingEmployee());
-		      		ctx.getRia().deleteEmployee(employee);
-		      		ctx.getStatusLine().showInfo("Employee '"+employee.getFullName()+"' deleted");
-				}
-			}
-		});		
-		buttonPanel.add(deleteButton);
 		
 	    FlexCellFormatter cellFormatter = getFlexCellFormatter();
 		cellFormatter.setColSpan(0, 0, 2);

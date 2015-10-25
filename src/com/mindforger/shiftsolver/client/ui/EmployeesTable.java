@@ -85,12 +85,11 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 
 	private void addTableTitle() {		
 		setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
-		setWidget(0, 1, new TableSetSortingButton("Email",TableSortCriteria.BY_EMAIL, this, ctx)); // TODO i18n
+		setWidget(0, 1, new TableSetSortingButton(i18n.email(),TableSortCriteria.BY_EMAIL, this, ctx));
 		setWidget(0, 2, new TableSetSortingButton(i18n.gender(),TableSortCriteria.BY_GENDER, this, ctx));
 		setWidget(0, 3, new TableSetSortingButton(i18n.editor(),TableSortCriteria.BY_EDITOR, this, ctx));
 		setWidget(0, 4, new TableSetSortingButton(i18n.sportak(),TableSortCriteria.BY_SPORTAK, this, ctx));
-		// TODO i18n
-		setWidget(0, 5, new TableSetSortingButton("Morning Sportak",TableSortCriteria.BY_MORNING_SPORTAK, this, ctx));
+		setWidget(0, 5, new TableSetSortingButton(i18n.morningSportak(),TableSortCriteria.BY_MORNING_SPORTAK, this, ctx));
 		setWidget(0, 6, new TableSetSortingButton(i18n.fulltime(),TableSortCriteria.BY_FULLTIME, this, ctx));
 	}
 		
