@@ -6,6 +6,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.mindforger.shiftsolver.client.ShiftSolverService;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
+import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 import com.mindforger.shiftsolver.shared.service.RiaBootImageBean;
 import com.mindforger.shiftsolver.shared.service.UserBean;
 import com.mindforger.shiftsolver.shared.service.UserSettingsBean;
@@ -24,6 +25,7 @@ public class ShiftSolverServiceImpl extends RemoteServiceServlet implements Shif
 		RiaBootImageBean result = new RiaBootImageBean();
 		result.setEmployees(persistence.getEmployees());
 		result.setPeriodPreferencesList(persistence.getPeriodPreferences());
+		result.setPeriodSolutions(persistence.getPeriodSolution());
 		result.setUser(new UserBean());
 		result.setUserSettings(new UserSettingsBean());
 		return result;
@@ -81,5 +83,25 @@ public class ShiftSolverServiceImpl extends RemoteServiceServlet implements Shif
 	@Override
 	public PeriodPreferences[] getPeriodPreferences() {
 		return persistence.getPeriodPreferences();
+	}
+
+	@Override
+	public PeriodSolution newPeriodSolution(PeriodSolution periodSolution) {
+		return persistence.createPeriodSolution(periodSolution);
+	}
+
+	@Override
+	public void savePeriodSolution(PeriodSolution periodSolution) {
+		persistence.savePeriodSolution(periodSolution);
+	}
+
+	@Override
+	public void deletePeriodSolution(String key) {
+		persistence.deletePeriodSolution(key);
+	}
+
+	@Override
+	public PeriodSolution[] getPeriodSolution() {
+		return persistence.getPeriodSolution();
 	}
 }

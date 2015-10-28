@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Job implements Serializable {
 	private static final long serialVersionUID = 5771885426390872948L;
 	
+	public String key;
 	public int shiftsLimit;
 	public int shifts;
 	
@@ -30,5 +31,13 @@ public class Job implements Serializable {
 
 	public void setShifts(int shifts) {
 		this.shifts = shifts;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 }

@@ -1,5 +1,6 @@
 package com.mindforger.shiftsolver.client.ui.menu;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,14 +11,16 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
-import com.mindforger.shiftsolver.client.ShiftSolverServiceAsync;
 import com.mindforger.shiftsolver.client.Ria;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
+import com.mindforger.shiftsolver.client.ShiftSolverServiceAsync;
+import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
+import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
 public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 	
@@ -26,12 +29,13 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 	private RiaContext ctx;
 	
 	HTML menuSectionsDelimiter;
-	
+
 	Button homeButton;
 	Button newEmployeeButton;
 	Button employeesButton;
 	Button newPeriodPreferencesButton;
 	Button periodPreferencesButton;
+	Button periodSolutionsButton;
 	Button settingsButton;
 
 	private Ria ria;
@@ -77,10 +81,23 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 		});
 		homeButton.setStyleName("mf-menuButtonOff");
 
+		periodSolutionsButton=new Button(i18n.solutions(), new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if(ctx.getState().getPeriodSolutions()!=null && ctx.getState().getPeriodSolutions().length>0) {
+					int count=ctx.getState().getPeriodPreferencesArray().length;
+					setPeriodSolutionsCount(count);
+					showSolutionsTable();
+				} else {
+					showHome();					
+				}
+			}
+		});
+		periodSolutionsButton.setStyleName("mf-menuButtonOff");
+
 		periodPreferencesButton=new Button(i18n.periodPreferences(), new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if(ctx.getState().getPeriodPreferencesArray()!=null && ctx.getState().getPeriodPreferencesArray().length>0) {
-					int count=(ctx.getState().getEmployees()!=null?ctx.getState().getPeriodPreferencesArray().length:0);
+					int count=ctx.getState().getPeriodPreferencesArray().length;
 					setPeriodPreferencesCount(count);
 					showPeriodPreferencesTable();
 				} else {
@@ -89,7 +106,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 			}
 		});
 		periodPreferencesButton.setStyleName("mf-menuButtonOff");
-
+		
 		newPeriodPreferencesButton = new Button(i18n.newPeriodPreferences(), new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				createNewPeriodPreferences();
@@ -126,8 +143,9 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 		setWidget(row++, 0, new HTML(HTML_MENU_DELIMITER));			
 
 		setWidget(row++, 0, newPeriodPreferencesButton);
-		setWidget(row++, 0, periodPreferencesButton);		
+		setWidget(row++, 0, periodPreferencesButton);
 
+		setWidget(row++, 0, periodSolutionsButton);
 		setWidget(row++, 0, new HTML(HTML_MENU_DELIMITER));			
 		
 		setWidget(row++, 0, settingsButton);
@@ -137,6 +155,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 		homeButton.setStyleName("mf-menuButtonOff"); // mf-menuButtonOffCheatSheet
 		employeesButton.setStyleName("mf-menuButtonOff");
 		periodPreferencesButton.setStyleName("mf-menuButtonOff");
+		periodSolutionsButton.setStyleName("mf-menuButtonOff");
 		settingsButton.setStyleName("mf-menuButtonOff");
 	}
 	
@@ -165,7 +184,13 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 		switchOfAllButtons();
 		periodPreferencesButton.setStyleName("mf-menuButtonOn");
 	}
-		
+
+	public void showSolutionsTable() {
+		ria.showSolutionsTable();
+		switchOfAllButtons();
+		periodSolutionsButton.setStyleName("mf-menuButtonOn");
+	}
+			
 	public Button getNewGrowButton() {
 		return newEmployeeButton;
 	}
@@ -218,6 +243,23 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 		});
 	}
 
+	public void createNewSolution(String periodPreferencesKey) {
+		PeriodSolution s=new PeriodSolution();
+		s.setPeriodPreferencesKey(periodPreferencesKey);
+		service.newPeriodSolution(s,new AsyncCallback<PeriodSolution>() {
+			public void onFailure(Throwable caught) {
+				ria.handleServiceError(caught);
+			}
+			public void onSuccess(PeriodSolution result) {
+				GWT.log("RIA - new solution succesfuly created! "+result);								
+				ctx.getSolutionViewPanel().refresh(result, new ArrayList<EmployeeAllocation>());
+				ctx.getState().addPeriodSolution(result);
+				ria.showSolutionViewPanel();
+				ctx.getStatusLine().showInfo("New period solution created");
+			}
+		});
+	}
+	
 	// TODO optimize this (perhaps one reinitialize doing everything is OK
 	public void setEmployeesCount(int count) {
 		reinitialize();
@@ -243,5 +285,18 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 		
 		periodPreferencesButton.setVisible(visibility);		
 		periodPreferencesButton.setText(ctx.getI18n().periodPreferences()+" ("+count+")");		
+	}
+
+	// TODO optimize this (perhaps one reinitialize doing everything is OK
+	public void setPeriodSolutionsCount(int count) {
+		reinitialize();
+
+		boolean visibility=true;
+		if(count==0) {
+			visibility=false;
+		}
+		
+		periodSolutionsButton.setVisible(visibility);		
+		periodSolutionsButton.setText(ctx.getI18n().solutions()+" ("+count+")");		
 	}
 }

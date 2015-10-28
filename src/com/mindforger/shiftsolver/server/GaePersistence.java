@@ -14,6 +14,7 @@ import com.google.appengine.api.datastore.Key;
 import com.mindforger.shiftsolver.server.beans.GaeEmployeeBean;
 import com.mindforger.shiftsolver.server.beans.GaeEmployeeDayPreferenceBean;
 import com.mindforger.shiftsolver.server.beans.GaePeriodPreferencesBean;
+import com.mindforger.shiftsolver.server.beans.GaePeriodSolutionBean;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
@@ -196,31 +197,84 @@ public class GaePersistence implements Persistence {
 			}								
 		} finally {
 			pm.close();
+		}		
+	}
+
+	@Override
+	public PeriodSolution createPeriodSolution(PeriodSolution bean) {
+		LOG.log(Level.INFO,"newPeriodSolution()");				
+		return savePeriodSolution(bean);
+	}
+
+	@Override
+	public PeriodSolution savePeriodSolution(PeriodSolution bean) {
+		LOG.log(Level.INFO,"savePeriodSolution() "+bean.toString());
+		
+		GaePeriodSolutionBean gaeResult=new GaePeriodSolutionBean();
+		gaeResult.fromPojo(bean);
+		
+		PersistenceManager pm = getPm();
+		Transaction tx=null;
+		try {
+			tx = pm.currentTransaction();
+			tx.begin();
+			gaeResult = (GaePeriodSolutionBean)pm.makePersistent(gaeResult);
+			tx.commit();
+		} finally {
+	        if (tx!=null && tx.isActive()) {
+	            tx.rollback();
+	        }
+	        pm.close();
 		}
 		
-	}
-
-	@Override
-	public PeriodSolution createPeriodSolution() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public PeriodSolution savePeriodSolution(PeriodSolution periodSolution) {
-		// TODO Auto-generated method stub
-		return null;
+		return gaeResult.toPojo();
 	}
 
 	@Override
 	public void deletePeriodSolution(String key) {
-		// TODO Auto-generated method stub
-		
+		LOG.log(Level.INFO,"deletePeriodSolution() "+key);		
+		Transaction tx=null;
+		PersistenceManager pm=getPm();
+		try {
+			tx = pm.currentTransaction();
+			tx.begin();
+			GaePeriodSolutionBean result 
+				= pm.getObjectById(GaePeriodSolutionBean.class, ServerUtils.stringToKey(key));
+			pm.deletePersistent(result);
+			tx.commit();
+			LOG.log(Level.INFO,"  Deleted!");
+		} finally {
+	        if (tx!=null && tx.isActive()) {
+	            tx.rollback();
+	        }
+			pm.close();
+		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public PeriodSolution[] getPeriodSolution() {
-		// TODO Auto-generated method stub
-		return null;
+		LOG.log(Level.INFO,"getPeriodSolutions()");
+
+		PersistenceManager pm = getPm();
+		Query query = pm.newQuery(GaePeriodSolutionBean.class);
+		LOG.log(Level.INFO,"Query: "+query.toString());
+		List<GaePeriodSolutionBean> gaeResult=null;
+		try {
+			gaeResult = (List<GaePeriodSolutionBean>)query.execute();
+			LOG.log(Level.INFO,"  Result: "+gaeResult.size());
+			
+			if (gaeResult==null || gaeResult.isEmpty()) {
+				return new PeriodSolution[0];
+			} else {
+				PeriodSolution[] result=new PeriodSolution[gaeResult.size()];
+				for (int i = 0; i < result.length; i++) {
+					result[i]=gaeResult.get(i).toPojo();
+				}			
+				return result;
+			}								
+		} finally {
+			pm.close();
+		}
 	}
 }

@@ -11,6 +11,7 @@ import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
+import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 import com.mindforger.shiftsolver.shared.service.RiaBootImageBean;
 
 /**
@@ -149,7 +150,38 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		ctx.getPageTitlePanel().setHTML(i18n.periodPreferences());
 		RootPanel.get(CONTAINER_DLOUHAN_EDITOR).setVisible(true);
 	}
-		
+	
+	public void showSolutionViewPanel() {
+		hideAllContainers();
+		ctx.getPageTitlePanel().setHTML(i18n.solution());
+		RootPanel.get(CONTAINER_SOLUTION_VIEW).setVisible(true);
+	}
+
+	public void showSolutionsTable() {
+		hideAllContainers();
+		ctx.getPageTitlePanel().setHTML(i18n.solutions());
+		RootPanel.get(CONTAINER_SOLUTION_TABLE).setVisible(true);
+	}
+
+	public void showSolverProgressPanel() {
+		hideAllContainers();
+		ctx.getPageTitlePanel().setHTML("Solver Progress"); // TODO i18n
+		RootPanel.get(CONTAINER_SOLVER_PROGRESS).setVisible(true);
+	}
+
+	public void showSolverNoSolutionPanel() {
+		hideAllContainers();
+		ctx.getPageTitlePanel().setHTML("No Solution"); // TODO i18n
+		RootPanel.get(CONTAINER_SOLVER_NO_SOLUTION).setVisible(true);
+	}
+
+	public void showSettings() {
+		hideAllContainers();
+		ctx.getPageTitlePanel().setHTML(i18n.settings());
+		RootPanel.get(CONTAINER_SETTINGS).setVisible(true);
+		ctx.getStatusLine().clear();		
+	}
+	
 	// TODO merge save and delete/update to single method
 	public void saveEmployee(final Employee employee) {
 		if(employee!=null) {
@@ -245,7 +277,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 					if(array!=null) {
 						if(ctx.getState().getPeriodPreferences(preferences.getKey())==null) {			
 							List<PeriodPreferences> list = new ArrayList<PeriodPreferences>();
-							for(PeriodPreferences e:array) list.add(e);
+							for(PeriodPreferences p:array) list.add(p);
 							list.add(preferences);
 							PeriodPreferences[] newArray = list.toArray(new PeriodPreferences[list.size()]);
 							ctx.getState().setPeriodPreferencesList(newArray);
@@ -306,34 +338,79 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		showPeriodPreferencesTable();		
 	}
 
-	public void showSolutionViewPanel() {
-		hideAllContainers();
-		ctx.getPageTitlePanel().setHTML(i18n.solution());
-		RootPanel.get(CONTAINER_SOLUTION_VIEW).setVisible(true);
+	// TODO merge save and delete/update to single method
+	public void savePeriodSolution(final PeriodSolution preferences) {
+		if(preferences!=null) {
+			ctx.getService().savePeriodSolution(preferences, new AsyncCallback<Void>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					ctx.getStatusLine().showError("Unable to save period solution!");
+				}
+
+				@Override
+				public void onSuccess(Void result) {
+					PeriodSolution[] array = ctx.getState().getPeriodSolutions();
+					if(array!=null) {
+						if(ctx.getState().getPeriodSolution(preferences.getKey())==null) {			
+							List<PeriodSolution> list = new ArrayList<PeriodSolution>();
+							for(PeriodSolution s:array) list.add(s);
+							list.add(preferences);
+							PeriodSolution[] newArray = list.toArray(new PeriodSolution[list.size()]);
+							ctx.getState().setPeriodSolutions(newArray);
+						} else {
+							deleteOrUpdatePeriodSolution(preferences, false);					
+				      		ctx.getMenu().setPeriodSolutionsCount(ctx.getState().getPeriodSolutions().length);
+							return;
+						}
+					}
+					ctx.getSolutionTable().refresh(ctx.getState().getPeriodSolutions());
+		      		ctx.getMenu().setPeriodPreferencesCount(ctx.getState().getPeriodPreferencesArray().length);
+				}
+			});
+		}
+		showPeriodPreferencesTable();
 	}
 
-	public void showSolutionsTable() {
-		hideAllContainers();
-		ctx.getPageTitlePanel().setHTML(i18n.solutions());
-		RootPanel.get(CONTAINER_SOLUTION_TABLE).setVisible(true);
-	}
+	public void deletePeriodSolutions(final PeriodSolution preferences) {
+		if(preferences!=null) {
+			ctx.getService().deletePeriodSolution(preferences.getKey(), new AsyncCallback<Void>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					ctx.getStatusLine().showError("Unable to delete period solution "+preferences.getYear()+"/"+preferences.getMonth());
+				}
 
-	public void showSolverProgressPanel() {
-		hideAllContainers();
-		ctx.getPageTitlePanel().setHTML("Solver Progress"); // TODO i18n
-		RootPanel.get(CONTAINER_SOLVER_PROGRESS).setVisible(true);
+				@Override
+				public void onSuccess(Void result) {
+					deleteOrUpdatePeriodSolution(preferences, true);
+		      		ctx.getMenu().setPeriodSolutionsCount(ctx.getState().getPeriodSolutions().length);
+				}
+			});
+		}
 	}
-
-	public void showSolverNoSolutionPanel() {
-		hideAllContainers();
-		ctx.getPageTitlePanel().setHTML("No Solution"); // TODO i18n
-		RootPanel.get(CONTAINER_SOLVER_NO_SOLUTION).setVisible(true);
-	}
-
-	public void showSettings() {
-		hideAllContainers();
-		ctx.getPageTitlePanel().setHTML(i18n.settings());
-		RootPanel.get(CONTAINER_SETTINGS).setVisible(true);
-		ctx.getStatusLine().clear();		
-	}
+	
+	public void deleteOrUpdatePeriodSolution(PeriodSolution pref, boolean delete) {
+		if(pref!=null) {
+			PeriodSolution[] prefs = ctx.getState().getPeriodSolutions();
+			if(prefs!=null && ctx.getState().getPeriodSolution(pref.getKey())!=null) {
+				List<PeriodSolution> list = new ArrayList<PeriodSolution>();
+				PeriodSolution victim=null;
+				for(PeriodSolution e:prefs) {
+					list.add(e);
+					if(e.getKey().equals(pref.getKey())) {
+						victim=e;
+					}
+				}
+				if(victim!=null) {
+					list.remove(victim);					
+					if(!delete) {
+						list.add(pref);
+					}
+				}
+				PeriodSolution[] newArray = list.toArray(new PeriodSolution[list.size()]);
+				ctx.getState().setPeriodSolutions(newArray);
+			}
+			ctx.getSolutionTable().refresh(ctx.getState().getPeriodSolutions());
+		}
+		showSolutionsTable();
+	}	
 }

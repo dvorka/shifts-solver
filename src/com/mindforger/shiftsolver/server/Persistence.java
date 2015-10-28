@@ -16,7 +16,7 @@ public interface Persistence {
 	void deletePeriodPreferences(String key);
 	PeriodPreferences[] getPeriodPreferences();
 
-	PeriodSolution createPeriodSolution();
+	PeriodSolution createPeriodSolution(PeriodSolution bean);
 	PeriodSolution savePeriodSolution(PeriodSolution periodSolution);
 	void deletePeriodSolution(String key);
 	PeriodSolution[] getPeriodSolution();

@@ -12,7 +12,7 @@ import com.mindforger.shiftsolver.client.ui.PageTitlePanel;
 import com.mindforger.shiftsolver.client.ui.PeriodPreferencesEditPanel;
 import com.mindforger.shiftsolver.client.ui.PeriodPreferencesTable;
 import com.mindforger.shiftsolver.client.ui.PeriodSolutionTable;
-import com.mindforger.shiftsolver.client.ui.PeriodSolutionViewPanel;
+import com.mindforger.shiftsolver.client.ui.PeriodSolutionPanel;
 import com.mindforger.shiftsolver.client.ui.SettingsPanel;
 import com.mindforger.shiftsolver.client.ui.SolverNoSolutionPanel;
 import com.mindforger.shiftsolver.client.ui.SolverProgressPanel;
@@ -60,7 +60,7 @@ public class RiaContext implements ShiftSolverConstants {
 	private PeriodPreferencesTable periodPreferencesTable;
 	private PeriodPreferencesEditPanel periodPreferencesEditPanel;
 	private PeriodSolutionTable periodSolutionTable;
-	private PeriodSolutionViewPanel periodSolutionViewPanel;
+	private PeriodSolutionPanel periodSolutionViewPanel;
 	private SolverProgressPanel solverProgressPanel;
 	private SolverNoSolutionPanel solverNoSolutionPanel;
 	
@@ -91,7 +91,7 @@ public class RiaContext implements ShiftSolverConstants {
 		periodPreferencesTable=new PeriodPreferencesTable(this);		
 		periodPreferencesEditPanel=new PeriodPreferencesEditPanel(this);
 		periodSolutionTable=new PeriodSolutionTable(this);
-		periodSolutionViewPanel=new PeriodSolutionViewPanel(this);
+		periodSolutionViewPanel=new PeriodSolutionPanel(this);
 		solverProgressPanel=new SolverProgressPanel(this);
 		solverNoSolutionPanel=new SolverNoSolutionPanel(this, true);
 	}
@@ -164,7 +164,7 @@ public class RiaContext implements ShiftSolverConstants {
 		return periodSolutionTable;
 	}
 
-	public PeriodSolutionViewPanel getSolutionViewPanel() {
+	public PeriodSolutionPanel getSolutionViewPanel() {
 		return periodSolutionViewPanel;
 	}
 

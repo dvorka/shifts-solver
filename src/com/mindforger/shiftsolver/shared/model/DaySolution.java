@@ -12,6 +12,8 @@ import com.mindforger.shiftsolver.shared.model.shifts.WorkdayMorningShift;
 public class DaySolution implements Serializable  {
 	private static final long serialVersionUID = -2908720137028791233L;
 
+	private String key;
+	
 	int day;
 	boolean isWorkday;
 	int weekday;
@@ -27,6 +29,14 @@ public class DaySolution implements Serializable  {
 		this.isWorkday=isWorkday;
 	}
 	
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
 	public int getDay() {
 		return day;
 	}

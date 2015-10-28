@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
+import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 import com.mindforger.shiftsolver.shared.service.RiaBootImageBean;
 import com.mindforger.shiftsolver.shared.service.UserBean;
 import com.mindforger.shiftsolver.shared.service.UserSettingsBean;
@@ -18,15 +19,18 @@ public class RiaState {
 
 	private Employee[] employees;
 	private PeriodPreferences[] periodPreferencesArray;
+	private PeriodSolution[] periodSolutions;
 		
 	private Map<String,Employee> employeesByKey;
 	private Map<String,PeriodPreferences> periodPreferencesByKey;
+	private Map<String,PeriodSolution> periodSolutionsByKey;
 	
 	public RiaState() {
 		employees=new Employee[0];
 		periodPreferencesArray=new PeriodPreferences[0];
+		periodSolutions=new PeriodSolution[0];
 		employeesByKey=new HashMap<String,Employee>();
-		periodPreferencesByKey=new HashMap<String,PeriodPreferences>();
+		periodSolutionsByKey=new HashMap<String,PeriodSolution>();
 	}
 	
 	public void init(RiaBootImageBean bean) {
@@ -35,6 +39,7 @@ public class RiaState {
 		
 		setEmployees(bean.getEmployees());
 		setPeriodPreferencesList(bean.getPeriodPreferencesList());
+		setPeriodSolutions(bean.getPeriodSolutions());
 	}
 	
 	public Employee getEmployee(String employeeId) {
@@ -44,6 +49,13 @@ public class RiaState {
 		return null;
 	}
 
+	public PeriodSolution getPeriodSolution(String solutionId) {
+		if(solutionId!=null) {
+			return periodSolutionsByKey.get(solutionId);
+		}
+		return null;
+	}
+	
 	public PeriodPreferences getPeriodPreferences(String periodPreferencesId) {
 		if(periodPreferencesId!=null) {
 			return periodPreferencesByKey.get(periodPreferencesId);
@@ -75,6 +87,10 @@ public class RiaState {
 		return periodPreferencesArray;
 	}
 	
+	public PeriodSolution[] getPeriodSolutions() {
+		return periodSolutions;
+	}
+
 	public void setEmployees(Employee[] employees) {
 		this.employees= employees;
 		employeesByKey.clear();
@@ -85,6 +101,19 @@ public class RiaState {
 		}
 	}
 
+	public void addEmployee(Employee employee) {
+		List<Employee> employeeList;
+		if(employee!=null) {
+			employeeList=new ArrayList<Employee>();
+			if(employees!=null) {
+				for(Employee e:employees) employeeList.add(e);
+			}
+			employeeList.add(employee);
+			employeesByKey.put(employee.getKey(), employee);
+			employees=employeeList.toArray(new Employee[employeeList.size()]);
+		}
+	}
+	
 	public void setPeriodPreferencesList(PeriodPreferences[] periodPreferencesList) {
 		this.periodPreferencesArray = periodPreferencesList;
 		periodPreferencesByKey.clear();
@@ -108,16 +137,26 @@ public class RiaState {
 		}
 	}
 
-	public void addEmployee(Employee employee) {
-		List<Employee> employeeList;
-		if(employee!=null) {
-			employeeList=new ArrayList<Employee>();
-			if(employees!=null) {
-				for(Employee e:employees) employeeList.add(e);
+	public void setPeriodSolutions(PeriodSolution[] periodSolutions) {
+		this.periodSolutions = periodSolutions;
+		periodSolutionsByKey.clear();
+		if(periodSolutions!=null) {
+			for(PeriodSolution periodSolution: periodSolutions) {
+				periodSolutionsByKey.put(periodSolution.getKey(), periodSolution);
 			}
-			employeeList.add(employee);
-			employeesByKey.put(employee.getKey(), employee);
-			employees=employeeList.toArray(new Employee[employeeList.size()]);
+		}
+	}
+
+	public void addPeriodSolution(PeriodSolution solution) {
+		List<PeriodSolution> periodSolutionsList;
+		if(solution!=null) {
+			periodSolutionsList =new ArrayList<PeriodSolution>();
+			if(periodSolutions!=null) {
+				for(PeriodSolution p:periodSolutions) periodSolutionsList.add(p);
+			}
+			periodSolutionsList.add(solution);
+			periodSolutionsByKey.put(solution.getKey(),solution);
+			periodSolutions=periodSolutionsList.toArray(new PeriodSolution[periodSolutionsList.size()]);
 		}
 	}
 }

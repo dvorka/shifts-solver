@@ -80,10 +80,49 @@ public class ShiftSolverTest {
 			EmployeeAllocation.printEmployeeAllocations(31,new ArrayList<EmployeeAllocation>(solver.getEmployeeAllocations().values()));
 
 			ShiftSolverLogger.debug("- SOLUTION ---------------------------------------------------------------");
-			solution.printSchedule();
+// TODO			solution.printSchedule();
 		}
 	}
 
+//	public void printSchedule() {		
+//		List<DaySolution> days = getDays();
+//		for(DaySolution ds:days) {
+//			ShiftSolverLogger.debug((ds.isWorkday()?"Work":"Weekend") + " Day "+ ds.getDay() +":");
+//			if(ds.isWorkday()) {
+//				ShiftSolverLogger.debug("  Morning:");
+//				ShiftSolverLogger.debug("    E "+ds.getWorkdayMorningShift().editor.get().getFullName());
+//				ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().staffer6am.get().getFullName());
+//				ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().staffer7am.get().getFullName());
+//				ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().staffer8am1.get().getFullName());
+//				ShiftSolverLogger.debug("    E "+ds.getWorkdayMorningShift().sportak.get().getFullName());
+//
+//				ShiftSolverLogger.debug("  Afternoon:");
+//				ShiftSolverLogger.debug("    E "+ds.getWorkdayAfternoonShift().editor.get().getFullName());
+//				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[0].get().getFullName());
+//				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[1].get().getFullName());
+//				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[2].get().getFullName());
+//				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[3].get().getFullName());
+//				ShiftSolverLogger.debug("    S "+ds.getWorkdayAfternoonShift().sportak.get().getFullName());
+//
+//				ShiftSolverLogger.debug("  Night:");
+//				ShiftSolverLogger.debug("    D "+ds.getNightShift().staffer.get().getFullName());
+//			} else {		
+//				ShiftSolverLogger.debug("  Morning:");
+//				ShiftSolverLogger.debug("    E "+ds.getWeekendMorningShift().editor.get().getFullName());
+//				ShiftSolverLogger.debug("    D "+ds.getWeekendMorningShift().staffer6am.get().getFullName());
+//				ShiftSolverLogger.debug("    E "+ds.getWeekendMorningShift().sportak.get().getFullName());
+//
+//				ShiftSolverLogger.debug("  Afternoon:");
+//				ShiftSolverLogger.debug("    E "+ds.getWeekendAfternoonShift().editor.get().getFullName());
+//				ShiftSolverLogger.debug("    D "+ds.getWeekendAfternoonShift().staffer.get().getFullName());
+//				ShiftSolverLogger.debug("    S "+ds.getWeekendAfternoonShift().sportak.get().getFullName());
+//
+//				ShiftSolverLogger.debug("  Night:");
+//				ShiftSolverLogger.debug("    D "+ds.getNightShift().staffer.get().getFullName());
+//			}
+//		}
+//	}
+	
 	public void calendarFun() {
 		int year=2015;
 		int month=11;

@@ -2652,6 +2652,8 @@ html>body .gwt-MenuBarPopup {
 
 /* S2 > latest style overrides */
 
+
+
 .s2-titleLogo {
 	font-family: arial, sans-serif; 
 	font-weight: bolder; 
@@ -2832,6 +2834,11 @@ html>body .gwt-MenuBarPopup {
 
 .s2-weekendDay {
 	color: #FF0000;
+}
+
+.s2-tableHeadBlack {
+	background-color: #000;
+	color: #FFF;
 }
 
 /** EOF **/

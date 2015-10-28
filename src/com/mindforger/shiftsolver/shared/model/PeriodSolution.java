@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
-
 public class PeriodSolution implements Serializable {
 	private static final long serialVersionUID = 7586400671035292788L;
 
@@ -17,7 +15,6 @@ public class PeriodSolution implements Serializable {
 	private int month;
 	private Map<String, Job> employeeJobs;
 	private List<DaySolution> days;
-	private int solutionNumber;
 	
 	public PeriodSolution() {
 		this.days=new ArrayList<DaySolution>();
@@ -92,53 +89,6 @@ public class PeriodSolution implements Serializable {
 
 	public void addEmployeeJob(String employeeKey, Job job) {
 		this.employeeJobs.put(employeeKey, job);
-	}
-
-	public void setSolutionNumber(int solutionNumber) {
-		this.solutionNumber=solutionNumber;
-	}
-
-	public int getSolutionNumber() {
-		return solutionNumber;
-	}
-
-	public void printSchedule() {		
-		List<DaySolution> days = getDays();
-		for(DaySolution ds:days) {
-			ShiftSolverLogger.debug((ds.isWorkday()?"Work":"Weekend") + " Day "+ ds.getDay() +":");
-			if(ds.isWorkday()) {
-				ShiftSolverLogger.debug("  Morning:");
-				ShiftSolverLogger.debug("    E "+ds.getWorkdayMorningShift().editor.get().getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().staffer6am.get().getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().staffer7am.get().getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().staffer8am.get().getFullName());
-				ShiftSolverLogger.debug("    E "+ds.getWorkdayMorningShift().sportak.get().getFullName());
-
-				ShiftSolverLogger.debug("  Afternoon:");
-				ShiftSolverLogger.debug("    E "+ds.getWorkdayAfternoonShift().editor.get().getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[0].get().getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[1].get().getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[2].get().getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[3].get().getFullName());
-				ShiftSolverLogger.debug("    S "+ds.getWorkdayAfternoonShift().sportak.get().getFullName());
-
-				ShiftSolverLogger.debug("  Night:");
-				ShiftSolverLogger.debug("    D "+ds.getNightShift().staffer.get().getFullName());
-			} else {		
-				ShiftSolverLogger.debug("  Morning:");
-				ShiftSolverLogger.debug("    E "+ds.getWeekendMorningShift().editor.get().getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWeekendMorningShift().staffer6am.get().getFullName());
-				ShiftSolverLogger.debug("    E "+ds.getWeekendMorningShift().sportak.get().getFullName());
-
-				ShiftSolverLogger.debug("  Afternoon:");
-				ShiftSolverLogger.debug("    E "+ds.getWeekendAfternoonShift().editor.get().getFullName());
-				ShiftSolverLogger.debug("    D "+ds.getWeekendAfternoonShift().staffer.get().getFullName());
-				ShiftSolverLogger.debug("    S "+ds.getWeekendAfternoonShift().sportak.get().getFullName());
-
-				ShiftSolverLogger.debug("  Night:");
-				ShiftSolverLogger.debug("    D "+ds.getNightShift().staffer.get().getFullName());
-			}
-		}
 	}
 
 	// TODO inefficient iterations > create map

@@ -10,7 +10,7 @@ public interface ShiftSolverConstants {
 	int ROOT=0;
 	int ROLE_EDITOR=1;
 	int ROLE_SPORTAK=2;
-	int ROLE_DRONE=3;
+	int ROLE_STAFFER=3;
 	int ROLE_ANYBODY = 4;
 	
 	// types

@@ -1,8 +1,5 @@
 package com.mindforger.shiftsolver.client.ui;
 
-import java.util.Arrays;
-import java.util.Comparator;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -12,8 +9,7 @@ import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.ui.buttons.PeriodPreferencesTableToEditorButton;
 import com.mindforger.shiftsolver.client.ui.buttons.TableSetSortingButton;
-import com.mindforger.shiftsolver.client.ui.comparators.ComparatorPeriodPreferencesByYearAndMonth;
-import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
+import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
 public class PeriodSolutionTable extends FlexTable implements SortableTable {
 	
@@ -33,14 +29,14 @@ public class PeriodSolutionTable extends FlexTable implements SortableTable {
 		addStyleName("mf-growsTable");
 		sortCriteria=TableSortCriteria.BY_YEAR_AND_MONTH;
 		sortIsAscending=true;
-		refresh(ctx.getState().getPeriodPreferencesArray());
+		refresh(ctx.getState().getPeriodSolutions());
 	}
 
 	public void refreshWithNewSortingCriteria() {
-		refresh(ctx.getState().getPeriodPreferencesArray());
+		refresh(ctx.getState().getPeriodSolutions());
 	}
 	
-	public void refresh(PeriodPreferences[] result) {
+	public void refresh(PeriodSolution[] result) {
 		if(result==null || result.length==0) {
 			setVisible(false);
 			return;
@@ -48,22 +44,21 @@ public class PeriodSolutionTable extends FlexTable implements SortableTable {
 			setVisible(true);
 		}
 				
-		Comparator<PeriodPreferences> comparator;
-		switch(sortCriteria) {
-		case BY_YEAR_AND_MONTH:
-		default:
-			comparator=new ComparatorPeriodPreferencesByYearAndMonth(sortIsAscending);
-			break;
-		}
-		
-		Arrays.sort(result, comparator);
+//		Comparator<PeriodPreferences> comparator;
+//		switch(sortCriteria) {
+//		case BY_YEAR_AND_MONTH:
+//		default:
+//			comparator=new ComparatorPeriodPreferencesByYearAndMonth(sortIsAscending);
+//			break;
+//		}
+//		
+//		Arrays.sort(result, comparator);
 		
 		removeAllRows();
 		addRows(result);
 	}
 	
-	private void addRows(PeriodPreferences[] result) {
-		addNewPeriodPreferencesRow();
+	private void addRows(PeriodSolution[] result) {
 		addTableTitle();
 		if(result!=null) {
 			for (int i = 0; i < result.length; i++) {

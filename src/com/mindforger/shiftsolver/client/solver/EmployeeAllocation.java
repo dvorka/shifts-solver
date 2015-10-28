@@ -212,31 +212,31 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 			DaySolution ds = solution.getSolutionForDay(d);
 			if(ds!=null) {
 				if(ds.isWorkday()) {
-					eToA.get(ds.getWorkdayMorningShift().editor.get().getKey()).assign(d, SHIFT_MORNING);
-					eToA.get(ds.getWorkdayMorningShift().staffer6am.get().getKey()).assign(d, SHIFT_MORNING);
-					eToA.get(ds.getWorkdayMorningShift().staffer7am.get().getKey()).assign(d, SHIFT_MORNING);
-					eToA.get(ds.getWorkdayMorningShift().staffer8am.get().getKey()).assign(d, SHIFT_MORNING);
-					eToA.get(ds.getWorkdayMorningShift().sportak.get().getKey()).assign(d, SHIFT_MORNING);
+					eToA.get(ds.getWorkdayMorningShift().editor.get()).assign(d, SHIFT_MORNING);
+					eToA.get(ds.getWorkdayMorningShift().staffer6am.get()).assign(d, SHIFT_MORNING);
+					eToA.get(ds.getWorkdayMorningShift().staffer7am.get()).assign(d, SHIFT_MORNING);
+					eToA.get(ds.getWorkdayMorningShift().staffer8am1.get()).assign(d, SHIFT_MORNING);
+					eToA.get(ds.getWorkdayMorningShift().sportak.get()).assign(d, SHIFT_MORNING);
 					
-					eToA.get(ds.getWorkdayAfternoonShift().editor.get().getKey()).assign(d, SHIFT_AFTERNOON);
-					eToA.get(ds.getWorkdayAfternoonShift().staffers[0].get().getKey()).assign(d, SHIFT_AFTERNOON);
-					eToA.get(ds.getWorkdayAfternoonShift().staffers[1].get().getKey()).assign(d, SHIFT_AFTERNOON);
-					eToA.get(ds.getWorkdayAfternoonShift().staffers[2].get().getKey()).assign(d, SHIFT_AFTERNOON);
-					eToA.get(ds.getWorkdayAfternoonShift().staffers[3].get().getKey()).assign(d, SHIFT_AFTERNOON);
-					eToA.get(ds.getWorkdayAfternoonShift().sportak.get().getKey()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWorkdayAfternoonShift().editor.get()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWorkdayAfternoonShift().staffers[0].get()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWorkdayAfternoonShift().staffers[1].get()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWorkdayAfternoonShift().staffers[2].get()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWorkdayAfternoonShift().staffers[3].get()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWorkdayAfternoonShift().sportak.get()).assign(d, SHIFT_AFTERNOON);
 					
-					eToA.get(ds.getNightShift().staffer.get().getKey()).assign(d, SHIFT_NIGHT);
+					eToA.get(ds.getNightShift().staffer.get()).assign(d, SHIFT_NIGHT);
 					
 				} else {
-					eToA.get(ds.getWeekendMorningShift().editor.get().getKey()).assign(d, SHIFT_MORNING);
-					eToA.get(ds.getWeekendMorningShift().staffer6am.get().getKey()).assign(d, SHIFT_MORNING);
-					eToA.get(ds.getWeekendMorningShift().sportak.get().getKey()).assign(d, SHIFT_MORNING);
+					eToA.get(ds.getWeekendMorningShift().editor.get()).assign(d, SHIFT_MORNING);
+					eToA.get(ds.getWeekendMorningShift().staffer6am.get()).assign(d, SHIFT_MORNING);
+					eToA.get(ds.getWeekendMorningShift().sportak.get()).assign(d, SHIFT_MORNING);
 
-					eToA.get(ds.getWeekendAfternoonShift().editor.get().getKey()).assign(d, SHIFT_AFTERNOON);
-					eToA.get(ds.getWeekendAfternoonShift().staffer.get().getKey()).assign(d, SHIFT_AFTERNOON);
-					eToA.get(ds.getWeekendAfternoonShift().sportak.get().getKey()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWeekendAfternoonShift().editor.get()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWeekendAfternoonShift().staffer.get()).assign(d, SHIFT_AFTERNOON);
+					eToA.get(ds.getWeekendAfternoonShift().sportak.get()).assign(d, SHIFT_AFTERNOON);
 
-					eToA.get(ds.getNightShift().staffer.get().getKey()).assign(d, SHIFT_NIGHT);
+					eToA.get(ds.getNightShift().staffer.get()).assign(d, SHIFT_NIGHT);
 				}
 			}
 		}

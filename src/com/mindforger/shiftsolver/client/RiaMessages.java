@@ -58,4 +58,5 @@ public interface RiaMessages extends Messages {
 	String homePageApplicationDescription();
 	String settings();
 	String newEmptySolution();
+	String validate();
 }
