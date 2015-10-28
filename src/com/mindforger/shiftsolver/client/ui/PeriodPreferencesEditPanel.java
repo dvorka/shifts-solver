@@ -114,7 +114,11 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		newSolutionButton.setStyleName("mf-buttonLooser");
 		newSolutionButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				// TODO
+				if(periodPreferences!=null) {
+					ctx.getMenu().createNewSolution(periodPreferences);					
+				} else {
+					ctx.getStatusLine().showError("Save preferences first to create a solution!");
+				}
 			}
 		});		
 		buttonPanel.add(newSolutionButton);

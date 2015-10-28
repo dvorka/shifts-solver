@@ -63,14 +63,6 @@ public class PeriodSolution implements Serializable {
 		this.key = key;
 	}
 
-	public String getDlouhanKey() {
-		return periodPreferencesKey;
-	}
-
-	public void setDlouhanKey(String dlouhanKey) {
-		this.periodPreferencesKey = dlouhanKey;
-	}
-
 	public String getPeriodPreferencesKey() {
 		return periodPreferencesKey;
 	}

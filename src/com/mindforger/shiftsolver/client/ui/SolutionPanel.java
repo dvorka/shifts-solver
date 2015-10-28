@@ -25,7 +25,7 @@ import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
-public class PeriodSolutionPanel extends FlexTable implements ShiftSolverConstants {
+public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 
 	private RiaMessages i18n;
 	public RiaContext ctx;
@@ -49,7 +49,7 @@ public class PeriodSolutionPanel extends FlexTable implements ShiftSolverConstan
 	private Button allocationButton;
 	private Button validateButton;
 	
-	public PeriodSolutionPanel(final RiaContext ctx) {
+	public SolutionPanel(final RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
 		this.publicHolidays=new PublicHolidays();
@@ -218,13 +218,15 @@ public class PeriodSolutionPanel extends FlexTable implements ShiftSolverConstan
 			scheduleTable.setWidget(0, 2, button);
 			
 			for(Employee employee:ctx.getState().getEmployees()) {
-				addEmployeeRow(
-						scheduleTable,
-						solution,
-						preferences,
-						employee, 
-						preferences.getEmployeeToPreferences().get(employee),
-						preferences.getMonthDays());
+				if(solution.getEmployeeJobs().get(employee.getKey())!=null) {
+					addEmployeeRow(
+							scheduleTable,
+							solution,
+							preferences,
+							employee, 
+							preferences.getEmployeeToPreferences().get(employee),
+							preferences.getMonthDays());					
+				}
 			}						
 		}		
 	}
@@ -353,7 +355,7 @@ public class PeriodSolutionPanel extends FlexTable implements ShiftSolverConstan
 	private void refreshShiftsTable() {
 		shiftsTable.removeAllRows();
 
-		if(solution!=null && solution.getDays()!=null && solution.getDays().size()>0) {		
+		if(solution!=null) {		
 
 			// table title
 			int row=0;		
@@ -428,7 +430,7 @@ public class PeriodSolutionPanel extends FlexTable implements ShiftSolverConstan
 								shiftsTable.setWidget(r-1+2, cc, new ChangeAssignmentButton(ds.getWorkdayMorningShift().staffer6am, this, day, SHIFT_MORNING_6, ROLE_STAFFER));
 								shiftsTable.setWidget(r-1+3, cc, new ChangeAssignmentButton(ds.getWorkdayMorningShift().staffer7am, this, day, SHIFT_MORNING_7, ROLE_STAFFER));
 								shiftsTable.setWidget(r-1+4, cc, new ChangeAssignmentButton(ds.getWorkdayMorningShift().staffer8am1, this, day, SHIFT_MORNING_8, ROLE_STAFFER));
-								shiftsTable.setWidget(r-1+5, cc, new HTML("MISSING"));
+								shiftsTable.setWidget(r-1+5, cc, new ChangeAssignmentButton(ds.getWorkdayMorningShift().staffer8am2, this, day, SHIFT_MORNING_8, ROLE_STAFFER));
 								shiftsTable.setWidget(r-1+6, cc, new ChangeAssignmentButton(ds.getWorkdayMorningShift().sportak, this, day, SHIFT_MORNING, ROLE_SPORTAK));
 								shiftsTable.setWidget(r-1+7, cc, new ChangeAssignmentButton(ds.getWorkdayAfternoonShift().editor, this, day, SHIFT_AFTERNOON, ROLE_EDITOR));
 								shiftsTable.setWidget(r-1+8, cc, new ChangeAssignmentButton(ds.getWorkdayAfternoonShift().staffers[0], this, day, SHIFT_AFTERNOON, ROLE_STAFFER));
@@ -526,7 +528,7 @@ public class PeriodSolutionPanel extends FlexTable implements ShiftSolverConstan
 			e2a.put(ea.employee.getKey(), ea);
 			employees.add(ea.employee);		
 		}
-		this.preferences = ctx.getState().getPeriodPreferences(solution.getDlouhanKey());
+		this.preferences = ctx.getState().getPeriodPreferences(solution.getPeriodPreferencesKey());
 		
 		objectToRia();
 	}

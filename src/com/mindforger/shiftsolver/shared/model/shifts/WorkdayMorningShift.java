@@ -1,9 +1,12 @@
 package com.mindforger.shiftsolver.shared.model.shifts;
 
+import java.io.Serializable;
+
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.model.Holder;
 
-public class WorkdayMorningShift implements ShiftSolution {
+public class WorkdayMorningShift implements Serializable, ShiftSolution {
+	private static final long serialVersionUID = -3104664629931011521L;
 
 	public Holder<String> editor;
 	public Holder<String> staffer6am;

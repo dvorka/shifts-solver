@@ -24,6 +24,8 @@ public class GaeJobBean implements Serializable, GaeBean {
 	private GaePeriodSolutionBean periodSolution;
 	
 	@Persistent
+	String employeeKey;
+	@Persistent
 	int shiftsLimit;
 	@Persistent
 	int shifts;
@@ -61,6 +63,14 @@ public class GaeJobBean implements Serializable, GaeBean {
 
 	public void setShifts(int shifts) {
 		this.shifts = shifts;
+	}
+
+	public void setEmployeeKey(String k) {
+		this.employeeKey=k;
+	}
+	
+	public String getEmployeeKey() {
+		return employeeKey;
 	}
 
 	public void fromPojo(Job job) {

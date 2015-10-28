@@ -8,10 +8,11 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.ui.buttons.PeriodPreferencesTableToEditorButton;
+import com.mindforger.shiftsolver.client.ui.buttons.SolutionTableToViewPanelButton;
 import com.mindforger.shiftsolver.client.ui.buttons.TableSetSortingButton;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
-public class PeriodSolutionTable extends FlexTable implements SortableTable {
+public class SolutionsTable extends FlexTable implements SortableTable {
 	
 	private RiaMessages i18n;
 	private RiaContext ctx;
@@ -19,7 +20,7 @@ public class PeriodSolutionTable extends FlexTable implements SortableTable {
 	private TableSortCriteria sortCriteria;
 	private boolean sortIsAscending;
 
-	public PeriodSolutionTable(RiaContext ctx) {
+	public SolutionsTable(RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
 	}
@@ -111,7 +112,7 @@ public class PeriodSolutionTable extends FlexTable implements SortableTable {
 	{
 		int numRows = getRowCount();
 				
-		PeriodPreferencesTableToEditorButton button = new PeriodPreferencesTableToEditorButton(
+		SolutionTableToViewPanelButton button = new SolutionTableToViewPanelButton(
 				id,
 				year,
 				month,

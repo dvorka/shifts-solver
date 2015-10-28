@@ -133,7 +133,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		this.preferences=periodPreferences;
 		
 		PeriodSolution result = new PeriodSolution(periodPreferences.getYear(), periodPreferences.getMonth());
-		result.setDlouhanKey(periodPreferences.getKey());
+		result.setPeriodPreferencesKey(periodPreferences.getKey());
 		result.setKey(periodPreferences.getKey() + "/" + ++sequence);
 		
 		steps=0;
@@ -1340,5 +1340,97 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		}
 		
 		return result;
+	}
+	
+	public static PeriodSolution createSolutionSkeleton(PeriodPreferences periodPreferences) {
+		PeriodSolution s=new PeriodSolution();
+		s.setYear(periodPreferences.getYear());
+		s.setMonth(periodPreferences.getMonth());
+		s.setPeriodPreferencesKey(periodPreferences.getKey());
+
+		Map<String,Job> jobs=new HashMap<String,Job>();
+		jobs.put(FERDA.getKey(),new Job());
+		s.setEmployeeJobs(jobs);
+		
+		PublicHolidays publicHolidays=new PublicHolidays();
+		boolean holidays=false;		
+		for(int d=1; d<=periodPreferences.getMonthDays(); d++) {
+			if(publicHolidays.isHolidays(periodPreferences.getYear(), periodPreferences.getMonth(), d)) {
+				holidays=true;
+			} else {
+				holidays=false;
+			}
+			
+			DaySolution daySolution = new DaySolution(
+					d, 
+					Utils.getWeekdayNumber(d, periodPreferences.getStartWeekDay())+1,
+					!holidays && !Utils.isWeekend(d, periodPreferences.getStartWeekDay()));
+			s.addDaySolution(daySolution);
+			
+			if(holidays) {
+				WeekendMorningShift weekendMorningShift = new WeekendMorningShift();
+				weekendMorningShift.editor=new Holder<String>(FERDA.getKey());
+				weekendMorningShift.staffer6am=new Holder<String>(FERDA.getKey());
+				weekendMorningShift.sportak=new Holder<String>(FERDA.getKey());
+				
+				WeekendAfternoonShift weekendAfternoonShift = new WeekendAfternoonShift();
+				weekendAfternoonShift.editor=new Holder<String>(FERDA.getKey());
+				weekendAfternoonShift.staffer=new Holder<String>(FERDA.getKey());
+				weekendAfternoonShift.sportak=new Holder<String>(FERDA.getKey());
+								
+				NightShift nightShift = new NightShift();
+				nightShift.staffer=new Holder<String>(FERDA.getKey());
+						
+				daySolution.setWorkday(false);
+				daySolution.setWeekendMorningShift(weekendMorningShift);
+				daySolution.setWeekendAfternoonShift(weekendAfternoonShift);
+				daySolution.setNightShift(nightShift);
+			} else {
+				if(Utils.isWeekend(d, periodPreferences.getStartWeekDay())) {
+					WeekendMorningShift weekendMorningShift = new WeekendMorningShift();
+					weekendMorningShift.editor=new Holder<String>(FERDA.getKey());
+					weekendMorningShift.staffer6am=new Holder<String>(FERDA.getKey());
+					weekendMorningShift.sportak=new Holder<String>(FERDA.getKey());
+					
+					WeekendAfternoonShift weekendAfternoonShift = new WeekendAfternoonShift();
+					weekendAfternoonShift.editor=new Holder<String>(FERDA.getKey());
+					weekendAfternoonShift.staffer=new Holder<String>(FERDA.getKey());
+					weekendAfternoonShift.sportak=new Holder<String>(FERDA.getKey());
+					
+					NightShift nightShift = new NightShift();
+					nightShift.staffer=new Holder<String>(FERDA.getKey());
+					
+					daySolution.setWorkday(false);
+					daySolution.setWeekendMorningShift(weekendMorningShift);
+					daySolution.setWeekendAfternoonShift(weekendAfternoonShift);
+					daySolution.setNightShift(nightShift);
+				} else {
+					daySolution.setWorkday(true);
+					WorkdayMorningShift workdayMorningShift = new WorkdayMorningShift();
+					daySolution.setWorkdayMorningShift(workdayMorningShift);
+					workdayMorningShift.editor=new Holder<String>(FERDA.getKey());
+					workdayMorningShift.staffer6am=new Holder<String>(FERDA.getKey());
+					workdayMorningShift.staffer7am=new Holder<String>(FERDA.getKey());
+					workdayMorningShift.staffer8am1=new Holder<String>(FERDA.getKey());
+					workdayMorningShift.staffer8am2=new Holder<String>(FERDA.getKey());
+					workdayMorningShift.sportak=new Holder<String>(FERDA.getKey());
+					
+					WorkdayAfternoonShift workdayAfternoonShift = new WorkdayAfternoonShift();
+					daySolution.setWorkdayAfternoonShift(workdayAfternoonShift);
+					workdayAfternoonShift.editor=new Holder<String>(FERDA.getKey());
+					workdayAfternoonShift.staffers[0]=new Holder<String>(FERDA.getKey());
+					workdayAfternoonShift.staffers[1]=new Holder<String>(FERDA.getKey());
+					workdayAfternoonShift.staffers[2]=new Holder<String>(FERDA.getKey());
+					workdayAfternoonShift.staffers[3]=new Holder<String>(FERDA.getKey());
+					workdayAfternoonShift.sportak=new Holder<String>(FERDA.getKey());
+					
+					NightShift nightShift = new NightShift();
+					daySolution.setNightShift(nightShift);
+					nightShift.staffer=new Holder<String>(FERDA.getKey());
+				}			
+			}
+		}
+		
+		return s;
 	}
 }

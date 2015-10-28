@@ -100,12 +100,12 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 
 	private void addTableTitle() {		
 		setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
-		setWidget(0, 1, new TableSetSortingButton(i18n.email(),TableSortCriteria.BY_EMAIL, this, ctx));
-		setWidget(0, 2, new TableSetSortingButton(i18n.gender(),TableSortCriteria.BY_GENDER, this, ctx));
-		setWidget(0, 3, new TableSetSortingButton(i18n.editor(),TableSortCriteria.BY_EDITOR, this, ctx));
-		setWidget(0, 4, new TableSetSortingButton(i18n.sportak(),TableSortCriteria.BY_SPORTAK, this, ctx));
-		setWidget(0, 5, new TableSetSortingButton(i18n.morningSportak(),TableSortCriteria.BY_MORTAK, this, ctx));
-		setWidget(0, 6, new TableSetSortingButton(i18n.fulltime(),TableSortCriteria.BY_FULLTIME, this, ctx));
+		//setWidget(0, 1, new TableSetSortingButton(i18n.email(),TableSortCriteria.BY_EMAIL, this, ctx));
+		setWidget(0, 1, new TableSetSortingButton(i18n.gender(),TableSortCriteria.BY_GENDER, this, ctx));
+		setWidget(0, 2, new TableSetSortingButton(i18n.editor(),TableSortCriteria.BY_EDITOR, this, ctx));
+		setWidget(0, 3, new TableSetSortingButton(i18n.sportak(),TableSortCriteria.BY_SPORTAK, this, ctx));
+		setWidget(0, 4, new TableSetSortingButton(i18n.morningSportak(),TableSortCriteria.BY_MORTAK, this, ctx));
+		setWidget(0, 5, new TableSetSortingButton(i18n.fulltime(),TableSortCriteria.BY_FULLTIME, this, ctx));
 	}
 		
 	public void addRow(
@@ -171,12 +171,12 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 		}
 		
 		setWidget(numRows, 0, button);
-		setWidget(numRows, 1, mailHtml);
-		setWidget(numRows, 2, womanHtml);
-		setWidget(numRows, 3, editorHtml);
-		setWidget(numRows, 4, sportakHtml);
-		setWidget(numRows, 5, morningSportakHtml);
-		setWidget(numRows, 6, fulltimeHtml);
+		//setWidget(numRows, 1, mailHtml);
+		setWidget(numRows, 1, womanHtml);
+		setWidget(numRows, 2, editorHtml);
+		setWidget(numRows, 3, sportakHtml);
+		setWidget(numRows, 4, morningSportakHtml);
+		setWidget(numRows, 5, fulltimeHtml);
 	}
 
 	public void removeRow() {

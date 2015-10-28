@@ -30,6 +30,7 @@ public class RiaState {
 		periodPreferencesArray=new PeriodPreferences[0];
 		periodSolutions=new PeriodSolution[0];
 		employeesByKey=new HashMap<String,Employee>();
+		periodPreferencesByKey=new HashMap<String,PeriodPreferences>();
 		periodSolutionsByKey=new HashMap<String,PeriodSolution>();
 	}
 	

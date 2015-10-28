@@ -1,8 +1,14 @@
 package com.mindforger.shiftsolver.shared.model;
 
-public class Holder<T> {
+import java.io.Serializable;
+
+public class Holder<T> implements Serializable {
+	private static final long serialVersionUID = -1312032921161292850L;
 
 	private T v;
+	
+	public Holder() {
+	}
 	
 	public Holder(T v) {
 		this.v=v;

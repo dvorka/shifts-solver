@@ -284,17 +284,17 @@ public class GaeDaySolutionBean implements Serializable, GaeBean {
 		if(d.getWorkdayMorningShift()!=null) {
 			workdayMorningEditor=d.getWorkdayMorningShift().editor.get();
 			workdayMorningStaffer6am=d.getWorkdayMorningShift().staffer6am.get();
-			workdayMorningStaffer6am=d.getWorkdayMorningShift().staffer7am.get();
-			workdayMorningStaffer6am=d.getWorkdayMorningShift().staffer8am1.get();
-			workdayMorningStaffer6am=d.getWorkdayMorningShift().staffer8am2.get();
+			workdayMorningStaffer7am=d.getWorkdayMorningShift().staffer7am.get();
+			workdayMorningStaffer8am1=d.getWorkdayMorningShift().staffer8am1.get();
+			workdayMorningStaffer8am2=d.getWorkdayMorningShift().staffer8am2.get();
 			workdayMorningSportak=d.getWorkdayMorningShift().sportak.get();
 		}
 		if(d.getWorkdayAfternoonShift()!=null) {
 			workdayAfternoonEditor=d.getWorkdayAfternoonShift().editor.get();			
 			workdayAfternoonStaffer1=d.getWorkdayAfternoonShift().staffers[0].get();			
-			workdayAfternoonStaffer1=d.getWorkdayAfternoonShift().staffers[1].get();			
-			workdayAfternoonStaffer1=d.getWorkdayAfternoonShift().staffers[2].get();			
-			workdayAfternoonStaffer1=d.getWorkdayAfternoonShift().staffers[3].get();			
+			workdayAfternoonStaffer2=d.getWorkdayAfternoonShift().staffers[1].get();			
+			workdayAfternoonStaffer3=d.getWorkdayAfternoonShift().staffers[2].get();			
+			workdayAfternoonStaffer4=d.getWorkdayAfternoonShift().staffers[3].get();			
 			workdayAfternoonSportak=d.getWorkdayAfternoonShift().sportak.get();
 		}
 		if(d.getWeekendMorningShift()!=null) {

@@ -216,6 +216,7 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 					eToA.get(ds.getWorkdayMorningShift().staffer6am.get()).assign(d, SHIFT_MORNING);
 					eToA.get(ds.getWorkdayMorningShift().staffer7am.get()).assign(d, SHIFT_MORNING);
 					eToA.get(ds.getWorkdayMorningShift().staffer8am1.get()).assign(d, SHIFT_MORNING);
+					eToA.get(ds.getWorkdayMorningShift().staffer8am2.get()).assign(d, SHIFT_MORNING);
 					eToA.get(ds.getWorkdayMorningShift().sportak.get()).assign(d, SHIFT_MORNING);
 					
 					eToA.get(ds.getWorkdayAfternoonShift().editor.get()).assign(d, SHIFT_AFTERNOON);

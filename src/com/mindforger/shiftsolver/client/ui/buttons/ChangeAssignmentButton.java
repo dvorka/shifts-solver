@@ -6,7 +6,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.mindforger.shiftsolver.client.RiaContext;
-import com.mindforger.shiftsolver.client.ui.PeriodSolutionPanel;
+import com.mindforger.shiftsolver.client.solver.ShiftSolver;
+import com.mindforger.shiftsolver.client.ui.SolutionPanel;
 import com.mindforger.shiftsolver.client.ui.dialogs.ChangeAssignmentDialog;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.model.Employee;
@@ -18,11 +19,11 @@ public class ChangeAssignmentButton extends Button implements ShiftSolverConstan
 	private RiaContext ctx;
 	private List<Employee> employees;
 	private ChangeAssignmentDialog dialog;
-	private PeriodSolutionPanel periodSolutionPanel;
+	private SolutionPanel periodSolutionPanel;
 	
 	public ChangeAssignmentButton(
 			final Holder<String> employeeHolder,
-			final PeriodSolutionPanel periodSolutionPanel,
+			final SolutionPanel periodSolutionPanel,
 			final int day,
 			final int shift,
 			final int role) 
@@ -32,7 +33,12 @@ public class ChangeAssignmentButton extends Button implements ShiftSolverConstan
 		this.employees=periodSolutionPanel.employees;
 		this.ctx=periodSolutionPanel.ctx;
 				
-		String fullName = periodSolutionPanel.e2a.get(employeeHolder.get()).employee.getFullName();
+		String fullName;
+		if(employeeHolder.get().equals(ShiftSolver.FERDA.getKey())) {
+			fullName = "X";
+		} else {
+			fullName = periodSolutionPanel.e2a.get(employeeHolder.get()).employee.getFullName();			
+		}
 		setText(fullName);
 		setTitle(fullName);
 		

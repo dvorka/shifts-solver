@@ -7,6 +7,8 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
+import com.mindforger.shiftsolver.client.solver.ShiftSolver;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
 import com.mindforger.shiftsolver.shared.model.Employee;
@@ -45,6 +47,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				RiaState riaState=new RiaState();
 				riaState.setEmployees(bean.getEmployees());
 				riaState.setPeriodPreferencesList(bean.getPeriodPreferencesList());
+				riaState.setPeriodSolutions(bean.getPeriodSolutions());
 				ctx.setState(riaState);
 
 				RootPanel pageTitlePanel = RootPanel.get(CONTAINER_PAGE_TITLE);
@@ -55,7 +58,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				RootPanel employeeEditPanel = RootPanel.get(CONTAINER_EMPLOYEE_EDITOR);
 				RootPanel dlouhanTable = RootPanel.get(CONTAINER_DLOUHAN_TABLE);
 				RootPanel dlouhanEditPanel = RootPanel.get(CONTAINER_DLOUHAN_EDITOR);
-				RootPanel solutionTable = RootPanel.get(CONTAINER_SOLUTION_TABLE);
+				RootPanel solutionsTable = RootPanel.get(CONTAINER_SOLUTION_TABLE);
 				RootPanel solutionViewPanel = RootPanel.get(CONTAINER_SOLUTION_VIEW);
 				RootPanel solverProgressPanel = RootPanel.get(CONTAINER_SOLVER_PROGRESS);
 				RootPanel solverNoSolutionPanel= RootPanel.get(CONTAINER_SOLVER_NO_SOLUTION);
@@ -67,7 +70,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				employeeEditPanel.add(ctx.getEmployeesEditPanel());
 				dlouhanTable.add(ctx.getPeriodPreferencesTable());
 				dlouhanEditPanel.add(ctx.getPeriodPreferencesEditPanel());
-				solutionTable.add(ctx.getSolutionTable());
+				solutionsTable.add(ctx.getSolutionsTable());
 				solutionViewPanel.add(ctx.getSolutionViewPanel());
 				solverProgressPanel.add(ctx.getSolverProgressPanel());
 				solverNoSolutionPanel.add(ctx.getSolverNoSolutionPanel());
@@ -105,6 +108,26 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		showPeriodPreferencesEditPanel();
 	}
 
+	public void loadSolution(String solutionId) {
+		// TODO consider loading from the server
+		PeriodSolution solution= ctx.getState().getPeriodSolution(solutionId);
+		List<Employee> es=new ArrayList<Employee>();
+		for(String k:solution.getEmployeeJobs().keySet()) {
+			if(ShiftSolver.FERDA.getKey().equals(k)) {
+				es.add(ShiftSolver.FERDA);
+			} else {
+				es.add(ctx.getState().getEmployee(k));				
+			}
+		}
+		List<EmployeeAllocation> allocations=EmployeeAllocation.calculateEmployeeAllocations(
+				ctx.getState().getPeriodPreferences(solution.getPeriodPreferencesKey()), 
+				solution,
+				es
+				);
+		ctx.getSolutionViewPanel().refresh(solution, allocations);
+		showSolutionViewPanel();
+	}
+	
 	private void hideAllContainers() {
 		ctx.getPageTitlePanel().setHTML("");
 		
@@ -363,7 +386,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 							return;
 						}
 					}
-					ctx.getSolutionTable().refresh(ctx.getState().getPeriodSolutions());
+					ctx.getSolutionsTable().refresh(ctx.getState().getPeriodSolutions());
 		      		ctx.getMenu().setPeriodPreferencesCount(ctx.getState().getPeriodPreferencesArray().length);
 				}
 			});
@@ -409,7 +432,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				PeriodSolution[] newArray = list.toArray(new PeriodSolution[list.size()]);
 				ctx.getState().setPeriodSolutions(newArray);
 			}
-			ctx.getSolutionTable().refresh(ctx.getState().getPeriodSolutions());
+			ctx.getSolutionsTable().refresh(ctx.getState().getPeriodSolutions());
 		}
 		showSolutionsTable();
 	}	

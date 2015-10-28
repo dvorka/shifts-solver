@@ -23,6 +23,9 @@ public class DaySolution implements Serializable  {
 	WeekendAfternoonShift weekendAfternoonShift;
 	NightShift nightShift;
 		
+	public DaySolution() {
+	}
+	
 	public DaySolution(int day, int weekday, boolean isWorkday) {
 		this.day=day;
 		this.weekday=weekday;

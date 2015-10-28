@@ -2,7 +2,9 @@ package com.mindforger.shiftsolver.server.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jdo.annotations.Element;
 import javax.jdo.annotations.IdGeneratorStrategy;
@@ -12,7 +14,9 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
+import com.mindforger.shiftsolver.server.ServerUtils;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
+import com.mindforger.shiftsolver.shared.model.Job;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
@@ -99,6 +103,7 @@ public class GaePeriodSolutionBean implements Serializable, GaeBean {
 			for(String k:s.getEmployeeJobs().keySet()) {
 				GaeJobBean gaeJobBean = new GaeJobBean();
 				gaeJobBean.setPeriodSolution(this);
+				gaeJobBean.setEmployeeKey(k);
 				gaeJobBean.fromPojo(s.getEmployeeJobs().get(k));
 				jobs.add(gaeJobBean);
 			}
@@ -116,6 +121,28 @@ public class GaePeriodSolutionBean implements Serializable, GaeBean {
 	
 	public PeriodSolution toPojo() {
 		PeriodSolution s=new PeriodSolution();
+
+		List<DaySolution> days=new ArrayList<DaySolution>();
+		if(daySolutions!=null) {
+			for(GaeDaySolutionBean ds:daySolutions) {
+				days.add(ds.toPojo());
+			}					
+		}
+		s.setDays(days);
+		
+		Map<String,Job> employeeJobs=new HashMap<String, Job>();
+		if(jobs!=null) {
+			for(GaeJobBean j:jobs) {
+				Job pojo = j.toPojo();
+				employeeJobs.put(j.getEmployeeKey(), pojo);
+			}
+		}
+		s.setEmployeeJobs(employeeJobs);
+		
+		s.setKey(ServerUtils.keyToString(key));
+		s.setMonth(month);
+		s.setPeriodPreferencesKey(periodPreferencesKey);
+		s.setYear(year);
 		
 		return s;
 	}		

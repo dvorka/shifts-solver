@@ -11,8 +11,8 @@ import com.mindforger.shiftsolver.client.ui.HomePanel;
 import com.mindforger.shiftsolver.client.ui.PageTitlePanel;
 import com.mindforger.shiftsolver.client.ui.PeriodPreferencesEditPanel;
 import com.mindforger.shiftsolver.client.ui.PeriodPreferencesTable;
-import com.mindforger.shiftsolver.client.ui.PeriodSolutionTable;
-import com.mindforger.shiftsolver.client.ui.PeriodSolutionPanel;
+import com.mindforger.shiftsolver.client.ui.SolutionsTable;
+import com.mindforger.shiftsolver.client.ui.SolutionPanel;
 import com.mindforger.shiftsolver.client.ui.SettingsPanel;
 import com.mindforger.shiftsolver.client.ui.SolverNoSolutionPanel;
 import com.mindforger.shiftsolver.client.ui.SolverProgressPanel;
@@ -59,8 +59,8 @@ public class RiaContext implements ShiftSolverConstants {
 	private EmployeeEditPanel employeeEditPanel;
 	private PeriodPreferencesTable periodPreferencesTable;
 	private PeriodPreferencesEditPanel periodPreferencesEditPanel;
-	private PeriodSolutionTable periodSolutionTable;
-	private PeriodSolutionPanel periodSolutionViewPanel;
+	private SolutionsTable periodSolutionsTable;
+	private SolutionPanel periodSolutionViewPanel;
 	private SolverProgressPanel solverProgressPanel;
 	private SolverNoSolutionPanel solverNoSolutionPanel;
 	
@@ -90,8 +90,8 @@ public class RiaContext implements ShiftSolverConstants {
 		employeeEditPanel=new EmployeeEditPanel(this);
 		periodPreferencesTable=new PeriodPreferencesTable(this);		
 		periodPreferencesEditPanel=new PeriodPreferencesEditPanel(this);
-		periodSolutionTable=new PeriodSolutionTable(this);
-		periodSolutionViewPanel=new PeriodSolutionPanel(this);
+		periodSolutionsTable=new SolutionsTable(this);
+		periodSolutionViewPanel=new SolutionPanel(this);
 		solverProgressPanel=new SolverProgressPanel(this);
 		solverNoSolutionPanel=new SolverNoSolutionPanel(this, true);
 	}
@@ -156,15 +156,15 @@ public class RiaContext implements ShiftSolverConstants {
 		return ria;
 	}
 
-	public PeriodSolutionTable getSolutionTable() {
-		if(!initialized.contains(periodSolutionTable)) {
-			initialized.add(periodSolutionTable);
-			periodSolutionTable.init();
+	public SolutionsTable getSolutionsTable() {
+		if(!initialized.contains(periodSolutionsTable)) {
+			initialized.add(periodSolutionsTable);
+			periodSolutionsTable.init();
 		}
-		return periodSolutionTable;
+		return periodSolutionsTable;
 	}
 
-	public PeriodSolutionPanel getSolutionViewPanel() {
+	public SolutionPanel getSolutionViewPanel() {
 		return periodSolutionViewPanel;
 	}
 
