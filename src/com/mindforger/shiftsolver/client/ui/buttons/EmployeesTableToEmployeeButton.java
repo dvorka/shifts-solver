@@ -12,7 +12,7 @@ public class EmployeesTableToEmployeeButton extends Button {
 			final String fullname,
 			final String cssClass,
 			final RiaContext ctx) {
-		setText(fullname);
+		setHTML(fullname);
 		setTitle(fullname);
 		setStyleName(cssClass);
 

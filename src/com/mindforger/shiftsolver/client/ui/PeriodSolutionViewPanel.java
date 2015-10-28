@@ -65,6 +65,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		setWidget(3, 0, shiftsTable);
 		
 		allocationsTable = new SolverNoSolutionPanel(ctx, false);
+		allocationsTable.init();
 		setWidget(4, 0, allocationsTable);
 	}
 	
@@ -172,6 +173,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 	
 	private FlexTable newScheduleTable() {
 		FlexTable table = new FlexTable();
+		table.setStyleName("s2-scheduleTable");
 		table.removeAllRows();				
 		return table;		
 	}
@@ -187,14 +189,15 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		scheduleTable.removeAllRows();
 				
 		if(solution!=null && solution.getDays()!=null && solution.getDays().size()>0) {
-			HTML html = new HTML(i18n.employee());
-			// TODO allow sorting the table by employee name
-			// setWidget(0, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
-			scheduleTable.setWidget(0, 0, html);
-			html = new HTML(i18n.job());
-			scheduleTable.setWidget(0, 1, html);			
-			html = new HTML(i18n.shifts());
-			scheduleTable.setWidget(0, 2, html);
+			Button button = new Button(i18n.employee());
+			button.setStyleName("s2-tableHeadColumnButton");
+			scheduleTable.setWidget(0, 0, button);
+			button = new Button(i18n.job());
+			button.setStyleName("s2-tableHeadColumnButton");
+			scheduleTable.setWidget(0, 1, button);			
+			button = new Button(i18n.shifts());
+			button.setStyleName("s2-tableHeadColumnButton");
+			scheduleTable.setWidget(0, 2, button);
 			
 			for(Employee employee:ctx.getState().getEmployees()) {
 				addEmployeeRow(
@@ -219,33 +222,18 @@ public class PeriodSolutionViewPanel extends FlexTable {
 		int numRows = table.getRowCount();		
 		EmployeesTableToEmployeeButton button = new EmployeesTableToEmployeeButton(
 				employee.getKey(),
-				employee.getFullName()
-				  // +" ("+(employee.isFulltime()?"F":"")+(employee.isSportak()?"S":"")+(employee.isEditor()?"E":"")+")",
-				  +(employee.isFulltime()?"*":""),
+				employee.getFirstname()+"&nbsp;"+employee.getFamilyname(),
 				// TODO css
 				"mf-growsTableGoalButton", 
-				ctx);
-		if(employee.isFemale()) {
-			button.addStyleName("s2-female");			
-		} else {
-			button.addStyleName("s2-male");						
-		}
-		if(employee.isFulltime()) {
-			button.addStyleName("s2-fulltime");			
-		} else {
-			button.addStyleName("s2-parttime");						
-		}
-		if(employee.isEditor()) {
-			button.setTitle(employee.getFullName()+" - Editor");
-			button.addStyleName("s2-editor");			
-		}
-		if(employee.isSportak()) {
-			button.setTitle(employee.getFullName()+" - Sportak");
-			button.addStyleName("s2-sportak");			
-		}
+				ctx);		
+		button.setTitle(
+				employee.getFullName()
+				+" - "
+				+(employee.isFulltime()?"fulltime ":"")
+				+(employee.isSportak()?"sportak ":"")
+				+(employee.isEditor()?"editor ":"")
+				+(employee.isMortak()?"mortak":""));
 		table.setWidget(numRows, 0, button);
-
-		
 		
 		int shiftsAssigned = solution.getEmployeeJobs().get(employee.getKey()).shifts;
 		int shiftsLimit = solution.getEmployeeJobs().get(employee.getKey()).shiftsLimit;
@@ -258,25 +246,23 @@ public class PeriodSolutionViewPanel extends FlexTable {
 			}
 		}
 		table.setWidget(numRows, 1, jobHtml); 
-		
-		
-		
+				
 		for (int i = 0; i<monthDays; i++) {
-			// TODO append Mon...Sun to the number; weekend to have different color
-			HTML html = new HTML(""+(i+1)+Utils.getDayLetter(i+1, preferences.getStartWeekDay()));
+			// TODO i18n
+			Button b = new Button(""+(i+1)+Utils.getDayLetter(i+1, preferences.getStartWeekDay()));
+			// TODO add Mon...Sun to title
+			b.setStyleName("s2-tableHeadColumnButton");
 			if(Utils.isWeekend(i+1, preferences.getStartWeekDay())
 					|| publicHolidays.isHolidays(
 							preferences.getYear(), 
 							preferences.getMonth(), 
 							i)) 
 			{
-				html.addStyleName("s2-weekendDay");
+				b.addStyleName("s2-weekendDay");
 			}
-			table.setWidget(0, i+2, html);
+			table.setWidget(0, i+2, b);
 		}
-		
-		// TODO change HTML to button that will allow to edit solution; click rotates meaningful employee allocation/shift
-				
+						
 		HTML html;
 		for(int c=0; c<monthDays; c++) {
 			if(solution.getDays().get(c).isEmployeeAllocatedToday(employee.getKey())) {
@@ -284,6 +270,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 				case ShiftSolverConstants.SHIFT_MORNING:
 					html = new HTML("&nbsp;M");
 					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
+					// TODO i18n
 					html.setTitle("Morning shift");
 					table.setWidget(numRows, c+2, html);
 					break;
@@ -542,7 +529,7 @@ public class PeriodSolutionViewPanel extends FlexTable {
 			refreshScheduleTable();
 			refreshShiftsTable();
 			refreshAllocationsTable();
-			showScheduleTable();
+			showShiftsTable();
 		} else {
 			yearMonthHtml.setVisible(false);
 			scheduleTable.setVisible(false);

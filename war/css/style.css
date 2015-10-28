@@ -2672,10 +2672,6 @@ html>body .gwt-MenuBarPopup {
 	color: #FF6600;
 }
 
-.s2-weekendDay {
-	color: #FF0000;
-}
-
 .s2-male {
 	background-color: #356AA0;
 	color: #FFF;
@@ -2698,7 +2694,8 @@ html>body .gwt-MenuBarPopup {
 }
 
 .s2-busy {
-	color: #990000;	
+	background-color: #C91826;
+	color: #FFF;	
 }
 
 .s2-match {
@@ -2801,19 +2798,40 @@ html>body .gwt-MenuBarPopup {
 	background-color: #EEE;
 	border-width: 0px;
 	color: #000;
+    cursor: pointer;
   	cursor: hand;
+    width: 100%;
 }
 .s2-solutionTableAfternoonB {
 	background-color: #DDD;
 	border-width: 0px;
 	color: #000;
+    cursor: pointer;
   	cursor: hand;
+    width: 100%;
 }
 .s2-solutionTableNightB {
 	background-color: #BBB;
 	border-width: 0px;
 	color: #000;
+    cursor: pointer;
   	cursor: hand;
+    width: 100%;
+}
+
+
+.s2-scheduleTable {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: collapse;
+}
+.s2-scheduleTable td {
+  border: 1px solid #ccc;
+}
+
+.s2-weekendDay {
+	color: #FF0000;
 }
 
 /** EOF **/

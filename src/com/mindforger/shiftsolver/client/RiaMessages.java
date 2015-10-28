@@ -57,4 +57,5 @@ public interface RiaMessages extends Messages {
 	String employeesAllocation();
 	String homePageApplicationDescription();
 	String settings();
+	String newEmptySolution();
 }

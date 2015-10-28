@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.dev.jjs.impl.CodeSplitter2.ParitionHeuristics;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.Utils;
@@ -1256,5 +1255,74 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 
 	public void setPartialSolution(boolean partialSolution) {
 		this.partialSolution = partialSolution;
+	}
+
+
+	
+	
+	
+
+//	static class DayCheck {
+//		
+//		public DayCheck(Employee e, int day) {
+//		}
+//		
+//		public boolean isAssignable() {
+//		}
+//		
+//		public boolean isRoleMatch() {
+//		}
+//		
+//		public boolean isNotBusy() {
+//		}
+//		
+//		public boolean isShiftCapacity() {
+//		}
+//		
+//		public boolean isNightCapacity() {
+//		}
+//		
+//		public boolean isNotAllocatedToday() {
+//		}
+//		
+//		public boolean isNotAllocated5Days() {
+//		}
+//		
+//		// TODO continuity
+//		
+//		public String toString() {
+//		}
+//	}
+	
+	// TODO move this method as static to solver where code can be shared
+	// TODO move this method as static to solver where code can be shared
+	// TODO move this method as static to solver where code can be shared
+	// TODO move this method as static to solver where code can be shared
+	// TODO move this method as static to solver where code can be shared
+	
+	public String getAvailabilityStringForEmployee(Employee e) {
+		String result="";
+		
+		int needDay;
+		int needShiftType;
+		int needRole;
+		
+		PeriodPreferences preferences;
+		PeriodSolution solution;
+		
+		// IN: employee + needed: day, shift type, role + preferences + solution 
+		// CHECKS:
+		//   role match	- !role
+		//   day preference - !want
+		//   shifts capacity - >shifts
+		//   night capacity - >nights
+		//   same day - !1*day
+		//   last 5 days - >5days
+		//   continuity - !fri2sun
+		
+		
+		
+		
+		return result.isEmpty()?"OK":" # "+result;
 	}
 }

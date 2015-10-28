@@ -89,6 +89,7 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 	}
 	
 	public void assign(int day, int shiftType) {
+		// TODO this should go away: checks must be made earlier, here I set, check to be optional
 		if(shiftType==ShiftSolverConstants.SHIFT_NIGHT) {
 			if(employee.isFulltime() && nights>=2) {
 				nights++;				

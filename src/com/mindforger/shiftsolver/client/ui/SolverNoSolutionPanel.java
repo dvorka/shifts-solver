@@ -62,6 +62,10 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 		case BY_NAME:
 			comparator=new ComparatorAllocationByName(sortIsAscending);
 			break;
+		case BY_FULLTIME:
+			// TODO ea to e
+			comparator=new ComparatorAllocationByName(sortIsAscending);
+			break;
 		case BY_ROLE:
 			comparator=new ComparatorAllocationByRole(sortIsAscending);
 			break;
@@ -119,7 +123,7 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 		int rows = getRowCount();
 		setWidget(rows, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
 		// TODO i18n
-		setWidget(rows, 1, new TableSetSortingButton("Shifts",TableSortCriteria.BY_NAME, this, ctx));
+		setWidget(rows, 1, new TableSetSortingButton(i18n.shifts(),TableSortCriteria.BY_NAME, this, ctx));
 		setWidget(rows, 2, new TableSetSortingButton("Nights",TableSortCriteria.BY_NAME, this, ctx));
 		setWidget(rows, 3, new TableSetSortingButton("Today",TableSortCriteria.BY_NAME, this, ctx));
 		setWidget(rows, 4, new TableSetSortingButton("5 Days",TableSortCriteria.BY_NAME, this, ctx));
@@ -160,21 +164,24 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 		}
 		HTML last5DaysHtml;
 		if(a.hadShiftsLast5Days(failday)) {
-			last5DaysHtml=new HTML("yes");
-			last5DaysHtml.setStyleName("s2-busy");
+			last5DaysHtml=new HTML(i18n.yes());
+			last5DaysHtml.setStyleName("s2-match");
 		} else {
-			last5DaysHtml=new HTML("no");			
+			last5DaysHtml=new HTML(i18n.no());			
+			last5DaysHtml.setStyleName("s2-mismatch");
 		}
 		HTML todayHtml;
 		if(a.hadShiftToday(failday)) {
-			todayHtml=new HTML("yes");
-			todayHtml.setStyleName("s2-busy");
+			todayHtml=new HTML(i18n.yes());
+			todayHtml.setStyleName("s2-match");
 		} else {
-			todayHtml=new HTML("no");			
+			todayHtml=new HTML(i18n.no());			
+			todayHtml.setStyleName("s2-mismatch");
 		}
 
 		boolean isFullPrefs=false;
 		HTML preferencesHtml=new HTML("?");
+		preferencesHtml.setStyleName("s2-mismatch");
 		EmployeePreferences employeePreferences = periodPreferences.getEmployeeToPreferences().get(a.employee.getKey());
 		if(employeePreferences!=null) {
 			DayPreference preferencesForDay = employeePreferences.getPreferencesForDay(failday);

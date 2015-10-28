@@ -110,6 +110,15 @@ public class PeriodPreferencesEditPanel extends FlexTable {
 		});		
 		buttonPanel.add(shuffleAndSolveButton);
 
+		Button newSolutionButton=new Button(i18n.newEmptySolution());
+		newSolutionButton.setStyleName("mf-buttonLooser");
+		newSolutionButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				// TODO
+			}
+		});		
+		buttonPanel.add(newSolutionButton);
+		
 		Button deleteButton=new Button(i18n.delete());
 		deleteButton.setStyleName("mf-button");
 		deleteButton.addClickHandler(new ClickHandler() {
