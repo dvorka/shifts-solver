@@ -12,6 +12,7 @@ import com.mindforger.shiftsolver.client.ui.buttons.TableSetSortingButton;
 import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeByEditor;
 import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeByFulltime;
 import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeByGender;
+import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeByModified;
 import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeByMortak;
 import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeByName;
 import com.mindforger.shiftsolver.client.ui.comparators.ComparatorEmployeeBySportak;
@@ -70,6 +71,9 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 		case BY_FULLTIME:
 			comparator=new ComparatorEmployeeByFulltime(sortIsAscending);
 			break;
+		case BY_MODIFIED:
+			comparator=new ComparatorEmployeeByModified(sortIsAscending);
+			break;
 		case BY_EMAIL:
 		default:
 			comparator=new ComparatorEmployeeByName(sortIsAscending);
@@ -93,7 +97,8 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 						result[i].isEditor(),
 						result[i].isSportak(),
 						result[i].isMortak(),
-						result[i].isFulltime());
+						result[i].isFulltime(),
+						result[i].getModifiedPretty());
 			}			
 		}
 	}
@@ -106,6 +111,7 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 		setWidget(0, 3, new TableSetSortingButton(i18n.sportak(),TableSortCriteria.BY_SPORTAK, this, ctx));
 		setWidget(0, 4, new TableSetSortingButton(i18n.morningSportak(),TableSortCriteria.BY_MORTAK, this, ctx));
 		setWidget(0, 5, new TableSetSortingButton(i18n.fulltime(),TableSortCriteria.BY_FULLTIME, this, ctx));
+		setWidget(0, 6, new TableSetSortingButton(i18n.modified(),TableSortCriteria.BY_MODIFIED, this, ctx));
 	}
 		
 	public void addRow(
@@ -116,7 +122,8 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 			boolean editor, 
 			boolean sportak, 
 			boolean morningSportak,
-			boolean fulltime) 
+			boolean fulltime,
+			String modified) 
 	{
 		int numRows = getRowCount();
 				
@@ -132,7 +139,7 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 			button.addStyleName("s2-male");						
 		}
 		
-		final HTML mailHtml = new HTML(email==null?"":email);
+		//final HTML mailHtml = new HTML(email==null?"":email);
 		//mailHtml.setStyleName("mf-progressHtml");
 		
 		final HTML womanHtml = new HTML((woman?i18n.female():i18n.male())+"&nbsp;&nbsp;");
@@ -177,6 +184,7 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 		setWidget(numRows, 3, sportakHtml);
 		setWidget(numRows, 4, morningSportakHtml);
 		setWidget(numRows, 5, fulltimeHtml);
+		setWidget(numRows, 6, new HTML(modified));
 	}
 
 	public void removeRow() {

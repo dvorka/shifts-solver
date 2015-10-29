@@ -246,7 +246,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 	}
 
 	public void createNewSolution(final PeriodPreferences periodPreferences) {
-		PeriodSolution s=ShiftSolver.createSolutionSkeleton(periodPreferences);
+		PeriodSolution s=ShiftSolver.createSolutionSkeleton(periodPreferences, ctx.getState());
 		
 		service.newPeriodSolution(s,new AsyncCallback<PeriodSolution>() {
 			public void onFailure(Throwable caught) {
@@ -259,8 +259,9 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 					EmployeeAllocation a=new EmployeeAllocation(e, periodPreferences);
 					allocations.add(a);
 				}
-				ctx.getSolutionViewPanel().refresh(result, allocations);
 				ctx.getState().addPeriodSolution(result);
+				setPeriodSolutionsCount(ctx.getState().getPeriodSolutions().length);
+				ctx.getSolutionViewPanel().refresh(result, allocations);
 				ria.showSolutionViewPanel();
 				ctx.getStatusLine().showInfo("New period solution created");
 			}

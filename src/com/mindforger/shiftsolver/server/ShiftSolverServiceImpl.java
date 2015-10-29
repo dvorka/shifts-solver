@@ -37,8 +37,8 @@ public class ShiftSolverServiceImpl extends RemoteServiceServlet implements Shif
 	}
 	
 	@Override
-	public void saveEmployee(Employee employee) {
-		persistence.saveEmployee(employee);
+	public Employee saveEmployee(Employee employee) {
+		return persistence.saveEmployee(employee);
 	}
 
 	@Override
@@ -71,8 +71,8 @@ public class ShiftSolverServiceImpl extends RemoteServiceServlet implements Shif
 	}
 
 	@Override
-	public void savePeriodPreferences(PeriodPreferences periodPreferences) {
-		persistence.savePeriodPreferences(periodPreferences);
+	public PeriodPreferences savePeriodPreferences(PeriodPreferences periodPreferences) {
+		return persistence.savePeriodPreferences(periodPreferences);
 	}
 
 	@Override
@@ -91,8 +91,8 @@ public class ShiftSolverServiceImpl extends RemoteServiceServlet implements Shif
 	}
 
 	@Override
-	public void savePeriodSolution(PeriodSolution periodSolution) {
-		persistence.savePeriodSolution(periodSolution);
+	public PeriodSolution savePeriodSolution(PeriodSolution periodSolution) {
+		return persistence.savePeriodSolution(periodSolution);
 	}
 
 	@Override

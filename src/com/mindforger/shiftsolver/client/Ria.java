@@ -111,19 +111,18 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 	public void loadSolution(String solutionId) {
 		// TODO consider loading from the server
 		PeriodSolution solution= ctx.getState().getPeriodSolution(solutionId);
-		List<Employee> es=new ArrayList<Employee>();
+		List<Employee> employees=new ArrayList<Employee>();
 		for(String k:solution.getEmployeeJobs().keySet()) {
-			if(ShiftSolver.FERDA.getKey().equals(k)) {
-				es.add(ShiftSolver.FERDA);
-			} else {
-				es.add(ctx.getState().getEmployee(k));				
+			if(k!=null) {
+				if(!ShiftSolver.FERDA_KEY.equals(k)) {
+					employees.add(ctx.getState().getEmployee(k));					
+				}
 			}
 		}
 		List<EmployeeAllocation> allocations=EmployeeAllocation.calculateEmployeeAllocations(
 				ctx.getState().getPeriodPreferences(solution.getPeriodPreferencesKey()), 
 				solution,
-				es
-				);
+				employees);
 		ctx.getSolutionViewPanel().refresh(solution, allocations);
 		showSolutionViewPanel();
 	}
@@ -208,14 +207,16 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 	// TODO merge save and delete/update to single method
 	public void saveEmployee(final Employee employee) {
 		if(employee!=null) {
-			ctx.getService().saveEmployee(employee, new AsyncCallback<Void>() {
+			ctx.getService().saveEmployee(employee, new AsyncCallback<Employee>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					ctx.getStatusLine().showError("Unable to save employee "+employee.getFullName());
 				}
 
 				@Override
-				public void onSuccess(Void result) {
+				public void onSuccess(Employee result) {
+					employee.setModified(result.getModified());
+					employee.setModifiedPretty(result.getModifiedPretty());
 					Employee[] employees = ctx.getState().getEmployees();
 					if(employees!=null) {
 						if(ctx.getState().getEmployee(employee.getKey())==null) {			
@@ -288,14 +289,16 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 	// TODO merge save and delete/update to single method
 	public void savePeriodPreferences(final PeriodPreferences preferences) {
 		if(preferences!=null) {
-			ctx.getService().savePeriodPreferences(preferences, new AsyncCallback<Void>() {
+			ctx.getService().savePeriodPreferences(preferences, new AsyncCallback<PeriodPreferences>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					ctx.getStatusLine().showError("Unable to save period preferences "+preferences.getYear()+"/"+preferences.getMonth());
 				}
 
 				@Override
-				public void onSuccess(Void result) {
+				public void onSuccess(PeriodPreferences result) {
+					preferences.setModified(result.getModified());
+					preferences.setModifiedPretty(result.getModifiedPretty());
 					PeriodPreferences[] array = ctx.getState().getPeriodPreferencesArray();
 					if(array!=null) {
 						if(ctx.getState().getPeriodPreferences(preferences.getKey())==null) {			
@@ -362,26 +365,28 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 	}
 
 	// TODO merge save and delete/update to single method
-	public void savePeriodSolution(final PeriodSolution preferences) {
-		if(preferences!=null) {
-			ctx.getService().savePeriodSolution(preferences, new AsyncCallback<Void>() {
+	public void savePeriodSolution(final PeriodSolution solution) {
+		if(solution!=null) {
+			ctx.getService().savePeriodSolution(solution, new AsyncCallback<PeriodSolution>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					ctx.getStatusLine().showError("Unable to save period solution!");
 				}
 
 				@Override
-				public void onSuccess(Void result) {
+				public void onSuccess(PeriodSolution result) {
+					solution.setModified(result.getModified());
+					solution.setModifiedPretty(result.getModifiedPretty());					
 					PeriodSolution[] array = ctx.getState().getPeriodSolutions();
 					if(array!=null) {
-						if(ctx.getState().getPeriodSolution(preferences.getKey())==null) {			
+						if(ctx.getState().getPeriodSolution(solution.getKey())==null) {			
 							List<PeriodSolution> list = new ArrayList<PeriodSolution>();
 							for(PeriodSolution s:array) list.add(s);
-							list.add(preferences);
+							list.add(solution);
 							PeriodSolution[] newArray = list.toArray(new PeriodSolution[list.size()]);
 							ctx.getState().setPeriodSolutions(newArray);
 						} else {
-							deleteOrUpdatePeriodSolution(preferences, false);					
+							deleteOrUpdatePeriodSolution(solution, false);					
 				      		ctx.getMenu().setPeriodSolutionsCount(ctx.getState().getPeriodSolutions().length);
 							return;
 						}
@@ -394,17 +399,17 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 		showPeriodPreferencesTable();
 	}
 
-	public void deletePeriodSolutions(final PeriodSolution preferences) {
-		if(preferences!=null) {
-			ctx.getService().deletePeriodSolution(preferences.getKey(), new AsyncCallback<Void>() {
+	public void deletePeriodSolution(final PeriodSolution solution) {
+		if(solution!=null) {
+			ctx.getService().deletePeriodSolution(solution.getKey(), new AsyncCallback<Void>() {
 				@Override
 				public void onFailure(Throwable caught) {
-					ctx.getStatusLine().showError("Unable to delete period solution "+preferences.getYear()+"/"+preferences.getMonth());
+					ctx.getStatusLine().showError("Unable to delete period solution "+solution.getYear()+"/"+solution.getMonth());
 				}
 
 				@Override
 				public void onSuccess(Void result) {
-					deleteOrUpdatePeriodSolution(preferences, true);
+					deleteOrUpdatePeriodSolution(solution, true);
 		      		ctx.getMenu().setPeriodSolutionsCount(ctx.getState().getPeriodSolutions().length);
 				}
 			});

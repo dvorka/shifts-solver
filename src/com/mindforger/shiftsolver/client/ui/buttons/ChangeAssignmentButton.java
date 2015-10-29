@@ -35,7 +35,7 @@ public class ChangeAssignmentButton extends Button implements ShiftSolverConstan
 				
 		String fullName;
 		if(employeeHolder.get().equals(ShiftSolver.FERDA.getKey())) {
-			fullName = "X";
+			fullName = "...";
 		} else {
 			fullName = periodSolutionPanel.e2a.get(employeeHolder.get()).employee.getFullName();			
 		}

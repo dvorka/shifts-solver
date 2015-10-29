@@ -10,14 +10,16 @@ import java.util.Map;
 public class PeriodPreferences implements Serializable  {
 	private static final long serialVersionUID = 8785936718601939671L;
 
-	String key;
-	int startWeekDay;
-	int monthDays;
-	int monthWorkDays;
-	int year;
-	int month;
+	private String key;
+	private long modified;
+	private String modifiedPretty;
+	private int startWeekDay;
+	private int monthDays;
+	private int monthWorkDays;
+	private int year;
+	private int month;
 	private Map<String,EmployeePreferences> employeeToPreferences;
-	String lastMonthEditor;
+	private String lastMonthEditor;
 	
 	public PeriodPreferences() {		
 	}
@@ -34,6 +36,22 @@ public class PeriodPreferences implements Serializable  {
 	
 	public void setKey(String key) {
 		this.key = key;
+	}
+	
+	public long getModified() {
+		return modified;
+	}
+
+	public void setModified(long modified) {
+		this.modified = modified;
+	}
+
+	public String getModifiedPretty() {
+		return modifiedPretty;
+	}
+
+	public void setModifiedPretty(String modifiedPretty) {
+		this.modifiedPretty = modifiedPretty;
 	}
 
 	public int getYear() {

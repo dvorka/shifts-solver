@@ -39,11 +39,7 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 		this.shiftsOnDays=new ArrayList<Integer>();
 		this.shiftTypesOnDays=new ArrayList<Integer>();
 		
-		if(employee.isFulltime()) {
-			shiftsToGet=Math.round(((float)preferences.getMonthWorkDays())/8f*7.5f);
-		} else {
-			shiftsToGet=Math.round((((float)preferences.getMonthWorkDays())/8f*7.5f)/2f);			
-		}
+		shiftsToGet=calculateShiftToGet(employee, preferences);
 		
 		if(preferences.getEmployeeToPreferences()!=null) {
 			EmployeePreferences employeePreferences = preferences.getEmployeeToPreferences().get(employee.getKey());
@@ -60,6 +56,16 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 				}
 			}
 		}
+	}
+
+	public static int calculateShiftToGet(Employee employee, PeriodPreferences preferences) {
+		int shiftsToGet;
+		if(employee.isFulltime()) {
+			shiftsToGet=Math.round(((float)preferences.getMonthWorkDays())/8f*7.5f);
+		} else {
+			shiftsToGet=Math.round((((float)preferences.getMonthWorkDays())/8f*7.5f)/2f);			
+		}
+		return shiftsToGet;
 	}
 
 	public EmployeeAllocation clone() {
@@ -205,8 +211,9 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 	{
 		Map<String,EmployeeAllocation> eToA=new HashMap<String, EmployeeAllocation>();
 		for(Employee e:employees) {
-			eToA.put(e.getKey(), new EmployeeAllocation(e, preferences));
+			if(e!=null) eToA.put(e.getKey(), new EmployeeAllocation(e, preferences));
 		}
+		eToA.put(ShiftSolver.FERDA_KEY, new EmployeeAllocation(ShiftSolver.FERDA, preferences));
 		
 		for(int d=1; d<=preferences.getMonthDays(); d++) {
 			DaySolution ds = solution.getSolutionForDay(d);
@@ -241,6 +248,9 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 				}
 			}
 		}
+		
+		eToA.remove(ShiftSolver.FERDA_KEY);
+		
 		return new ArrayList<EmployeeAllocation>(eToA.values());
 	}
 	

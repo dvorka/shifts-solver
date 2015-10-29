@@ -60,6 +60,7 @@ public class GaePersistence implements Persistence {
 				gaeResult=new GaeEmployeeBean();
 			}
 			gaeResult.fromPojo(bean);
+			gaeResult.setModified(System.currentTimeMillis());
 			gaeResult = (GaeEmployeeBean)pm.makePersistent(gaeResult);
 		} finally {
 			pm.close();
@@ -121,6 +122,7 @@ public class GaePersistence implements Persistence {
 		
 		GaePeriodPreferencesBean gaeResult=new GaePeriodPreferencesBean();
 		gaeResult.fromPojo(bean);
+		gaeResult.setModified(System.currentTimeMillis());
 		
 		PersistenceManager pm = getPm();
 		Transaction tx=null;
@@ -212,6 +214,7 @@ public class GaePersistence implements Persistence {
 		
 		GaePeriodSolutionBean gaeResult=new GaePeriodSolutionBean();
 		gaeResult.fromPojo(bean);
+		gaeResult.setModified(System.currentTimeMillis());
 		
 		PersistenceManager pm = getPm();
 		Transaction tx=null;

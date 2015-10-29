@@ -26,6 +26,8 @@ public class GaePeriodSolutionBean implements Serializable, GaeBean {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)	
 	private Key key;
+	@Persistent
+	private long modified;
 
 	@Persistent
 	private String periodPreferencesKey;
@@ -45,6 +47,14 @@ public class GaePeriodSolutionBean implements Serializable, GaeBean {
 	public GaePeriodSolutionBean() {
 	}
 
+	public long getModified() {
+		return modified;
+	}
+
+	public void setModified(long modified) {
+		this.modified = modified;
+	}
+	
 	public String getPeriodPreferencesKey() {
 		return periodPreferencesKey;
 	}
@@ -143,6 +153,8 @@ public class GaePeriodSolutionBean implements Serializable, GaeBean {
 		s.setMonth(month);
 		s.setPeriodPreferencesKey(periodPreferencesKey);
 		s.setYear(year);
+		s.setModified(modified);
+		s.setModifiedPretty(ServerUtils.getPrettyTimestampHtml(modified));
 		
 		return s;
 	}		

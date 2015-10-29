@@ -43,6 +43,7 @@ public class EmployeeEditPanel extends FlexTable {
 				}
 			}
 		});
+		buttonPanel.add(saveButton);
 		
 		Button deleteButton=new Button(i18n.delete());
 		deleteButton.setStyleName("mf-button");
@@ -57,7 +58,6 @@ public class EmployeeEditPanel extends FlexTable {
 		});		
 		buttonPanel.add(deleteButton);
 
-		buttonPanel.add(saveButton);
 		Button cancelButton=new Button(i18n.cancel());
 		cancelButton.setStyleName("mf-buttonLooser");
 		cancelButton.setTitle(i18n.discardChanges());
@@ -70,7 +70,7 @@ public class EmployeeEditPanel extends FlexTable {
 			}
 		});		
 		buttonPanel.add(cancelButton);
-		
+				
 	    FlexCellFormatter cellFormatter = getFlexCellFormatter();
 		cellFormatter.setColSpan(0, 0, 2);
 		setWidget(++numRows, 0, buttonPanel);
@@ -156,7 +156,7 @@ public class EmployeeEditPanel extends FlexTable {
 			employee.setFirstname(firstNameTextBox.getText());
 			employee.setFulltime(fulltimeCheckbox.getValue());
 			employee.setSportak(sportakCheckbox.getValue());
-			employee.setMorningSportak(morningSportakCheckbox.getValue());
+			employee.setMortak(morningSportakCheckbox.getValue());
 		}
 	}
 }

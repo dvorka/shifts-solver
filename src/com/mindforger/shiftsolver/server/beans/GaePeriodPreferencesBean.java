@@ -26,6 +26,8 @@ public class GaePeriodPreferencesBean implements Serializable, GaeBean {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)	
 	private Key key;
+	@Persistent
+	private long modified;
 
 	@Persistent
 	int startWeekDay;
@@ -53,6 +55,14 @@ public class GaePeriodPreferencesBean implements Serializable, GaeBean {
 		return key;
 	}
 
+	public long getModified() {
+		return modified;
+	}
+
+	public void setModified(long modified) {
+		this.modified = modified;
+	}
+	
 	public int getStartWeekDay() {
 		return startWeekDay;
 	}
@@ -145,6 +155,8 @@ public class GaePeriodPreferencesBean implements Serializable, GaeBean {
 	public PeriodPreferences toPojo() {
 		PeriodPreferences periodPreferences=new PeriodPreferences();
 		periodPreferences.setKey(ServerUtils.keyToString(key));
+		periodPreferences.setModified(modified);
+		periodPreferences.setModifiedPretty(ServerUtils.getPrettyTimestampHtml(modified));
 		periodPreferences.setMonth(month);
 		periodPreferences.setMonthDays(monthDays);
 		periodPreferences.setMonthWorkDays(monthWorkDays);

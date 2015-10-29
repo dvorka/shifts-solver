@@ -4,10 +4,12 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.ui.buttons.PeriodPreferencesTableToEditorButton;
 import com.mindforger.shiftsolver.client.ui.buttons.TableSetSortingButton;
+import com.mindforger.shiftsolver.client.ui.comparators.ComparatorPeriodPreferencesByModified;
 import com.mindforger.shiftsolver.client.ui.comparators.ComparatorPeriodPreferencesByYearAndMonth;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
@@ -45,6 +47,9 @@ public class PeriodPreferencesTable extends FlexTable implements SortableTable {
 				
 		Comparator<PeriodPreferences> comparator;
 		switch(sortCriteria) {
+		case BY_MODIFIED:
+			comparator=new ComparatorPeriodPreferencesByModified(sortIsAscending);
+			break;
 		case BY_YEAR_AND_MONTH:
 		default:
 			comparator=new ComparatorPeriodPreferencesByYearAndMonth(sortIsAscending);
@@ -64,19 +69,22 @@ public class PeriodPreferencesTable extends FlexTable implements SortableTable {
 				addRow(
 						result[i].getKey(), 
 						result[i].getYear(),
-						result[i].getMonth());
+						result[i].getMonth(),
+						result[i].getModifiedPretty());
 			}			
 		}
 	}
 	
 	private void addTableTitle() {
 		setWidget(1, 0, new TableSetSortingButton(i18n.yearAndMonth(),TableSortCriteria.BY_YEAR_AND_MONTH, this, ctx));
+		setWidget(1, 1, new TableSetSortingButton(i18n.modified(),TableSortCriteria.BY_MODIFIED, this, ctx));
 	}
 		
 	public void addRow(
 			String id, 
 			int year,
-			int month)
+			int month,
+			String modified)
 	{
 		int numRows = getRowCount();
 				
@@ -89,6 +97,7 @@ public class PeriodPreferencesTable extends FlexTable implements SortableTable {
 				ctx);
 				
 		setWidget(numRows, 0, button);
+		setWidget(numRows, 1, new HTML(modified));
 	}
 
 	public void removeRow() {

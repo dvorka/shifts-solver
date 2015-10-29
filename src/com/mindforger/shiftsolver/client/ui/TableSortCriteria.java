@@ -10,5 +10,6 @@ public enum TableSortCriteria {
 	BY_YEAR_AND_MONTH, 
 	BY_EMAIL, 
 	BY_MORTAK, 
-	BY_ROLE
+	BY_ROLE, 
+	BY_MODIFIED
 }

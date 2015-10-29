@@ -10,6 +10,8 @@ public class PeriodSolution implements Serializable {
 	private static final long serialVersionUID = 7586400671035292788L;
 
 	private String key;
+	private long modified;
+	private String modifiedPretty;
 	private String periodPreferencesKey;
 	private int year;
 	private int month;
@@ -25,6 +27,22 @@ public class PeriodSolution implements Serializable {
 		this();
 		this.year=year;
 		this.month=month;
+	}
+	
+	public long getModified() {
+		return modified;
+	}
+
+	public void setModified(long modified) {
+		this.modified = modified;
+	}
+
+	public String getModifiedPretty() {
+		return modifiedPretty;
+	}
+
+	public void setModifiedPretty(String modifiedPretty) {
+		this.modifiedPretty = modifiedPretty;
 	}
 
 	public int getYear() {

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
+import com.mindforger.shiftsolver.client.RiaState;
 import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.client.ui.SolverProgressPanels;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
@@ -41,11 +42,12 @@ import com.mindforger.shiftsolver.shared.model.shifts.WorkdayMorningShift;
  *  - iterate only sportaks for sportak, editors for editor (not all)
  */
 public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer {
+	public static final String FERDA_KEY="FERDAKEY";
 	public static final Employee FERDA;
 	
 	static {
-		// persist as NULL, set to Ferda on load 
 		FERDA=new Employee();
+		FERDA.setKey(FERDA_KEY);
 		FERDA.setBirthdayDay(1);
 		FERDA.setBirthdayMonth(1);
 		FERDA.setBirthdayYear(1965);
@@ -55,8 +57,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		FERDA.setFemale(false);
 		FERDA.setFirstname("Ferda");
 		FERDA.setFulltime(true);
-		FERDA.setKey("FERDAKEY");
-		FERDA.setMorningSportak(true);
+		FERDA.setMortak(true);
 		FERDA.setSportak(true);
 	}
 	
@@ -1342,14 +1343,18 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		return result;
 	}
 	
-	public static PeriodSolution createSolutionSkeleton(PeriodPreferences periodPreferences) {
+	public static PeriodSolution createSolutionSkeleton(PeriodPreferences periodPreferences, RiaState riaState) {
 		PeriodSolution s=new PeriodSolution();
 		s.setYear(periodPreferences.getYear());
 		s.setMonth(periodPreferences.getMonth());
 		s.setPeriodPreferencesKey(periodPreferences.getKey());
 
 		Map<String,Job> jobs=new HashMap<String,Job>();
-		jobs.put(FERDA.getKey(),new Job());
+		for(Employee e:riaState.getEmployees()) {
+			Job job = new Job();
+			job.shiftsLimit=EmployeeAllocation.calculateShiftToGet(e, periodPreferences);
+			jobs.put(e.getKey(), job);
+		}
 		s.setEmployeeJobs(jobs);
 		
 		PublicHolidays publicHolidays=new PublicHolidays();

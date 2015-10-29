@@ -6,6 +6,8 @@ public class Employee implements Serializable  {
 	private static final long serialVersionUID = 3788399085593900403L;
 
 	private String key;
+	private long modified;
+	private String modifiedPretty;
 	private String firstname;
 	private String familyname;
 	private String email;
@@ -15,7 +17,7 @@ public class Employee implements Serializable  {
 	private boolean female;
 	private boolean editor;
 	private boolean sportak;
-	private boolean morningSportak;
+	private boolean mortak;
 	private boolean fulltime;
 		
 	public Employee() {		
@@ -27,6 +29,22 @@ public class Employee implements Serializable  {
 
 	public void setKey(String key) {
 		this.key = key;
+	}
+	
+	public long getModified() {
+		return modified;
+	}
+
+	public void setModified(long modified) {
+		this.modified = modified;
+	}
+
+	public String getModifiedPretty() {
+		return modifiedPretty;
+	}
+
+	public void setModifiedPretty(String modifiedPretty) {
+		this.modifiedPretty = modifiedPretty;
 	}
 
 	public String getFirstname() {
@@ -114,10 +132,10 @@ public class Employee implements Serializable  {
 	}
 
 	public boolean isMortak() {
-		return morningSportak;
+		return mortak;
 	}
 
-	public void setMorningSportak(boolean morningSportak) {
-		this.morningSportak = morningSportak;
+	public void setMortak(boolean mortak) {
+		this.mortak = mortak;
 	}
 }

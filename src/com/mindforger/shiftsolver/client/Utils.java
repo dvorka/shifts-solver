@@ -121,7 +121,7 @@ public class Utils {
 		e.setKey(""+key++);
 		e.setFirstname("Simona");
 		e.setFamilyname("B");
-		e.setMorningSportak(true);
+		e.setMortak(true);
 		e.setFulltime(true);
 		e.setFemale(true);
 		team.addEmployee(e);
@@ -130,7 +130,7 @@ public class Utils {
 		e.setKey(""+key++);
 		e.setFirstname("Katarina");
 		e.setFamilyname("B");
-		e.setMorningSportak(true);
+		e.setMortak(true);
 		e.setFulltime(true);
 		e.setFemale(true);
 		team.addEmployee(e);
@@ -139,7 +139,7 @@ public class Utils {
 		e.setKey(""+key++);
 		e.setFirstname("David");
 		e.setFamilyname("B");
-		e.setMorningSportak(true);
+		e.setMortak(true);
 		e.setFulltime(true);
 		team.addEmployee(e);
 
@@ -393,7 +393,7 @@ public class Utils {
 		e.setKey(""+key++);
 		e.setFirstname("Simona");
 		e.setFamilyname("B");
-		e.setMorningSportak(true);
+		e.setMortak(true);
 		e.setFulltime(true);
 		e.setFemale(true);
 		team.addEmployee(e);
@@ -402,7 +402,7 @@ public class Utils {
 		e.setKey(""+key++);
 		e.setFirstname("Katarina");
 		e.setFamilyname("B");
-		e.setMorningSportak(true);
+		e.setMortak(true);
 		e.setFulltime(true);
 		e.setFemale(true);
 		team.addEmployee(e);
@@ -411,7 +411,7 @@ public class Utils {
 		e.setKey(""+key++);
 		e.setFirstname("David");
 		e.setFamilyname("B");
-		e.setMorningSportak(true);
+		e.setMortak(true);
 		e.setFulltime(true);
 		team.addEmployee(e);
 

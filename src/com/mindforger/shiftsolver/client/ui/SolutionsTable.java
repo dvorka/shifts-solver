@@ -1,15 +1,16 @@
 package com.mindforger.shiftsolver.client.ui;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
+import java.util.Arrays;
+import java.util.Comparator;
+
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.HTML;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
-import com.mindforger.shiftsolver.client.ui.buttons.PeriodPreferencesTableToEditorButton;
 import com.mindforger.shiftsolver.client.ui.buttons.SolutionTableToViewPanelButton;
 import com.mindforger.shiftsolver.client.ui.buttons.TableSetSortingButton;
+import com.mindforger.shiftsolver.client.ui.comparators.ComparatorPeriodSolutionByModified;
+import com.mindforger.shiftsolver.client.ui.comparators.ComparatorPeriodSolutionByYearAndMonth;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
 public class SolutionsTable extends FlexTable implements SortableTable {
@@ -45,15 +46,18 @@ public class SolutionsTable extends FlexTable implements SortableTable {
 			setVisible(true);
 		}
 				
-//		Comparator<PeriodPreferences> comparator;
-//		switch(sortCriteria) {
-//		case BY_YEAR_AND_MONTH:
-//		default:
-//			comparator=new ComparatorPeriodPreferencesByYearAndMonth(sortIsAscending);
-//			break;
-//		}
-//		
-//		Arrays.sort(result, comparator);
+		Comparator<PeriodSolution> comparator;
+		switch(sortCriteria) {
+		case BY_MODIFIED:
+			comparator=new ComparatorPeriodSolutionByModified(sortIsAscending);
+			break;
+		case BY_YEAR_AND_MONTH:
+		default:
+			comparator=new ComparatorPeriodSolutionByYearAndMonth(sortIsAscending);
+			break;
+		}
+		
+		Arrays.sort(result, comparator);
 		
 		removeAllRows();
 		addRows(result);
@@ -66,49 +70,22 @@ public class SolutionsTable extends FlexTable implements SortableTable {
 				addRow(
 						result[i].getKey(), 
 						result[i].getYear(),
-						result[i].getMonth());
+						result[i].getMonth(),
+						result[i].getModifiedPretty());
 			}			
 		}
 	}
 
-	private void addNewPeriodPreferencesRow() {
-		Button newPeriodPreferencesButton=new Button();
-		newPeriodPreferencesButton.setText(i18n.create());
-		newPeriodPreferencesButton.setTitle(i18n.createNewPeriodPreferences());
-		// TODO newPeriodPreferencesButton.setStyleName();
-		newPeriodPreferencesButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-	    		ctx.getStatusLine().showProgress(ctx.getI18n().creatingNewPeriodPreferences());
-	    		// TODO
-	      		ctx.getStatusLine().showInfo("New period preferences created");
-			}
-		});
-
-		ListBox yearListBox=new ListBox(false);
-		for(int i=0; i<10; i++) {
-			yearListBox.addItem(""+(2015+i));			
-		}
-		
-		ListBox monthListBox=new ListBox(false);
-		for(int i=1; i<=12; i++) {
-			monthListBox.addItem(""+i);			
-		}
-		
-		setWidget(0, 0, yearListBox);
-		setWidget(0, 1, monthListBox);		
-		setWidget(0, 2, newPeriodPreferencesButton);
-	}
-	
 	private void addTableTitle() {
-		// preferences link / solution timestamp is link to editor / view as calendar JSP / view by employee JSP 
-		
 		setWidget(1, 0, new TableSetSortingButton(i18n.yearAndMonth(),TableSortCriteria.BY_YEAR_AND_MONTH, this, ctx));
+		setWidget(1, 1, new TableSetSortingButton(i18n.modified(),TableSortCriteria.BY_MODIFIED, this, ctx));
 	}
 		
 	public void addRow(
 			String id, 
 			int year,
-			int month)
+			int month,
+			String modified)
 	{
 		int numRows = getRowCount();
 				
@@ -121,6 +98,7 @@ public class SolutionsTable extends FlexTable implements SortableTable {
 				ctx);
 				
 		setWidget(numRows, 0, button);
+		setWidget(numRows, 1, new HTML(modified));
 	}
 
 	public void removeRow() {

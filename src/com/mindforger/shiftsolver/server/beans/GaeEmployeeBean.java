@@ -19,7 +19,9 @@ public class GaeEmployeeBean implements Serializable, GaeBean {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)	
 	private Key key;
-		
+	@Persistent
+	private long modified;
+	
 	@Persistent
 	private String firstname;
 	@Persistent
@@ -51,6 +53,14 @@ public class GaeEmployeeBean implements Serializable, GaeBean {
 		return key;
 	}
 	
+	public long getModified() {
+		return modified;
+	}
+
+	public void setModified(long modified) {
+		this.modified = modified;
+	}
+
 	public String getFirstname() {
 		return firstname;
 	}
@@ -160,6 +170,9 @@ public class GaeEmployeeBean implements Serializable, GaeBean {
 	
 	public Employee toPojo() {
 		Employee e=new Employee();
+		e.setKey(ServerUtils.keyToString(key));
+		e.setModified(modified);
+		e.setModifiedPretty(ServerUtils.getPrettyTimestampHtml(modified));
 		e.setBirthdayDay(birthdayDay);
 		e.setBirthdayMonth(birthdayMonth);
 		e.setBirthdayYear(birthdayYear);
@@ -169,8 +182,7 @@ public class GaeEmployeeBean implements Serializable, GaeBean {
 		e.setFirstname(firstname);
 		e.setFulltime(fulltime);
 		e.setEmail(email);
-		e.setKey(ServerUtils.keyToString(key));
-		e.setMorningSportak(morningSportak);
+		e.setMortak(morningSportak);
 		e.setSportak(sportak);
 		return e;
 	}

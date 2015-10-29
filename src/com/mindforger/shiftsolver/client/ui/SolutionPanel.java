@@ -110,7 +110,7 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		saveButton.setStyleName("mf-button");
 		saveButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				// TODO save solution
+				ctx.getRia().savePeriodSolution(solution);
 			}
 		});		
 		buttonPanel.add(saveButton);
@@ -166,6 +166,15 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 			}
 		});		
 		buttonPanel.add(backButton);
+		
+		Button deleteButton=new Button(i18n.delete());
+		deleteButton.setStyleName("mf-button");
+		deleteButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				ctx.getRia().deletePeriodSolution(solution);
+			}
+		});		
+		buttonPanel.add(deleteButton);
 		
 		Button cancelButton=new Button(i18n.cancel());
 		cancelButton.setStyleName("mf-buttonLooser");
