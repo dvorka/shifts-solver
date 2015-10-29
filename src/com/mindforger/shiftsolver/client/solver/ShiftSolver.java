@@ -1264,7 +1264,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 	{
 		EmployeeAvailability result=new EmployeeAvailability();
 				
-		// this is simplified e.g. mortaks ... not treated
+		// this is simplified e.g. mortaks ... not treated > false OK candidates
 		switch(needRole) {
 		case ROLE_EDITOR:
 			if(e.isEditor()) {

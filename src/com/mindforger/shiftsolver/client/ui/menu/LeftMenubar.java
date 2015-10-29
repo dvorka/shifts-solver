@@ -189,6 +189,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 
 	public void showSolutionsTable() {
 		ria.showSolutionsTable();
+		ctx.getSolutionsTable().refresh(ctx.getState().getPeriodSolutions());
 		switchOfAllButtons();
 		periodSolutionsButton.setStyleName("mf-menuButtonOn");
 	}

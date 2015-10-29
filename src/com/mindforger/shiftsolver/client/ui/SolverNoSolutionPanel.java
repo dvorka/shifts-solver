@@ -142,6 +142,9 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 		HTML nightsAllocationHtml; 
 		if(a.shifts<a.shiftsToGet) {
 			shiftsAllocationHtml=new HTML(a.shifts+"/"+a.shiftsToGet);
+			if(a.shifts==0) {
+				shiftsAllocationHtml.addStyleName("s2-mismatch");				
+			}
 		} else {
 			isFullShifts=true;
 			shiftsAllocationHtml=new HTML(a.shifts+"/"+a.shiftsToGet);
@@ -152,6 +155,9 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 				nightsAllocationHtml=new HTML(a.nights+"/2");
 			} else {
 				nightsAllocationHtml=new HTML(a.nights+"/inf");				
+			}
+			if(a.nights==0) {
+				nightsAllocationHtml.addStyleName("s2-mismatch");				
 			}
 		} else {
 			if(a.employee.isFulltime()) {

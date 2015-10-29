@@ -38,8 +38,8 @@ public class SolutionsTable extends FlexTable implements SortableTable {
 		refresh(ctx.getState().getPeriodSolutions());
 	}
 	
-	public void refresh(PeriodSolution[] result) {
-		if(result==null || result.length==0) {
+	public void refresh(PeriodSolution[] s) {
+		if(s==null || s.length==0) {
 			setVisible(false);
 			return;
 		} else {
@@ -57,10 +57,10 @@ public class SolutionsTable extends FlexTable implements SortableTable {
 			break;
 		}
 		
-		Arrays.sort(result, comparator);
+		Arrays.sort(s, comparator);
 		
 		removeAllRows();
-		addRows(result);
+		addRows(s);
 	}
 	
 	private void addRows(PeriodSolution[] result) {

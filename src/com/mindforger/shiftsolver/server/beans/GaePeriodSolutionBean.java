@@ -105,6 +105,7 @@ public class GaePeriodSolutionBean implements Serializable, GaeBean {
 	}
 	
 	public void fromPojo(PeriodSolution s) {
+		key=ServerUtils.stringToKey(s.getKey());
 		year=s.getYear();
 		month=s.getMonth();
 		periodPreferencesKey=s.getPeriodPreferencesKey();

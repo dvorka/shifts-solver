@@ -281,34 +281,48 @@ public class GaeDaySolutionBean implements Serializable, GaeBean {
 		isWorkday=d.isWorkday();
 		weekday=d.getWeekday();
 		
-		if(d.getWorkdayMorningShift()!=null) {
-			workdayMorningEditor=d.getWorkdayMorningShift().editor.get();
-			workdayMorningStaffer6am=d.getWorkdayMorningShift().staffer6am.get();
-			workdayMorningStaffer7am=d.getWorkdayMorningShift().staffer7am.get();
-			workdayMorningStaffer8am1=d.getWorkdayMorningShift().staffer8am1.get();
-			workdayMorningStaffer8am2=d.getWorkdayMorningShift().staffer8am2.get();
-			workdayMorningSportak=d.getWorkdayMorningShift().sportak.get();
+		if(isWorkday) {
+			if(d.getWorkdayMorningShift()!=null) {
+				workdayMorningEditor=d.getWorkdayMorningShift().editor.get();
+				workdayMorningStaffer6am=d.getWorkdayMorningShift().staffer6am.get();
+				workdayMorningStaffer7am=d.getWorkdayMorningShift().staffer7am.get();
+				workdayMorningStaffer8am1=d.getWorkdayMorningShift().staffer8am1.get();
+				workdayMorningStaffer8am2=d.getWorkdayMorningShift().staffer8am2.get();
+				workdayMorningSportak=d.getWorkdayMorningShift().sportak.get();
+			} else {
+				throw new RuntimeException("Unable to map pojo to GAE bean!");				
+			}
+			if(d.getWorkdayAfternoonShift()!=null) {
+				workdayAfternoonEditor=d.getWorkdayAfternoonShift().editor.get();			
+				workdayAfternoonStaffer1=d.getWorkdayAfternoonShift().staffers[0].get();			
+				workdayAfternoonStaffer2=d.getWorkdayAfternoonShift().staffers[1].get();			
+				workdayAfternoonStaffer3=d.getWorkdayAfternoonShift().staffers[2].get();			
+				workdayAfternoonStaffer4=d.getWorkdayAfternoonShift().staffers[3].get();			
+				workdayAfternoonSportak=d.getWorkdayAfternoonShift().sportak.get();
+			} else {
+				throw new RuntimeException("Unable to map pojo to GAE bean!");				
+			}
+		} else {
+			if(d.getWeekendMorningShift()!=null) {
+				weekendMorningEditor=d.getWeekendMorningShift().editor.get();						
+				weekendMorningStaffer6am=d.getWeekendMorningShift().staffer6am.get();						
+				weekendMorningSportak=d.getWeekendMorningShift().sportak.get();						
+			} else {
+				throw new RuntimeException("Unable to map pojo to GAE bean!");				
+			}
+			if(d.getWeekendAfternoonShift()!=null) {
+				weekendAfternoonEditor=d.getWeekendAfternoonShift().editor.get();						
+				weekendAfternoonStaffer=d.getWeekendAfternoonShift().staffer.get();						
+				weekendAfternoonSportak=d.getWeekendAfternoonShift().sportak.get();									
+			} else {
+				throw new RuntimeException("Unable to map pojo to GAE bean!");				
+			}			
 		}
-		if(d.getWorkdayAfternoonShift()!=null) {
-			workdayAfternoonEditor=d.getWorkdayAfternoonShift().editor.get();			
-			workdayAfternoonStaffer1=d.getWorkdayAfternoonShift().staffers[0].get();			
-			workdayAfternoonStaffer2=d.getWorkdayAfternoonShift().staffers[1].get();			
-			workdayAfternoonStaffer3=d.getWorkdayAfternoonShift().staffers[2].get();			
-			workdayAfternoonStaffer4=d.getWorkdayAfternoonShift().staffers[3].get();			
-			workdayAfternoonSportak=d.getWorkdayAfternoonShift().sportak.get();
-		}
-		if(d.getWeekendMorningShift()!=null) {
-			weekendMorningEditor=d.getWeekendMorningShift().editor.get();						
-			weekendMorningStaffer6am=d.getWeekendMorningShift().staffer6am.get();						
-			weekendMorningSportak=d.getWeekendMorningShift().sportak.get();						
-		}
-		if(d.getWeekendAfternoonShift()!=null) {
-			weekendAfternoonEditor=d.getWeekendAfternoonShift().editor.get();						
-			weekendAfternoonStaffer=d.getWeekendAfternoonShift().staffer.get();						
-			weekendAfternoonSportak=d.getWeekendAfternoonShift().sportak.get();									
-		}
+		
 		if(d.getNightShift()!=null) {
 			nightStaffer=d.getNightShift().staffer.get();									
+		} else {
+			throw new RuntimeException("Unable to map pojo to GAE bean!");				
 		}
 	}
 
@@ -317,34 +331,67 @@ public class GaeDaySolutionBean implements Serializable, GaeBean {
 		
 		s.setKey(ServerUtils.keyToString(key));
 		
-		s.setWorkdayMorningShift(new WorkdayMorningShift());
-		if(workdayMorningEditor!=null) s.getWorkdayMorningShift().editor=new Holder<String>(workdayMorningEditor);
-		if(workdayMorningStaffer6am!=null) s.getWorkdayMorningShift().staffer6am=new Holder<String>(workdayMorningStaffer6am);
-		if(workdayMorningStaffer7am!=null) s.getWorkdayMorningShift().staffer7am=new Holder<String>(workdayMorningStaffer7am);
-		if(workdayMorningStaffer8am1!=null) s.getWorkdayMorningShift().staffer8am1=new Holder<String>(workdayMorningStaffer8am1);
-		if(workdayMorningStaffer8am2!=null) s.getWorkdayMorningShift().staffer8am2=new Holder<String>(workdayMorningStaffer8am2);
-		if(workdayMorningSportak!=null) s.getWorkdayMorningShift().sportak=new Holder<String>(workdayMorningSportak);
-
-		s.setWorkdayAfternoonShift(new WorkdayAfternoonShift());
-		if(workdayAfternoonEditor!=null) s.getWorkdayAfternoonShift().editor=new Holder<String>(workdayAfternoonEditor);
-		if(workdayAfternoonStaffer1!=null) s.getWorkdayAfternoonShift().staffers[0]=new Holder<String>(workdayAfternoonStaffer1);
-		if(workdayAfternoonStaffer2!=null) s.getWorkdayAfternoonShift().staffers[1]=new Holder<String>(workdayAfternoonStaffer2);
-		if(workdayAfternoonStaffer3!=null) s.getWorkdayAfternoonShift().staffers[2]=new Holder<String>(workdayAfternoonStaffer3);
-		if(workdayAfternoonStaffer4!=null) s.getWorkdayAfternoonShift().staffers[3]=new Holder<String>(workdayAfternoonStaffer4);
-		if(workdayAfternoonSportak!=null) s.getWorkdayAfternoonShift().sportak=new Holder<String>(workdayAfternoonSportak);
-
-		s.setWeekendMorningShift(new WeekendMorningShift());
-		if(weekendMorningEditor!=null) s.getWeekendMorningShift().editor=new Holder<String>(weekendMorningEditor);
-		if(weekendMorningStaffer6am!=null) s.getWeekendMorningShift().staffer6am=new Holder<String>(weekendMorningStaffer6am);
-		if(weekendMorningSportak!=null) s.getWeekendMorningShift().sportak=new Holder<String>(weekendMorningSportak);
-
-		s.setWeekendAfternoonShift(new WeekendAfternoonShift());
-		if(weekendAfternoonEditor!=null) s.getWeekendAfternoonShift().editor=new Holder<String>(weekendAfternoonEditor);
-		if(weekendAfternoonStaffer!=null) s.getWeekendAfternoonShift().staffer=new Holder<String>(weekendAfternoonStaffer);
-		if(weekendAfternoonSportak!=null) s.getWeekendAfternoonShift().sportak=new Holder<String>(weekendAfternoonSportak);
-
-		s.setNightShift(new NightShift());
-		if(nightStaffer!=null) s.getNightShift().staffer=new Holder<String>(nightStaffer);
+		if(isWorkday) {
+			if(workdayMorningEditor!=null && 
+					workdayMorningStaffer6am!=null && 
+					workdayMorningStaffer7am!=null &&
+					workdayMorningStaffer8am1!=null && 
+					workdayMorningStaffer8am2!=null &&
+					workdayMorningSportak!=null) 
+			{
+				s.setWorkdayMorningShift(new WorkdayMorningShift());
+				s.getWorkdayMorningShift().editor=new Holder<String>(workdayMorningEditor);
+				s.getWorkdayMorningShift().staffer6am=new Holder<String>(workdayMorningStaffer6am);
+				s.getWorkdayMorningShift().staffer7am=new Holder<String>(workdayMorningStaffer7am);
+				s.getWorkdayMorningShift().staffer8am1=new Holder<String>(workdayMorningStaffer8am1);
+				s.getWorkdayMorningShift().staffer8am2=new Holder<String>(workdayMorningStaffer8am2);
+				s.getWorkdayMorningShift().sportak=new Holder<String>(workdayMorningSportak);			
+			} else {
+				throw new RuntimeException("Unable to map GAE bean to pojo!");				
+			}
+			
+			if(workdayAfternoonEditor!=null &&
+					workdayAfternoonStaffer1!=null &&
+					workdayAfternoonStaffer2!=null &&
+					workdayAfternoonStaffer3!=null &&
+					workdayAfternoonStaffer4!=null &&
+					workdayAfternoonSportak!=null) 
+			{
+				s.setWorkdayAfternoonShift(new WorkdayAfternoonShift());
+				s.getWorkdayAfternoonShift().editor=new Holder<String>(workdayAfternoonEditor);
+				s.getWorkdayAfternoonShift().staffers[0]=new Holder<String>(workdayAfternoonStaffer1);
+				s.getWorkdayAfternoonShift().staffers[1]=new Holder<String>(workdayAfternoonStaffer2);
+				s.getWorkdayAfternoonShift().staffers[2]=new Holder<String>(workdayAfternoonStaffer3);
+				s.getWorkdayAfternoonShift().staffers[3]=new Holder<String>(workdayAfternoonStaffer4);
+				s.getWorkdayAfternoonShift().sportak=new Holder<String>(workdayAfternoonSportak);			
+			} else {
+				throw new RuntimeException("Unable to map GAE bean to pojo!");				
+			}
+		} else {
+			if(weekendMorningEditor!=null && weekendMorningStaffer6am!=null && weekendMorningSportak!=null) {
+				s.setWeekendMorningShift(new WeekendMorningShift());
+				s.getWeekendMorningShift().editor=new Holder<String>(weekendMorningEditor);
+				s.getWeekendMorningShift().staffer6am=new Holder<String>(weekendMorningStaffer6am);
+				s.getWeekendMorningShift().sportak=new Holder<String>(weekendMorningSportak);			
+			} else {
+				throw new RuntimeException("Unable to map GAE bean to pojo!");				
+			}
+			if(weekendAfternoonEditor!=null && weekendAfternoonStaffer!=null && weekendAfternoonSportak!=null) {
+				s.setWeekendAfternoonShift(new WeekendAfternoonShift());
+				s.getWeekendAfternoonShift().editor=new Holder<String>(weekendAfternoonEditor);
+				s.getWeekendAfternoonShift().staffer=new Holder<String>(weekendAfternoonStaffer);
+				s.getWeekendAfternoonShift().sportak=new Holder<String>(weekendAfternoonSportak);			
+			} else {
+				throw new RuntimeException("Unable to map GAE bean to pojo!");				
+			}
+		}
+		
+		if(nightStaffer!=null) {
+			s.setNightShift(new NightShift());
+			s.getNightShift().staffer=new Holder<String>(nightStaffer);	
+		} else {
+			throw new RuntimeException("Unable to map GAE bean to pojo!");				
+		}
 		
 		return s;
 	}

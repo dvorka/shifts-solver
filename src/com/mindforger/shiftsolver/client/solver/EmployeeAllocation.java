@@ -167,8 +167,8 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 				return false;
 			}
 		} else {
-			shiftsOnDays.add(day);
-			shiftTypesOnDays.add(shiftType);
+			// TODO was is probably BUG shiftsOnDays.add(day);
+			// TODO was is probably BUG shiftTypesOnDays.add(shiftType);
 			return hasCapacity(capacityNeeded);
 		}
 	}
