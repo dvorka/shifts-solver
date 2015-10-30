@@ -188,8 +188,8 @@ public class PeriodPreferencesPanel extends FlexTable {
 		lastMonthEditorListBox.addChangeHandler(new ChangeHandler() {			
 			@Override
 			public void onChange(ChangeEvent event) {
-				int idx = lastMonthEditorListBox.getSelectedIndex();				
-				preferences.setLastMonthEditor(ctx.getState().getEmployees()[idx].getKey());
+				int idx = lastMonthEditorListBox.getSelectedIndex();		
+				preferences.setLastMonthEditor(lastMonthEditorListBox.getValue(idx));
 			}
 		});
 		flowPanel.add(lastMonthEditorListBox);
@@ -397,15 +397,17 @@ public class PeriodPreferencesPanel extends FlexTable {
 		yearListBox.setSelectedIndex(periodPreferences.getYear()-YEAR);
 		monthListBox.setSelectedIndex(periodPreferences.getMonth()-1);
 		lastMonthEditorListBox.clear();
-		int idx=0;
+		int idx=-1;
 		for(Employee ee:ctx.getState().getEmployees()) {
 			if(ee.isEditor()) {
-				lastMonthEditorListBox.addItem(""+ee.getFullName());		
+				lastMonthEditorListBox.addItem(""+ee.getFullName(),ee.getKey());		
 			}
 			if(ee.getKey().equals(periodPreferences.getLastMonthEditor())) {
 				idx=lastMonthEditorListBox.getItemCount()-1;
-				lastMonthEditorListBox.setSelectedIndex(idx);
 			}
+		}
+		if(idx>=0) {
+			lastMonthEditorListBox.setSelectedIndex(idx);			
 		}
 		
 		refreshPreferencesTable(preferencesTable);

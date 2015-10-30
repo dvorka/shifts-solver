@@ -26,6 +26,7 @@ import com.mindforger.shiftsolver.shared.model.Holder;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
+// TODO solution/employees/days - show shift type m/a/n/6
 public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 
 	private RiaMessages i18n;
@@ -429,7 +430,7 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 				shiftsTable.setWidget(r++, 0, new HTML(i18n.morningEditor()+"<BR>6:00-14:00"));
 				shiftsTable.setWidget(r++, 0, new HTML(i18n.morningStaffer()+"<BR>6:00-14:30"));
 				shiftsTable.setWidget(r++, 0, new HTML(i18n.morningStaffer()+"<BR>7:00-15:30"));
-				shiftsTable.setWidget(r++, 0, new HTML(i18n.morningStaffer()+"<BR>7:00-15:30"));
+				shiftsTable.setWidget(r++, 0, new HTML(i18n.morningStaffer()+"<BR>8:00-16:30"));
 				shiftsTable.setWidget(r++, 0, new HTML(i18n.morningStaffer()+"<BR>8:00-16:30"));
 				shiftsTable.setWidget(r++, 0, new HTML(i18n.morningSportak()+"<BR>7:00-15:30"));		
 				shiftsTable.setWidget(r++, 0, new HTML(i18n.afternoonEditor()+"<BR>14:00-22:30"));
