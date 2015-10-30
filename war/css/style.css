@@ -2739,6 +2739,12 @@ html>body .gwt-MenuBarPopup {
 	font-weight: normal;
 }
 
+.s2-notValid {
+	background-color: #a40000;
+	color: #FFF; 
+}
+
+
 .s2-3stateYes {
 	background-color: #4e9a06; 
 }

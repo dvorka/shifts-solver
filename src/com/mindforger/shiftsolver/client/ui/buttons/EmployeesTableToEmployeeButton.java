@@ -20,7 +20,7 @@ public class EmployeesTableToEmployeeButton extends Button {
 			public void onClick(ClickEvent event) {
 	    		ctx.getStatusLine().showProgress(ctx.getI18n().loadingEmployee());
 	      		ctx.getRia().loadEmployee(employeeId);
-	      		ctx.getStatusLine().showInfo("Employee loaded");
+	      		ctx.getStatusLine().showInfo(ctx.getI18n().employeeLoaded());
 			}
 		});
 	}

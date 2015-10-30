@@ -22,6 +22,7 @@ import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
+import com.mindforger.shiftsolver.shared.model.Holder;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
@@ -48,11 +49,13 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 	private Button shiftsButton;
 	private Button allocationButton;
 	private Button validateButton;
+	private List<ChangeAssignmentButton> changeAssignmentButtons;
 	
 	public SolutionPanel(final RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
 		this.publicHolidays=new PublicHolidays();
+		this.changeAssignmentButtons=new ArrayList<ChangeAssignmentButton>();
 		
 		FlowPanel buttonPanel = newButtonPanel(ctx);
 		setWidget(0, 0, buttonPanel);
@@ -151,7 +154,12 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		validateButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				ctx.getStatusLine().clear();
-				// TODO
+				if(!changeAssignmentButtons.isEmpty()) {
+					for(ChangeAssignmentButton b:changeAssignmentButtons) {
+						b.validate();
+					}
+				}
+				ctx.getStatusLine().showInfo(i18n.validationFinished());
 			}
 		});		
 		buttonPanel.add(validateButton);
@@ -162,6 +170,13 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		backButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				ctx.getStatusLine().clear();
+				if(ctx.getPeriodPreferencesEditPanel().preferences!=null) {
+					if(ctx.getPeriodPreferencesEditPanel().preferences.equals(solution.getPeriodPreferencesKey())) {
+			      		ctx.getRia().loadPeriodPreferences(solution.getPeriodPreferencesKey());
+					}
+				} else {
+		      		ctx.getRia().loadPeriodPreferences(solution.getPeriodPreferencesKey());
+				}
 				ctx.getRia().showPeriodPreferencesEditPanel();
 			}
 		});		
@@ -252,7 +267,6 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		EmployeesTableToEmployeeButton button = new EmployeesTableToEmployeeButton(
 				employee.getKey(),
 				employee.getFirstname()+"&nbsp;"+employee.getFamilyname(),
-				// TODO css
 				"mf-growsTableGoalButton", 
 				ctx);		
 		button.setTitle(
@@ -277,9 +291,7 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		table.setWidget(numRows, 1, jobHtml); 
 				
 		for (int i = 0; i<monthDays; i++) {
-			// TODO i18n
-			Button b = new Button(""+(i+1)+Utils.getDayLetter(i+1, preferences.getStartWeekDay()));
-			// TODO add Mon...Sun to title
+			Button b = new Button(""+(i+1)+Utils.getDayLetter(i+1, preferences.getStartWeekDay(), i18n));
 			b.setStyleName("s2-tableHeadColumnButton");
 			if(Utils.isWeekend(i+1, preferences.getStartWeekDay())
 					|| publicHolidays.isHolidays(
@@ -363,20 +375,21 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 	
 	private void refreshShiftsTable() {
 		shiftsTable.removeAllRows();
+		changeAssignmentButtons.clear();
 
 		if(solution!=null) {		
 
 			// table title
 			int row=0;		
-			shiftsTable.setWidget(row, 0, new HTML("Shifts"));
-			shiftsTable.setWidget(row, 1, new HTML("Monday"));
-			shiftsTable.setWidget(row, 2, new HTML("Tuesday"));
-			shiftsTable.setWidget(row, 3, new HTML("Wednesday"));
-			shiftsTable.setWidget(row, 4, new HTML("Thursday"));
-			shiftsTable.setWidget(row, 5, new HTML("Friday"));
-			shiftsTable.setWidget(row, 6, new HTML("Shifts"));
-			shiftsTable.setWidget(row, 7, new HTML("Saturday"));
-			shiftsTable.setWidget(row, 8, new HTML("Sunday"));
+			shiftsTable.setWidget(row, 0, new HTML(i18n.shifts()));
+			shiftsTable.setWidget(row, 1, new HTML(i18n.monday()));
+			shiftsTable.setWidget(row, 2, new HTML(i18n.tuesday()));
+			shiftsTable.setWidget(row, 3, new HTML(i18n.wednesday()));
+			shiftsTable.setWidget(row, 4, new HTML(i18n.thursday()));
+			shiftsTable.setWidget(row, 5, new HTML(i18n.friday()));
+			shiftsTable.setWidget(row, 6, new HTML(i18n.shifts()));
+			shiftsTable.setWidget(row, 7, new HTML(i18n.saturday()));
+			shiftsTable.setWidget(row, 8, new HTML(i18n.sunday()));
 			for(int ii=0; ii<=8; ii++) {
 				shiftsTable.getCellFormatter().setStyleName(row, ii, "s2-solutionTableBlack");				
 			}
@@ -393,7 +406,7 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 				c=1;
 				row++;
 				oldDay=day;
-				shiftsTable.setWidget(row, 0, new HTML("Week"));
+				shiftsTable.setWidget(row, 0, new HTML(i18n.week()));
 				// TODO this condition is broken - no number is shown - fix it
 				shiftsTable.setWidget(row, 1, new HTML(c>=columnOf1stDay && day<=preferences.getMonthDays()?""+day++:""));
 				shiftsTable.setWidget(row, 2, new HTML(c>=columnOf1stDay && day<=preferences.getMonthDays()?""+day++:""));
@@ -413,19 +426,19 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 				for(int ii=0; ii<13; ii++) {
 					shiftsTable.getCellFormatter().setStyleName(r+ii, 0, "s2-solutionTableBlack");				
 				}
-				shiftsTable.setWidget(r++, 0, new HTML("Morning Editor<BR>6:00-14:00"));
-				shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>6:00-14:30"));
-				shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>7:00-15:30"));
-				shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>7:00-15:30"));
-				shiftsTable.setWidget(r++, 0, new HTML("Morning Staffer<BR>8:00-16:30"));
-				shiftsTable.setWidget(r++, 0, new HTML("Morning Sportak<BR>7:00-15:30"));		
-				shiftsTable.setWidget(r++, 0, new HTML("Afternoon Editor<BR>14:00-22:30"));
-				shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
-				shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
-				shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
-				shiftsTable.setWidget(r++, 0, new HTML("Afternoon Staffer<BR>14:00-22:30"));
-				shiftsTable.setWidget(r++, 0, new HTML("Afternoon Sportak<BR>15:00-23:30"));
-				shiftsTable.setWidget(r++, 0, new HTML("Night Staffer<BR>22:00-6:30"));
+				shiftsTable.setWidget(r++, 0, new HTML(i18n.morningEditor()+"<BR>6:00-14:00"));
+				shiftsTable.setWidget(r++, 0, new HTML(i18n.morningStaffer()+"<BR>6:00-14:30"));
+				shiftsTable.setWidget(r++, 0, new HTML(i18n.morningStaffer()+"<BR>7:00-15:30"));
+				shiftsTable.setWidget(r++, 0, new HTML(i18n.morningStaffer()+"<BR>7:00-15:30"));
+				shiftsTable.setWidget(r++, 0, new HTML(i18n.morningStaffer()+"<BR>8:00-16:30"));
+				shiftsTable.setWidget(r++, 0, new HTML(i18n.morningSportak()+"<BR>7:00-15:30"));		
+				shiftsTable.setWidget(r++, 0, new HTML(i18n.afternoonEditor()+"<BR>14:00-22:30"));
+				shiftsTable.setWidget(r++, 0, new HTML(i18n.afternoonStaffer()+"<BR>14:00-22:30"));
+				shiftsTable.setWidget(r++, 0, new HTML(i18n.afternoonStaffer()+"<BR>14:00-22:30"));
+				shiftsTable.setWidget(r++, 0, new HTML(i18n.afternoonStaffer()+"<BR>14:00-22:30"));
+				shiftsTable.setWidget(r++, 0, new HTML(i18n.afternoonStaffer()+"<BR>14:00-22:30"));
+				shiftsTable.setWidget(r++, 0, new HTML(i18n.afternoonSportak()+"<BR>15:00-23:30"));
+				shiftsTable.setWidget(r++, 0, new HTML(i18n.nightStaffer()+"<BR>22:00-6:30"));
 				nextWeekRow=r;
 
 				r=row;
@@ -435,33 +448,33 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 						DaySolution ds=solution.getSolutionForDay(day);
 						if(ds!=null) {
 							if(ds.isWorkday()) {
-								shiftsTable.setWidget(r-1+1, cc, new ChangeAssignmentButton(ds.getWorkdayMorningShift().editor, this, day, SHIFT_MORNING, ROLE_EDITOR));
-								shiftsTable.setWidget(r-1+2, cc, new ChangeAssignmentButton(ds.getWorkdayMorningShift().staffer6am, this, day, SHIFT_MORNING_6, ROLE_STAFFER));
-								shiftsTable.setWidget(r-1+3, cc, new ChangeAssignmentButton(ds.getWorkdayMorningShift().staffer7am, this, day, SHIFT_MORNING_7, ROLE_STAFFER));
-								shiftsTable.setWidget(r-1+4, cc, new ChangeAssignmentButton(ds.getWorkdayMorningShift().staffer8am1, this, day, SHIFT_MORNING_8, ROLE_STAFFER));
-								shiftsTable.setWidget(r-1+5, cc, new ChangeAssignmentButton(ds.getWorkdayMorningShift().staffer8am2, this, day, SHIFT_MORNING_8, ROLE_STAFFER));
-								shiftsTable.setWidget(r-1+6, cc, new ChangeAssignmentButton(ds.getWorkdayMorningShift().sportak, this, day, SHIFT_MORNING, ROLE_SPORTAK));
-								shiftsTable.setWidget(r-1+7, cc, new ChangeAssignmentButton(ds.getWorkdayAfternoonShift().editor, this, day, SHIFT_AFTERNOON, ROLE_EDITOR));
-								shiftsTable.setWidget(r-1+8, cc, new ChangeAssignmentButton(ds.getWorkdayAfternoonShift().staffers[0], this, day, SHIFT_AFTERNOON, ROLE_STAFFER));
-								shiftsTable.setWidget(r-1+9, cc, new ChangeAssignmentButton(ds.getWorkdayAfternoonShift().staffers[1], this, day, SHIFT_AFTERNOON, ROLE_STAFFER));
-								shiftsTable.setWidget(r-1+10, cc, new ChangeAssignmentButton(ds.getWorkdayAfternoonShift().staffers[2], this, day, SHIFT_AFTERNOON, ROLE_STAFFER));
-								shiftsTable.setWidget(r-1+11, cc, new ChangeAssignmentButton(ds.getWorkdayAfternoonShift().staffers[3], this, day, SHIFT_AFTERNOON, ROLE_STAFFER));
-								shiftsTable.setWidget(r-1+12, cc, new ChangeAssignmentButton(ds.getWorkdayAfternoonShift().sportak, this, day, SHIFT_AFTERNOON, ROLE_SPORTAK));
-								shiftsTable.setWidget(r-1+13, cc, new ChangeAssignmentButton(ds.getNightShift().staffer, this, day, SHIFT_NIGHT, ROLE_STAFFER));										
+								setAssignmentButton(r-1+1, cc, ds.getWorkdayMorningShift().editor, day, SHIFT_MORNING, ROLE_EDITOR);
+								setAssignmentButton(r-1+2, cc, ds.getWorkdayMorningShift().staffer6am, day, SHIFT_MORNING_6, ROLE_STAFFER);
+								setAssignmentButton(r-1+3, cc, ds.getWorkdayMorningShift().staffer7am, day, SHIFT_MORNING_7, ROLE_STAFFER);
+								setAssignmentButton(r-1+4, cc, ds.getWorkdayMorningShift().staffer8am1, day, SHIFT_MORNING_8, ROLE_STAFFER);
+								setAssignmentButton(r-1+5, cc, ds.getWorkdayMorningShift().staffer8am2, day, SHIFT_MORNING_8, ROLE_STAFFER);
+								setAssignmentButton(r-1+6, cc, ds.getWorkdayMorningShift().sportak, day, SHIFT_MORNING, ROLE_SPORTAK);
+								setAssignmentButton(r-1+7, cc, ds.getWorkdayAfternoonShift().editor, day, SHIFT_AFTERNOON, ROLE_EDITOR);
+								setAssignmentButton(r-1+8, cc, ds.getWorkdayAfternoonShift().staffers[0], day, SHIFT_AFTERNOON, ROLE_STAFFER);
+								setAssignmentButton(r-1+9, cc, ds.getWorkdayAfternoonShift().staffers[1], day, SHIFT_AFTERNOON, ROLE_STAFFER);
+								setAssignmentButton(r-1+10, cc, ds.getWorkdayAfternoonShift().staffers[2], day, SHIFT_AFTERNOON, ROLE_STAFFER);
+								setAssignmentButton(r-1+11, cc, ds.getWorkdayAfternoonShift().staffers[3], day, SHIFT_AFTERNOON, ROLE_STAFFER);
+								setAssignmentButton(r-1+12, cc, ds.getWorkdayAfternoonShift().sportak, day, SHIFT_AFTERNOON, ROLE_SPORTAK);
+								setAssignmentButton(r-1+13, cc, ds.getNightShift().staffer, day, SHIFT_NIGHT, ROLE_STAFFER);										
 							} else {
-								shiftsTable.setWidget(r-1+1, cc, new ChangeAssignmentButton(ds.getWeekendMorningShift().editor, this, day, SHIFT_MORNING, ROLE_EDITOR));
-								shiftsTable.setWidget(r-1+2, cc, new ChangeAssignmentButton(ds.getWeekendMorningShift().staffer6am, this, day, SHIFT_MORNING_6, ROLE_STAFFER));
+								setAssignmentButton(r-1+1, cc, ds.getWeekendMorningShift().editor, day, SHIFT_MORNING, ROLE_EDITOR);
+								setAssignmentButton(r-1+2, cc, ds.getWeekendMorningShift().staffer6am, day, SHIFT_MORNING_6, ROLE_STAFFER);
 								shiftsTable.setWidget(r-1+3, cc, new HTML(""));
 								shiftsTable.setWidget(r-1+4, cc, new HTML(""));
 								shiftsTable.setWidget(r-1+5, cc, new HTML(""));
-								shiftsTable.setWidget(r-1+6, cc, new ChangeAssignmentButton(ds.getWeekendMorningShift().sportak, this, day, SHIFT_MORNING_6, ROLE_SPORTAK));
-								shiftsTable.setWidget(r-1+7, cc, new ChangeAssignmentButton(ds.getWeekendAfternoonShift().editor, this, day, SHIFT_AFTERNOON, ROLE_EDITOR));
-								shiftsTable.setWidget(r-1+8, cc, new ChangeAssignmentButton(ds.getWeekendAfternoonShift().staffer, this, day, SHIFT_AFTERNOON, ROLE_STAFFER));
+								setAssignmentButton(r-1+6, cc, ds.getWeekendMorningShift().sportak, day, SHIFT_MORNING_6, ROLE_SPORTAK);
+								setAssignmentButton(r-1+7, cc, ds.getWeekendAfternoonShift().editor, day, SHIFT_AFTERNOON, ROLE_EDITOR);
+								setAssignmentButton(r-1+8, cc, ds.getWeekendAfternoonShift().staffer, day, SHIFT_AFTERNOON, ROLE_STAFFER);
 								shiftsTable.setWidget(r-1+9, cc, new HTML(""));
 								shiftsTable.setWidget(r-1+10, cc, new HTML(""));
 								shiftsTable.setWidget(r-1+11, cc, new HTML(""));
-								shiftsTable.setWidget(r-1+12, cc, new ChangeAssignmentButton(ds.getWeekendAfternoonShift().sportak, this, day, SHIFT_AFTERNOON, ROLE_SPORTAK));
-								shiftsTable.setWidget(r-1+13, cc, new ChangeAssignmentButton(ds.getNightShift().staffer, this, day, SHIFT_NIGHT, ROLE_STAFFER));
+								setAssignmentButton(r-1+12, cc, ds.getWeekendAfternoonShift().sportak, day, SHIFT_AFTERNOON, ROLE_SPORTAK);
+								setAssignmentButton(r-1+13, cc, ds.getNightShift().staffer, day, SHIFT_NIGHT, ROLE_STAFFER);
 							}
 							for(int ii=1; ii<=6; ii++) shiftsTable.getCellFormatter().setStyleName(r-1+ii, cc, "s2-solutionTableMorning");				
 							for(int ii=7; ii<=12; ii++) shiftsTable.getCellFormatter().setStyleName(r-1+ii, cc, "s2-solutionTableAfternoon");				
@@ -475,13 +488,13 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 				for(int ii=0; ii<7; ii++) {
 					shiftsTable.getCellFormatter().setStyleName(r+ii, 6, "s2-solutionTableBlack");				
 				}
-				shiftsTable.setWidget(r++, 6, new HTML("Morning Editor<BR>6:00-14:00"));
-				shiftsTable.setWidget(r++, 6, new HTML("Morning Staffer<BR>6:00-14:30"));
-				shiftsTable.setWidget(r++, 6, new HTML("Morning Sportak<BR>7:00-15:30"));
-				shiftsTable.setWidget(r++, 6, new HTML("Afternoon Editor<BR>14:00-20:30"));
-				shiftsTable.setWidget(r++, 6, new HTML("Afternoon Staffer<BR>14:00-22:30"));
-				shiftsTable.setWidget(r++, 6, new HTML("Afternoon Sportak<BR>15:00-23:30"));
-				shiftsTable.setWidget(r++, 6, new HTML("Nigt Staffer<BR>22:00-6:30"));
+				shiftsTable.setWidget(r++, 6, new HTML(i18n.morningEditor()+"<BR>6:00-14:00"));
+				shiftsTable.setWidget(r++, 6, new HTML(i18n.morningStaffer()+"<BR>6:00-14:30"));
+				shiftsTable.setWidget(r++, 6, new HTML(i18n.morningSportak()+"<BR>7:00-15:30"));
+				shiftsTable.setWidget(r++, 6, new HTML(i18n.afternoonEditor()+"<BR>14:00-20:30"));
+				shiftsTable.setWidget(r++, 6, new HTML(i18n.afternoonStaffer()+"<BR>14:00-22:30"));
+				shiftsTable.setWidget(r++, 6, new HTML(i18n.afternoonSportak()+"<BR>15:00-23:30"));
+				shiftsTable.setWidget(r++, 6, new HTML(i18n.nightStaffer()+"<BR>22:00-6:30"));
 
 				r=row;
 
@@ -489,15 +502,15 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 					if(day>0) {
 						DaySolution ds=solution.getSolutionForDay(day);
 						if(ds!=null) {
-							shiftsTable.setWidget(r+1-1, cc+1, new ChangeAssignmentButton(ds.getWeekendMorningShift().editor, this, day, SHIFT_MORNING, ROLE_EDITOR));
-							shiftsTable.setWidget(r+2-1, cc+1, new ChangeAssignmentButton(ds.getWeekendMorningShift().staffer6am, this, day, SHIFT_MORNING, ROLE_STAFFER));
-							shiftsTable.setWidget(r+3-1, cc+1, new ChangeAssignmentButton(ds.getWeekendMorningShift().sportak, this, day, SHIFT_MORNING, ROLE_SPORTAK));
+							setAssignmentButton(r+1-1, cc+1, ds.getWeekendMorningShift().editor, day, SHIFT_MORNING, ROLE_EDITOR);
+							setAssignmentButton(r+2-1, cc+1, ds.getWeekendMorningShift().staffer6am, day, SHIFT_MORNING, ROLE_STAFFER);
+							setAssignmentButton(r+3-1, cc+1, ds.getWeekendMorningShift().sportak, day, SHIFT_MORNING, ROLE_SPORTAK);
 							for(int ii=1; ii<=3; ii++) shiftsTable.getCellFormatter().setStyleName(r+ii-1, cc+1, "s2-solutionTableMorning");							
-							shiftsTable.setWidget(r+4-1, cc+1, new ChangeAssignmentButton(ds.getWeekendAfternoonShift().editor, this, day, SHIFT_AFTERNOON, ROLE_EDITOR));
-							shiftsTable.setWidget(r+5-1, cc+1, new ChangeAssignmentButton(ds.getWeekendAfternoonShift().staffer, this, day, SHIFT_AFTERNOON, ROLE_STAFFER));
-							shiftsTable.setWidget(r+6-1, cc+1, new ChangeAssignmentButton(ds.getWeekendAfternoonShift().sportak, this, day, SHIFT_AFTERNOON, ROLE_SPORTAK));
+							setAssignmentButton(r+4-1, cc+1, ds.getWeekendAfternoonShift().editor, day, SHIFT_AFTERNOON, ROLE_EDITOR);
+							setAssignmentButton(r+5-1, cc+1, ds.getWeekendAfternoonShift().staffer, day, SHIFT_AFTERNOON, ROLE_STAFFER);
+							setAssignmentButton(r+6-1, cc+1, ds.getWeekendAfternoonShift().sportak, day, SHIFT_AFTERNOON, ROLE_SPORTAK);
 							for(int ii=4; ii<=6; ii++) shiftsTable.getCellFormatter().setStyleName(r+ii-1, cc+1, "s2-solutionTableAfternoon");
-							shiftsTable.setWidget(r+7-1, cc+1, new ChangeAssignmentButton(ds.getNightShift().staffer, this, day, SHIFT_NIGHT, ROLE_STAFFER));
+							setAssignmentButton(r+7-1, cc+1, ds.getNightShift().staffer, day, SHIFT_NIGHT, ROLE_STAFFER);
 							shiftsTable.getCellFormatter().setStyleName(r+7-1, cc+1, "s2-solutionTableNight");				
 						}
 					}
@@ -519,6 +532,12 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 			}
 
 		}
+	}
+	
+	private void setAssignmentButton(int row, int column, Holder<String> employee, int day, int shift, int role) {
+		ChangeAssignmentButton button = new ChangeAssignmentButton(employee, this, day, shift, role);
+		shiftsTable.setWidget(row, column, button);
+		changeAssignmentButtons.add(button);
 	}
 
 	public void refresh(PeriodSolution solution, List<EmployeeAllocation> allocations) {
@@ -557,7 +576,7 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 	
 	private void objectToRia() {
 		if(solution!=null) {
-			yearMonthHtml.setHTML("Solution for: "+solution.getYear()+"/"+solution.getMonth());
+			yearMonthHtml.setHTML(i18n.solutionFor()+": "+solution.getYear()+"/"+solution.getMonth());
 			yearMonthHtml.setVisible(true);
 			refreshScheduleTable();
 			refreshShiftsTable();

@@ -319,7 +319,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 						previousEditor=e2a.get(previousDaySolution.getWeekendMorningShift().editor.get()).employee;
 					} else {
 						throw new ShiftSolverException(
-								"Workday in weekend? "+daySolution.getWeekday()+" - "+Utils.getDayLetter(d, preferences.getStartWeekDay()),
+								"Workday in weekend? "+daySolution.getWeekday()+" - "+Utils.getDayLetter(d, preferences.getStartWeekDay(), i18n),
 								failedWithEmployeeAllocations,
 								d,
 								failedOnMaxDepth,
@@ -1437,5 +1437,82 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		}
 		
 		return s;
+	}
+
+	public boolean validateEmployeeAssignment(
+			Employee e, 
+			int day,
+			int shift, 
+			int role, 
+			PeriodPreferences p,
+			PeriodSolution s, 
+			Map<String, EmployeeAllocation> a) 
+	{
+		switch(role) {
+		case ROLE_EDITOR:
+			if(!e.isEditor()) {
+				return false;
+			}
+			break;
+		case ROLE_SPORTAK:
+			if(!e.isSportak()) {
+				return false;
+			}
+			break;
+		case ROLE_STAFFER:
+			if(e.isSportak()) {
+				return false;
+			}
+			break;
+		}
+		
+		switch(shift) {
+		case SHIFT_MORNING:
+			if(getDayPreference(e, p, s.getSolutionForDay(day)).isNoMorning6()) {
+				return false;
+			}
+			break;
+		case SHIFT_MORNING_6:
+			if(getDayPreference(e, p, s.getSolutionForDay(day)).isNoMorning6()) {
+				return false;
+			}
+			break;
+		case SHIFT_MORNING_7:
+			if(getDayPreference(e, p, s.getSolutionForDay(day)).isNoMorning7()) {
+				return false;
+			}
+			break;
+		case SHIFT_MORNING_8:
+			if(getDayPreference(e, p, s.getSolutionForDay(day)).isNoMorning8()) {
+				return false;
+			}
+			break;
+		case SHIFT_AFTERNOON:
+			if(getDayPreference(e, p, s.getSolutionForDay(day)).isNoAfternoon()) {
+				return false;
+			}
+			break;
+		case SHIFT_NIGHT:
+			if(getDayPreference(e, p, s.getSolutionForDay(day)).isNoNight()) {
+				return false;
+			}
+			break;
+		}
+
+		// don't check capacity (too many red buttons) - it's shown on allocations panel
+		
+		if(a.get(e.getKey()).hadShiftsLast5Days(day)) {
+			return false;
+		}
+
+		if(!a.get(e.getKey()).hadMoreThanOneShiftToday(day)) {
+			return false;
+		}
+		
+		// don't check night capacity - it's shown on allocations panel
+
+		// TODO editor continuity to be checked (day and go backward)
+		
+		return true;
 	}
 }

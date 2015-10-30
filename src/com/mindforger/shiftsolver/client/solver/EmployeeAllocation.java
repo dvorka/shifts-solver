@@ -174,10 +174,27 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 	}
 
 	public boolean hadShiftToday(int day) {
+		int count=0;
 		if(shiftsOnDays.size()>0) {
-			return day==shiftsOnDays.get(shiftsOnDays.size()-1);			
+			for(Integer i:shiftsOnDays) {
+				if(day==i) {
+					count++;
+				}
+			}
 		}		
-		return false;
+		return count>0;
+	}
+
+	public boolean hadMoreThanOneShiftToday(int day) {
+		int count=0;
+		if(shiftsOnDays.size()>0) {
+			for(Integer i:shiftsOnDays) {
+				if(day==i) {
+					count++;
+				}
+			}
+		}		
+		return count>1;
 	}
 	
 	public boolean hadShiftsLast5Days(int day) {

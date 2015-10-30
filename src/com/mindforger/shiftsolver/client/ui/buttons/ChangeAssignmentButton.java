@@ -20,6 +20,9 @@ public class ChangeAssignmentButton extends Button implements ShiftSolverConstan
 	private List<Employee> employees;
 	private ChangeAssignmentDialog dialog;
 	private SolutionPanel periodSolutionPanel;
+	private int day;
+	private int shift;
+	private int role;
 	
 	public ChangeAssignmentButton(
 			final Holder<String> employeeHolder,
@@ -32,6 +35,9 @@ public class ChangeAssignmentButton extends Button implements ShiftSolverConstan
 		this.periodSolutionPanel=periodSolutionPanel;
 		this.employees=periodSolutionPanel.employees;
 		this.ctx=periodSolutionPanel.ctx;
+		this.day=day;
+		this.shift=shift;
+		this.role=role;
 				
 		String fullName;
 		if(employeeHolder.get().equals(ShiftSolver.FERDA.getKey())) {
@@ -42,20 +48,7 @@ public class ChangeAssignmentButton extends Button implements ShiftSolverConstan
 		setText(fullName);
 		setTitle(fullName);
 		
-		switch(shift) {
-		case SHIFT_MORNING:
-		case SHIFT_MORNING_6:
-		case SHIFT_MORNING_7:
-		case SHIFT_MORNING_8:
-			setStyleName("s2-solutionTableMorningB");
-			break;
-		case SHIFT_AFTERNOON:
-			setStyleName("s2-solutionTableAfternoonB");
-			break;
-		case SHIFT_NIGHT:
-			setStyleName("s2-solutionTableNightB");
-			break;
-		}
+		setStyleNameByShiftType(shift);
 						
 		addClickHandler(new ClickHandler() {			
 			@Override
@@ -77,10 +70,47 @@ public class ChangeAssignmentButton extends Button implements ShiftSolverConstan
 		});
 	}
 
+	private void setStyleNameByShiftType(final int shift) {
+		switch(shift) {
+		case SHIFT_MORNING:
+		case SHIFT_MORNING_6:
+		case SHIFT_MORNING_7:
+		case SHIFT_MORNING_8:
+			setStyleName("s2-solutionTableMorningB");
+			break;
+		case SHIFT_AFTERNOON:
+			setStyleName("s2-solutionTableAfternoonB");
+			break;
+		case SHIFT_NIGHT:
+			setStyleName("s2-solutionTableNightB");
+			break;
+		}
+	}
+
 	public void setEmployee() {
 		employeeHolder.set(dialog.getSelectedEmployee().getKey());
 		String fullName = periodSolutionPanel.e2a.get(employeeHolder.get()).employee.getFullName();
 		setText(fullName);
 		setTitle(fullName);		
+	}
+
+	public void validate() {
+		if(!ShiftSolver.FERDA_KEY.equals(employeeHolder.get())) {
+			if(ctx.getSolver().validateEmployeeAssignment(
+					ctx.getState().getEmployee(employeeHolder.get()),
+					day,
+					shift,
+					role,
+					periodSolutionPanel.preferences,
+					periodSolutionPanel.solution,
+					periodSolutionPanel.e2a)) 
+			{
+				setStyleNameByShiftType(shift);				
+			} else {
+				setStyleName("s2-notValid");				
+			}
+		} else {
+			setStyleName("s2-notValid");
+		}
 	}
 }

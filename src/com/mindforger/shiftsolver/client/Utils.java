@@ -20,17 +20,29 @@ public class Utils {
 			return false;
 		}
 	}
-		
-	private static final String[] WEEKDAY_LETTERS = {
-		"S", "M", "T", "W", "T", "F", "S"
-	};
-	
+			
 	public static int getWeekdayNumber(int day, int startWeekDay) {
 		return (day-1+startWeekDay-1)%7;
 	}
 	
-	public static String getDayLetter(int day, int startWeekDay) {
-		return WEEKDAY_LETTERS[getWeekdayNumber(day, startWeekDay)];
+	public static String getDayLetter(int day, int startWeekDay, RiaMessages i18n) {
+		switch(getWeekdayNumber(day, startWeekDay)) {
+		case 0:
+			return i18n.sundayLetter();
+		case 1:
+			return i18n.mondayLetter();
+		case 2:
+			return i18n.tuesdayLetter();
+		case 3:
+			return i18n.wednesdayLetter();
+		case 4:
+			return i18n.thursdayLetter();
+		case 5:
+			return i18n.fridayLetter();
+		case 6:
+			return i18n.saturdayLetter();
+		}
+		return "";
 	}
 	
 	public static void shuffleArray(Employee[] array) {

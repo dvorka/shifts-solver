@@ -14,15 +14,14 @@ public class SolutionTableToViewPanelButton extends Button {
 			final String cssClass,
 			final RiaContext ctx) {
 		setText(year+"/"+month);
-		// TODO i18n
-		setTitle("Year/Month");
+		setTitle(ctx.getI18n().year()+"/"+ctx.getI18n().month());
 		setStyleName(cssClass);
 
 		addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {								
-	    		ctx.getStatusLine().showProgress("Loading solution...");
+	    		ctx.getStatusLine().showProgress(ctx.getI18n().loadingSolution());
 	      		ctx.getRia().loadSolution(solutionId);
-	      		ctx.getStatusLine().showInfo("Solution loaded");
+	      		ctx.getStatusLine().showInfo(ctx.getI18n().solutionLoaded());
 			}
 		});
 	}

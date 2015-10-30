@@ -97,7 +97,7 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 		});		
 		buttonPanel.add(backButton);
 
-		Button solveButton=new Button("Solve Partially");
+		Button solveButton=new Button(i18n.solvePartially());
 		solveButton.setStyleName("mf-buttonLooser");
 		solveButton.setTitle("Solve what can be solved and skip the rest"); // TODO i18n
 		solveButton.addClickHandler(new ClickHandler() {
@@ -124,13 +124,13 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 		setWidget(rows, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
 		// TODO i18n
 		setWidget(rows, 1, new TableSetSortingButton(i18n.shifts(),TableSortCriteria.BY_NAME, this, ctx));
-		setWidget(rows, 2, new TableSetSortingButton("Nights",TableSortCriteria.BY_NAME, this, ctx));
-		setWidget(rows, 3, new TableSetSortingButton("Today",TableSortCriteria.BY_NAME, this, ctx));
-		setWidget(rows, 4, new TableSetSortingButton("5 Days",TableSortCriteria.BY_NAME, this, ctx));
-		setWidget(rows, 5, new TableSetSortingButton("No",TableSortCriteria.BY_NAME, this, ctx));
-		setWidget(rows, 6, new TableSetSortingButton("Role",TableSortCriteria.BY_ROLE, this, ctx));
+		setWidget(rows, 2, new TableSetSortingButton(i18n.nights(),TableSortCriteria.BY_NAME, this, ctx));
+		setWidget(rows, 3, new TableSetSortingButton(i18n.today(),TableSortCriteria.BY_NAME, this, ctx));
+		setWidget(rows, 4, new TableSetSortingButton("5 "+i18n.days(),TableSortCriteria.BY_NAME, this, ctx));
+		setWidget(rows, 5, new TableSetSortingButton("Y/N",TableSortCriteria.BY_NAME, this, ctx));
+		setWidget(rows, 6, new TableSetSortingButton(i18n.role(),TableSortCriteria.BY_ROLE, this, ctx));
 		setWidget(rows, 7, new TableSetSortingButton(i18n.fulltime(),TableSortCriteria.BY_FULLTIME, this, ctx));
-		setWidget(rows, 8, new TableSetSortingButton("Days",TableSortCriteria.BY_NAME, this, ctx));
+		setWidget(rows, 8, new TableSetSortingButton(i18n.dayListing(),TableSortCriteria.BY_NAME, this, ctx));
 	}
 		
 	public void addRow(EmployeeAllocation a, int failday) {
@@ -171,7 +171,7 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 		HTML last5DaysHtml;
 		if(a.hadShiftsLast5Days(failday)) {
 			last5DaysHtml=new HTML(i18n.yes());
-			last5DaysHtml.setStyleName("s2-match");
+			last5DaysHtml.setStyleName("s2-busy");
 		} else {
 			last5DaysHtml=new HTML(i18n.no());			
 			last5DaysHtml.setStyleName("s2-mismatch");
@@ -179,7 +179,7 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 		HTML todayHtml;
 		if(a.hadShiftToday(failday)) {
 			todayHtml=new HTML(i18n.yes());
-			todayHtml.setStyleName("s2-match");
+			todayHtml.setStyleName("s2-busy");
 		} else {
 			todayHtml=new HTML(i18n.no());			
 			todayHtml.setStyleName("s2-mismatch");
@@ -193,12 +193,12 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 			DayPreference preferencesForDay = employeePreferences.getPreferencesForDay(failday);
 			if(preferencesForDay!=null) {
 				if(preferencesForDay.isNoDay()) {
-					preferencesHtml=new HTML("Day");
+					preferencesHtml=new HTML(i18n.day());
 					preferencesHtml.setStyleName("s2-busy");
 					isFullPrefs=true;
 				} else {
 					if(preferencesForDay.isNoDay()) {
-						preferencesHtml=new HTML("Holiday");
+						preferencesHtml=new HTML(i18n.holidays());
 						preferencesHtml.setStyleName("s2-busy");
 						isFullPrefs=true;
 					} else {
@@ -235,15 +235,15 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 		}
 		HTML shiftsDaysHtml=new HTML(text);
 						
-		HTML roleHtml=new HTML("Staffer");
+		HTML roleHtml=new HTML(i18n.staffer());
 		if(a.employee.isEditor()) {
-			roleHtml=new HTML("Editor");
+			roleHtml=new HTML(i18n.editor());
 		} else {
 			if(a.employee.isSportak()) {
-				roleHtml=new HTML("Sportak");
+				roleHtml=new HTML(i18n.sportak());
 			} else {
 				if(a.employee.isMortak()) {
-					roleHtml=new HTML("Mortak");
+					roleHtml=new HTML(i18n.morningSportak());
 				}
 			}
 		}

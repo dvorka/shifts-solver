@@ -100,7 +100,7 @@ Rules:
       * *MUST:* fulltime employee must get max shifts +/-1 shift
       * *MUST:* 2 night shifts in month at most
       * *MUST:* if employee has holidays on workday, then it adds 1 to her/his
-        job shifts **(TODO)**
+        job shifts
       * *SHOULD:* morning and afternoon shifts to be balanced 50%/50% **(TODO)**
    * Part time employee jobs:
       * *MUST:* max job shifts = fulltime job shifts / 2

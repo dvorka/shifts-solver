@@ -14,15 +14,14 @@ public class PeriodPreferencesTableToEditorButton extends Button {
 			final String cssClass,
 			final RiaContext ctx) {
 		setText(year+"/"+month);
-		// TODO i18n
-		setTitle("Year/Month");
+		setTitle(ctx.getI18n().year()+"/"+ctx.getI18n().month());
 		setStyleName(cssClass);
 
 		addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {								
 	    		ctx.getStatusLine().showProgress(ctx.getI18n().loadingPeriodPreferences());
 	      		ctx.getRia().loadPeriodPreferences(periodPreferencesId);
-	      		ctx.getStatusLine().showInfo("Period preferences loaded");
+	      		ctx.getStatusLine().showInfo(ctx.getI18n().periodPreferencesLoaded());
 			}
 		});
 	}

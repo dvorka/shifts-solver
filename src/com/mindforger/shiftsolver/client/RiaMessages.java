@@ -1,6 +1,7 @@
 package com.mindforger.shiftsolver.client;
 
 import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.safehtml.shared.SafeHtml;
 
 public interface RiaMessages extends Messages {
 
@@ -60,4 +61,44 @@ public interface RiaMessages extends Messages {
 	String newEmptySolution();
 	String validate();
 	String modified();
+	String periodPreferencesBuilt();
+	String employeeLoaded();
+	String sundayLetter();
+	String mondayLetter();
+	String tuesdayLetter();
+	String wednesdayLetter();
+	String thursdayLetter();
+	String fridayLetter();
+	String saturdayLetter();
+	String day();
+	String night();
+	String morning();
+	String afternoon();
+	String periodPreferencesLoaded();
+	String solutionLoaded();
+	String loadingSolution();
+	String validationFinished();
+	String monday();
+	String tuesday();
+	String wednesday();
+	String thursday();
+	String friday();
+	String saturday();
+	String sunday();
+	String week();
+	String nightStaffer();
+	String morningEditor();
+	String morningStaffer();
+	String afternoonEditor();
+	String afternoonStaffer();
+	String afternoonSportak();
+	String solutionFor();
+	String nights();
+	String today();
+	String role();
+	String days();
+	String dayListing();
+	String staffer();
+	String holidays();
+	String solvePartially();
 }
