@@ -6,18 +6,31 @@
          xmlns="http://java.sun.com/xml/ns/javaee">
 
   <servlet>
+    <servlet-name>index</servlet-name>
+    <jsp-file>/index.jsp</jsp-file>
+  </servlet>  
+  <servlet>
     <servlet-name>shiftSolverServlet</servlet-name>
     <servlet-class>com.mindforger.shiftsolver.server.ShiftSolverServiceImpl</servlet-class>
+    <load-on-startup>1</load-on-startup>
   </servlet>
   
+  <servlet-mapping>
+	<servlet-name>index</servlet-name>
+	<url-pattern>/</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>shiftSolverServlet</servlet-name>
     <url-pattern>/shifts_solver/s2</url-pattern>
   </servlet-mapping>
   
-  <!-- Default page to serve -->
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-  </welcome-file-list>
-
+    <security-constraint>
+        <web-resource-collection>
+            <url-pattern>/_ah/login_required</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>*</role-name>
+        </auth-constraint>
+    </security-constraint>        
+  
 </web-app>

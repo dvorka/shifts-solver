@@ -41,7 +41,6 @@ import com.mindforger.shiftsolver.shared.model.shifts.WorkdayMorningShift;
  *    > count jobs for all roles and compare it with people you have > fail even without calling any depth if e.g. not enough sportaks
  *  - iterate only sportaks for sportak, editors for editor (not all)
  */
-// TODO sunday morning editor is not editor
 public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer {
 	public static final String FERDA_KEY="FERDAKEY";
 	public static final Employee FERDA;
