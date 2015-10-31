@@ -15,7 +15,7 @@ Employees management:
 
 Month preferences management:
 
-[![Month Preferences Management](http://mindforger.com/project/s2/s-preferences.png "Month Preferences Management")](http://mindforger.com/project/s2/s2preferences.png)
+[![Month Preferences Management](http://mindforger.com/project/s2/s2preferences.png "Month Preferences Management")](http://mindforger.com/project/s2/s2preferences.png)
 
 Solution management:
 
