@@ -44,7 +44,7 @@
 	    <td colspan="1"><div id="solverStatusLineContainer" class="mf-statusProgress">Loading ShiftsSolver...</div></td>
 	    <td align="right" style="padding-right: 27px;">
 	      <a href="<%= userService.createLogoutURL(request.getRequestURI()) %>" 
-	         class="signOutButton" style="color: #555" >Sign Out</a>
+	         class="signOutButton" style="color: #555" >Logout</a>
 	    </td>
 	  </tr>
 	  <tr>
@@ -186,9 +186,9 @@ END OF POLICY
 			    </td>
 				<td align="right">
 			       <% if(!isLogged) { %>
-			         <a href="<%= userService.createLoginURL(request.getRequestURI()) %>" class="signInButton">Sign In</a>
+			         <a href="<%= userService.createLoginURL(request.getRequestURI()) %>" class="signInButton">Login</a>
 			       <% } else { %>
-			         <a href="<%= userService.createLogoutURL(request.getRequestURI()) %>" class="signOutButton">Sign Out</a>
+			         <a href="<%= userService.createLogoutURL(request.getRequestURI()) %>" class="signOutButton">Logout</a>
 			       <% } %>
 				</td>
 			</tr>

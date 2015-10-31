@@ -286,7 +286,7 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 					" "+
 					(a.employee.isEditor()?"editor    ":
 						(a.employee.isSportak()?"sportak   ":
-							(a.employee.isMortak()?"am-sportak":"staffer     ")))+
+							(a.employee.isMortak()?"am-sportak":"staffer   ")))+
 					" "+
 					(a.employee.isFulltime()?"FULL":"PART")+
 					" "+

@@ -592,7 +592,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			debugDown(d, "MORNING", "DRONE7AM", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_7);					
 			daySolution.getWorkdayMorningShift().staffer7am=new Holder<String>(lastAssignee.getKey());
-			BacktrackFor backtrackFor=assignWorkdayMorningDrone8am(d, daySolution, result);
+			BacktrackFor backtrackFor=assignWorkdayMorningDrone8am1(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
 			} else {
@@ -609,28 +609,54 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		return new BacktrackFor(thisLevelRole);		
 	}
 
-	private BacktrackFor assignWorkdayMorningDrone8am(int d, DaySolution daySolution, PeriodSolution result) {
+	private BacktrackFor assignWorkdayMorningDrone8am1(int d, DaySolution daySolution, PeriodSolution result) {
 		int thisLevelRole=ROLE_STAFFER;
 		Employee lastAssignee=null;
 		int c=0;
 		List<Employee> employees=sortEmployeesByShifts();
 		while((lastAssignee=findDroneForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
-			debugDown(d, "MORNING", "DRONE8AM", c++);
+			debugDown(d, "MORNING", "DRONE8AM1", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_8);					
 			daySolution.getWorkdayMorningShift().staffer8am1=new Holder<String>(lastAssignee.getKey());
-			BacktrackFor backtrackFor=assignWorkdayMorningSportak(d, daySolution, result);
+			BacktrackFor backtrackFor=assignWorkdayMorningDrone8am2(d, daySolution, result);
 			if(backtrackFor.isSolutionFound()) {
 				return backtrackFor;
 			} else {
 				if(!backtrackFor.isTarget(thisLevelRole)) {
-					debugUp(d, "MORNING", "DRONE8AM*");		
+					debugUp(d, "MORNING", "DRONE8AM1*");		
 					e2a.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_8);
 					return backtrackFor;
 				}
 			}
 			e2a.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_8);
 		}
-		debugUp(d, "MORNING", "DRONE8AM"); 
+		debugUp(d, "MORNING", "DRONE8AM1"); 
+		//daySolution.getWorkdayMorningShift().staffer8am=null;
+		return new BacktrackFor(thisLevelRole);		
+	}
+
+	private BacktrackFor assignWorkdayMorningDrone8am2(int d, DaySolution daySolution, PeriodSolution result) {
+		int thisLevelRole=ROLE_STAFFER;
+		Employee lastAssignee=null;
+		int c=0;
+		List<Employee> employees=sortEmployeesByShifts();
+		while((lastAssignee=findDroneForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
+			debugDown(d, "MORNING", "DRONE8AM2", c++);
+			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_8);					
+			daySolution.getWorkdayMorningShift().staffer8am2=new Holder<String>(lastAssignee.getKey());
+			BacktrackFor backtrackFor=assignWorkdayMorningSportak(d, daySolution, result);
+			if(backtrackFor.isSolutionFound()) {
+				return backtrackFor;
+			} else {
+				if(!backtrackFor.isTarget(thisLevelRole)) {
+					debugUp(d, "MORNING", "DRONE8AM2*");		
+					e2a.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_8);
+					return backtrackFor;
+				}
+			}
+			e2a.get(lastAssignee.getKey()).unassign(SHIFT_MORNING_8);
+		}
+		debugUp(d, "MORNING", "DRONE8AM2"); 
 		//daySolution.getWorkdayMorningShift().staffer8am=null;
 		return new BacktrackFor(thisLevelRole);		
 	}

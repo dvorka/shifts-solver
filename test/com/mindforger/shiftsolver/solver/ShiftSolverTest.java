@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.mindforger.shiftsolver.client.RiaState;
-import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
 import com.mindforger.shiftsolver.client.solver.ShiftSolver;
 import com.mindforger.shiftsolver.server.ServerUtils;
@@ -16,7 +15,7 @@ import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
-public class ShiftSolverTest {
+public class ShiftSolverTest extends AbstractShiftSolverTest {
 
 	private ShiftSolver solver;
 	private RiaState state;
@@ -34,7 +33,7 @@ public class ShiftSolverTest {
 	}
 
 	public void testRiaBigDataSolutionFirst() {
-		state = Utils.createNovemberFooState();
+		state = createNovemberFooState();
 		PeriodPreferences preferences = state.getPeriodPreferencesArray()[0];
 
 		// TODO ShiftSolver.STEPS_LIMIT=Long.MAX_VALUE;
@@ -58,7 +57,7 @@ public class ShiftSolverTest {
 	}
 
 	public void testRiaSmallDataSolutionFirst() {		
-		RiaState state = Utils.createSmallFooState();
+		RiaState state = createSmallFooState();
 		PeriodPreferences preferences = state.getPeriodPreferencesArray()[0];
 
 		PeriodSolution solution = solver.solve(
@@ -83,45 +82,6 @@ public class ShiftSolverTest {
 // TODO			solution.printSchedule();
 		}
 	}
-
-//	public void printSchedule() {		
-//		List<DaySolution> days = getDays();
-//		for(DaySolution ds:days) {
-//			ShiftSolverLogger.debug((ds.isWorkday()?"Work":"Weekend") + " Day "+ ds.getDay() +":");
-//			if(ds.isWorkday()) {
-//				ShiftSolverLogger.debug("  Morning:");
-//				ShiftSolverLogger.debug("    E "+ds.getWorkdayMorningShift().editor.get().getFullName());
-//				ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().staffer6am.get().getFullName());
-//				ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().staffer7am.get().getFullName());
-//				ShiftSolverLogger.debug("    D "+ds.getWorkdayMorningShift().staffer8am1.get().getFullName());
-//				ShiftSolverLogger.debug("    E "+ds.getWorkdayMorningShift().sportak.get().getFullName());
-//
-//				ShiftSolverLogger.debug("  Afternoon:");
-//				ShiftSolverLogger.debug("    E "+ds.getWorkdayAfternoonShift().editor.get().getFullName());
-//				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[0].get().getFullName());
-//				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[1].get().getFullName());
-//				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[2].get().getFullName());
-//				ShiftSolverLogger.debug("    D "+ds.getWorkdayAfternoonShift().staffers[3].get().getFullName());
-//				ShiftSolverLogger.debug("    S "+ds.getWorkdayAfternoonShift().sportak.get().getFullName());
-//
-//				ShiftSolverLogger.debug("  Night:");
-//				ShiftSolverLogger.debug("    D "+ds.getNightShift().staffer.get().getFullName());
-//			} else {		
-//				ShiftSolverLogger.debug("  Morning:");
-//				ShiftSolverLogger.debug("    E "+ds.getWeekendMorningShift().editor.get().getFullName());
-//				ShiftSolverLogger.debug("    D "+ds.getWeekendMorningShift().staffer6am.get().getFullName());
-//				ShiftSolverLogger.debug("    E "+ds.getWeekendMorningShift().sportak.get().getFullName());
-//
-//				ShiftSolverLogger.debug("  Afternoon:");
-//				ShiftSolverLogger.debug("    E "+ds.getWeekendAfternoonShift().editor.get().getFullName());
-//				ShiftSolverLogger.debug("    D "+ds.getWeekendAfternoonShift().staffer.get().getFullName());
-//				ShiftSolverLogger.debug("    S "+ds.getWeekendAfternoonShift().sportak.get().getFullName());
-//
-//				ShiftSolverLogger.debug("  Night:");
-//				ShiftSolverLogger.debug("    D "+ds.getNightShift().staffer.get().getFullName());
-//			}
-//		}
-//	}
 	
 	public void calendarFun() {
 		int year=2015;
