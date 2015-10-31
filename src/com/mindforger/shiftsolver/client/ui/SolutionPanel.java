@@ -24,6 +24,7 @@ import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.Holder;
+import com.mindforger.shiftsolver.shared.model.Job;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
@@ -601,13 +602,22 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 	}
 	
 	public void onSolutionModification() {
-		refreshScheduleTable();
 		// TODO consider dirty flag to recalculate on change, otherwise just make visible
+		
 		allocations=EmployeeAllocation.calculateEmployeeAllocations(preferences, solution, employees);
 		e2a.clear();
 		for(EmployeeAllocation ea:allocations) {
 			e2a.put(ea.employee.getKey(), ea);
+			Job job = solution.getEmployeeJobs().get(ea.employee.getKey());
+			if(job!=null) {
+				job.setShifts(ea.shifts);
+			} else {
+				job=new Job(ea.shifts, ea.shiftsToGet);
+				solution.getEmployeeJobs().put(ea.employee.getKey(), job);
+			}
 		}
+		
+		refreshScheduleTable();
 		refreshAllocationsTable();
 	}
 

@@ -42,7 +42,7 @@ public class ChangeAssignmentDialog extends DialogBox {
 		this.i18n=ctx.getI18n();
 		this.employees=employees;
 		
-		setText("Assign Employee");
+		setText(i18n.assignEmployee());
 
 		FlexTable panel=new FlexTable();
 		panel.getFlexCellFormatter().setColSpan(0, 0, 2);
@@ -53,11 +53,11 @@ public class ChangeAssignmentDialog extends DialogBox {
 		HTML html;
 		table.setWidget(0, 0, new HTML(i18n.employee()));
 		html=new HTML();
-		html.setTitle("Free/Holidays/Busy/Want");
+		html.setTitle("Free/Holidays/Busy/Want"); // TODO i18n
 		table.setWidget(0, 1, new HTML(" "));
 		html=new HTML();
-		html.setTitle("Can employee be assigned for this day?");
-		table.setWidget(0, 2, new HTML("Validation Result"));
+		html.setTitle("Can employee be assigned for this day?"); // TODO i18n
+		table.setWidget(0, 2, new HTML("Validation Result")); // TODO i18n
 
 		radios = new ArrayList<RadioButton>();
 		int r=1;

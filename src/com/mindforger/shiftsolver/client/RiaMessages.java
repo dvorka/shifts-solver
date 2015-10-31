@@ -113,4 +113,5 @@ public interface RiaMessages extends Messages {
 	String newEmptySolutionCreated();
 	String periodPreferencesSaved();
 	String print();
+	String assignEmployee();
 }
