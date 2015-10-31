@@ -4,16 +4,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Button;
 import com.mindforger.shiftsolver.client.solver.ShiftSolver;
 import com.mindforger.shiftsolver.client.ui.EmployeeEditPanel;
 import com.mindforger.shiftsolver.client.ui.EmployeesTable;
 import com.mindforger.shiftsolver.client.ui.HomePanel;
 import com.mindforger.shiftsolver.client.ui.PageTitlePanel;
-import com.mindforger.shiftsolver.client.ui.PreferencesPanel;
 import com.mindforger.shiftsolver.client.ui.PeriodPreferencesTable;
-import com.mindforger.shiftsolver.client.ui.SolutionsTable;
-import com.mindforger.shiftsolver.client.ui.SolutionPanel;
+import com.mindforger.shiftsolver.client.ui.PreferencesPanel;
+import com.mindforger.shiftsolver.client.ui.PrintButtonPanel;
 import com.mindforger.shiftsolver.client.ui.SettingsPanel;
+import com.mindforger.shiftsolver.client.ui.SolutionPanel;
+import com.mindforger.shiftsolver.client.ui.SolutionsTable;
 import com.mindforger.shiftsolver.client.ui.SolverEmployeesSummaryPanel;
 import com.mindforger.shiftsolver.client.ui.SolverProgressPanel;
 import com.mindforger.shiftsolver.client.ui.StatusLine;
@@ -63,6 +65,7 @@ public class RiaContext implements ShiftSolverConstants {
 	private SolutionPanel periodSolutionViewPanel;
 	private SolverProgressPanel solverProgressPanel;
 	private SolverEmployeesSummaryPanel solverNoSolutionPanel;
+	private PrintButtonPanel printButtonPanel;
 	
 	// data
 	private RiaState state;
@@ -94,6 +97,7 @@ public class RiaContext implements ShiftSolverConstants {
 		periodSolutionViewPanel=new SolutionPanel(this);
 		solverProgressPanel=new SolverProgressPanel(this);
 		solverNoSolutionPanel=new SolverEmployeesSummaryPanel(this, true);
+		printButtonPanel=new PrintButtonPanel(this);
 	}
 
 	public RiaMessages getI18n() {
@@ -140,7 +144,7 @@ public class RiaContext implements ShiftSolverConstants {
 		return periodPreferencesTable;
 	}
 	
-	public PreferencesPanel getPeriodPreferencesEditPanel() {
+	public PreferencesPanel getPreferencesPanel() {
 		return periodPreferencesEditPanel;
 	}
 	
@@ -164,7 +168,7 @@ public class RiaContext implements ShiftSolverConstants {
 		return periodSolutionsTable;
 	}
 
-	public SolutionPanel getSolutionViewPanel() {
+	public SolutionPanel getSolutionPanel() {
 		return periodSolutionViewPanel;
 	}
 
@@ -202,5 +206,9 @@ public class RiaContext implements ShiftSolverConstants {
 			settingsPanel.init();
 		}
 		return settingsPanel;
+	}
+
+	public Button getPrintButtonPanel() {
+		return printButtonPanel;
 	}
 }

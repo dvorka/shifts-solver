@@ -238,7 +238,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 				}
 				result.setEmployeeToPreferences(prefs);
 				
-				ctx.getPeriodPreferencesEditPanel().refresh(result);
+				ctx.getPreferencesPanel().refresh(result);
 				ctx.getState().addPeriodPreferences(result);
 				ria.showPeriodPreferencesEditPanel();
 				ctx.getStatusLine().showInfo("New period preferences created");
@@ -261,7 +261,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 				}
 				ctx.getState().addPeriodSolution(result);
 				setPeriodSolutionsCount(ctx.getState().getPeriodSolutions().length);
-				ctx.getSolutionViewPanel().refresh(result, allocations);
+				ctx.getSolutionPanel().refresh(result, allocations);
 				ria.showSolutionViewPanel();
 				ctx.getStatusLine().showInfo(i18n.newEmptySolutionCreated());
 			}

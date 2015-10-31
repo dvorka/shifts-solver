@@ -62,6 +62,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				RootPanel solutionViewPanel = RootPanel.get(CONTAINER_SOLUTION_VIEW);
 				RootPanel solverProgressPanel = RootPanel.get(CONTAINER_SOLVER_PROGRESS);
 				RootPanel solverNoSolutionPanel= RootPanel.get(CONTAINER_SOLVER_NO_SOLUTION);
+				RootPanel printButtonPanel= RootPanel.get(CONTAINER_PRINT_BUTTON);
 
 				pageTitlePanel.add(ctx.getPageTitlePanel());
 				menuPanel.add(ctx.getMenu());
@@ -69,12 +70,13 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				employeesTablePanel.add(ctx.getEmployeesTable());
 				employeeEditPanel.add(ctx.getEmployeesEditPanel());
 				dlouhanTable.add(ctx.getPeriodPreferencesTable());
-				dlouhanEditPanel.add(ctx.getPeriodPreferencesEditPanel());
+				dlouhanEditPanel.add(ctx.getPreferencesPanel());
 				solutionsTable.add(ctx.getSolutionsTable());
-				solutionViewPanel.add(ctx.getSolutionViewPanel());
+				solutionViewPanel.add(ctx.getSolutionPanel());
 				solverProgressPanel.add(ctx.getSolverProgressPanel());
 				solverNoSolutionPanel.add(ctx.getSolverNoSolutionPanel());
 				settingsPanel.add(ctx.getSettingsPanel());
+				printButtonPanel.add(ctx.getPrintButtonPanel());
 
 				showHome();
 
@@ -104,7 +106,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 	public void loadPeriodPreferences(String periodPreferencesId) {
 		// TODO consider loading from the server
 		PeriodPreferences periodPreferences = ctx.getState().getPeriodPreferences(periodPreferencesId);
-		ctx.getPeriodPreferencesEditPanel().refresh(periodPreferences);
+		ctx.getPreferencesPanel().refresh(periodPreferences);
 		showPeriodPreferencesEditPanel();
 	}
 
@@ -123,7 +125,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				ctx.getState().getPeriodPreferences(solution.getPeriodPreferencesKey()), 
 				solution,
 				employees);
-		ctx.getSolutionViewPanel().refresh(solution, allocations);
+		ctx.getSolutionPanel().refresh(solution, allocations);
 		showSolutionViewPanel();
 	}
 	

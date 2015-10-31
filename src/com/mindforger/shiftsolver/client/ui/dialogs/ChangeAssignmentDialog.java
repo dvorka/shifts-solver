@@ -93,7 +93,7 @@ public class ChangeAssignmentDialog extends DialogBox {
 		Button changeButton = new Button(i18n.save(), new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				trigger.setEmployee();
-				ctx.getSolutionViewPanel().onSolutionModification();
+				ctx.getSolutionPanel().onSolutionModification();
 				hide();
 			}
 		});

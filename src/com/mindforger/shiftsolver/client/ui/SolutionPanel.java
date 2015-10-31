@@ -51,6 +51,7 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 	private Button allocationButton;
 	private Button validateButton;
 	private List<ChangeAssignmentButton> changeAssignmentButtons;
+	private FlowPanel buttonPanel;
 	
 	public SolutionPanel(final RiaContext ctx) {
 		this.ctx=ctx;
@@ -58,7 +59,7 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		this.publicHolidays=new PublicHolidays();
 		this.changeAssignmentButtons=new ArrayList<ChangeAssignmentButton>();
 		
-		FlowPanel buttonPanel = newButtonPanel(ctx);
+		buttonPanel = newButtonPanel(ctx);
 		setWidget(0, 0, buttonPanel);
 		getFlexCellFormatter().setColSpan(0, 0, 5);
 		
@@ -171,8 +172,8 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		backButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				ctx.getStatusLine().clear();
-				if(ctx.getPeriodPreferencesEditPanel().preferences!=null) {
-					if(ctx.getPeriodPreferencesEditPanel().preferences.equals(solution.getPeriodPreferencesKey())) {
+				if(ctx.getPreferencesPanel().preferences!=null) {
+					if(ctx.getPreferencesPanel().preferences.equals(solution.getPeriodPreferencesKey())) {
 			      		ctx.getRia().loadPeriodPreferences(solution.getPeriodPreferencesKey());
 					}
 				} else {
@@ -609,4 +610,8 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		}
 		refreshAllocationsTable();
 	}
+
+	public void print(boolean visible) {
+		buttonPanel.setVisible(visible);
+	}	
 }

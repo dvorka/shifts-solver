@@ -41,6 +41,7 @@ public interface ShiftSolverConstants {
 	String CONTAINER_SOLUTION_VIEW="solverSolutionViewContainer";	
 	String CONTAINER_SOLVER_PROGRESS="solverProgressContainer";	
 	String CONTAINER_SOLVER_NO_SOLUTION="solverNoSolution";	
+	String CONTAINER_PRINT_BUTTON="solverPrintButton";
 	
 	// CSS
 	String CSS_NOTHING_STYLE="s2-statusNothing";

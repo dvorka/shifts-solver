@@ -43,6 +43,7 @@
 	  <tr>
 	    <td colspan="1"><div id="solverStatusLineContainer" class="mf-statusProgress">Loading ShiftsSolver...</div></td>
 	    <td align="right" style="padding-right: 27px;">
+	      <span id="solverPrintButton"></span>
 	      <a href="<%= userService.createLogoutURL(request.getRequestURI()) %>" 
 	         class="signOutButton" style="color: #555" >Logout</a>
 	    </td>

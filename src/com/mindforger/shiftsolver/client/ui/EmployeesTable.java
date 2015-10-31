@@ -207,4 +207,8 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 	public boolean isSortAscending() {
 		return sortIsAscending;
 	}
+
+	public void print(boolean visible) {
+		// nothing to hide
+	}
 }

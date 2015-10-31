@@ -58,6 +58,8 @@ public class PreferencesPanel extends FlexTable {
 	private static final int CHECK_MORNING_8=4;
 	private static final int CHECK_AFTERNOON=5;
 	private static final int CHECK_NIGHT=6;
+
+	private FlowPanel buttonPanel;
 	
 	public PreferencesPanel(final RiaContext ctx) {
 		this.ctx=ctx;
@@ -65,7 +67,7 @@ public class PreferencesPanel extends FlexTable {
 		this.publicHolidays=new PublicHolidays();
 		this.preferenceButtons=new HashMap<String,List<YesNoDontcareButton>>();
 		
-		FlowPanel buttonPanel = newButtonPanel(ctx);
+		buttonPanel = newButtonPanel(ctx);
 		setWidget(0, 0, buttonPanel);
 		
 		FlowPanel datePanel = newDatePanel();
@@ -542,7 +544,7 @@ public class PreferencesPanel extends FlexTable {
 				solution = ctx.getSolver().solve(Arrays.asList(employees), preferences, 0);							
 				if(solution!=null) {
 					ctx.getStatusLine().showInfo(i18n.solutionFound());
-					ctx.getSolutionViewPanel().refresh(
+					ctx.getSolutionPanel().refresh(
 							solution, 
 							new ArrayList<EmployeeAllocation>(ctx.getSolver().getEmployeeAllocations().values()));
 					ctx.getRia().showSolutionViewPanel();  			
@@ -586,5 +588,9 @@ public class PreferencesPanel extends FlexTable {
 				ctx.getStatusLine().showError("Unable to determine month's properties!"); // TODO i18n
 			}
 		});
+	}
+
+	public void print(boolean visible) {
+		buttonPanel.setVisible(visible);
 	}	
 }
