@@ -134,7 +134,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		
 		PeriodSolution result = new PeriodSolution(periodPreferences.getYear(), periodPreferences.getMonth());
 		result.setPeriodPreferencesKey(periodPreferences.getKey());
-		result.setKey(periodPreferences.getKey() + "/" + ++sequence);
+		result.setKey(null);
 		
 		steps=0;
 		depth=0;
@@ -1570,7 +1570,11 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			break;
 		case ROLE_SPORTAK:
 			if(!e.isSportak()) {
-				return false;
+				if(!Utils.isWeekend(day, p.getStartWeekDay()) && shift==SHIFT_MORNING && e.isMortak()) {
+					// OK
+				} else {
+					return false;					
+				}
 			}
 			break;
 		case ROLE_STAFFER:
@@ -1620,7 +1624,15 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		}
 
 		if(a.get(e.getKey()).hadMoreThanOneShiftToday(day)) {
-			return false;
+			if(e.isEditor() && Utils.isWeekend(day, p.getStartWeekDay())) {
+				// OK
+			} else {
+				if(e.isEditor() && publicHolidays.isHolidays(preferences.getYear(), preferences.getMonth(), day)) {
+					// OK
+				} else {
+					return false;
+				}
+			}
 		}
 		
 		// don't check night capacity - it's shown on allocations panel

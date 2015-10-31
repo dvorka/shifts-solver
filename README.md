@@ -1,21 +1,29 @@
 # Shifts Solver
 Finds a solution to fitting employees with preferences in a schedule for
-shifts-based operation.
+shifts-based operation using *heuristical backtracking*.
 
 
 
 # Overview
+Home:
+
+[![Home](http://mindforger.com/project/s2/s2home.png "Home")](http://mindforger.com/project/s2/s2home.png)
+
 Employees management:
 
-[![Employees Management](http://mindforger.com/project/s2/s2-employees.jpg "Employees Management")](http://mindforger.com/project/s2/s2-employees.jpg)
+[![Employees Management](http://mindforger.com/project/s2/s2employees.png "Employees Management")](http://mindforger.com/project/s2/s2employees.png)
 
 Month preferences management:
 
-[![Month Preferences Management](http://mindforger.com/project/s2/s2-preferences.png "Month Preferences Management")](http://mindforger.com/project/s2/s2-preferences.png)
+[![Month Preferences Management](http://mindforger.com/project/s2/s-preferences.png "Month Preferences Management")](http://mindforger.com/project/s2/s2preferences.png)
 
 Solution management:
 
-[![Solution Management](http://mindforger.com/project/s2/s2-solution.png "Solution Management")](http://mindforger.com/project/s2/s2-solution.png)
+[![Solution Management](http://mindforger.com/project/s2/s2solution.png "Solution Management")](http://mindforger.com/project/s2/s2solution.png)
+
+[![Solution Dlouhan Management](http://mindforger.com/project/s2/s2dlouhan.png "Solution Management")](http://mindforger.com/project/s2/s2dlouhan.png)
+
+[![Solution Employees Management](http://mindforger.com/project/s2/s2allocation.png "Solution Management")](http://mindforger.com/project/s2/s2allocation.png)
 
 
 

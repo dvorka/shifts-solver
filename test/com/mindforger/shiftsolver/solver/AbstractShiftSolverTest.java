@@ -136,13 +136,13 @@ public abstract class AbstractShiftSolverTest {
 		e.setFulltime(false);
 		team.addEmployee(e);
 
-		e=new Employee();
-		e.setKey(""+key++);
-		e.setFirstname("Newcomer2");
-		e.setFamilyname("X");
-		e.setSportak(true);
-		e.setFulltime(false);
-		team.addEmployee(e);
+//		e=new Employee();
+//		e.setKey(""+key++);
+//		e.setFirstname("Newcomer2");
+//		e.setFamilyname("X");
+//		e.setSportak(true);
+//		e.setFulltime(false);
+//		team.addEmployee(e);
 		
 		/*
 		 * fulltime

@@ -33,7 +33,6 @@ public class Candidate {
 		this.fallbackSearch = fallbackSearch;
 	}
 
-	@Deprecated
 	public Employee getEmployee() {
 		return employee;
 	}

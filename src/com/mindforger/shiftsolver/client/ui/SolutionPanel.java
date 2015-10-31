@@ -45,7 +45,7 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 	private HTML yearMonthHtml;
 	private FlexTable scheduleTable;
 	private FlexTable shiftsTable;
-	private SolverNoSolutionPanel allocationsTable;
+	private SolverEmployeesSummaryPanel allocationsTable;
 	private Button scheduleButton;
 	private Button shiftsButton;
 	private Button allocationButton;
@@ -72,7 +72,7 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		shiftsTable = newShiftsTable();
 		setWidget(3, 0, shiftsTable);
 		
-		allocationsTable = new SolverNoSolutionPanel(ctx, false);
+		allocationsTable = new SolverEmployeesSummaryPanel(ctx, false);
 		allocationsTable.init();
 		setWidget(4, 0, allocationsTable);
 	}
@@ -119,7 +119,7 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		});		
 		buttonPanel.add(saveButton);
 
-		scheduleButton = new Button(i18n.schedule());
+		scheduleButton = new Button(i18n.shiftPlan());
 		scheduleButton.setStyleName("mf-buttonLooser");
 		scheduleButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -129,7 +129,7 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		});		
 		buttonPanel.add(scheduleButton);
 
-		shiftsButton = new Button(i18n.shifts());
+		shiftsButton = new Button(i18n.schedule());
 		shiftsButton.setStyleName("mf-button");
 		shiftsButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {

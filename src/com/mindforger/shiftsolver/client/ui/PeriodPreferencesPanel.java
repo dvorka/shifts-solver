@@ -541,13 +541,13 @@ public class PeriodPreferencesPanel extends FlexTable {
 				}
 				solution = ctx.getSolver().solve(Arrays.asList(employees), preferences, 0);							
 				if(solution!=null) {
-					ctx.getStatusLine().showInfo("Solution found!");
+					ctx.getStatusLine().showInfo(i18n.solutionFound());
 					ctx.getSolutionViewPanel().refresh(
 							solution, 
 							new ArrayList<EmployeeAllocation>(ctx.getSolver().getEmployeeAllocations().values()));
 					ctx.getRia().showSolutionViewPanel();  			
 				} else {
-					ctx.getStatusLine().showError("No solution exists for these employees and their preferences!");
+					ctx.getStatusLine().showError(i18n.noSolutionExists());
 					ctx.getSolverNoSolutionPanel().refresh(
 							ctx.getSolver().getFailedWithEmployeeAllocations(),
 							1,

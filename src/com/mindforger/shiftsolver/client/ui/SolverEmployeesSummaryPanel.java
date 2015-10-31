@@ -15,17 +15,21 @@ import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.client.ui.buttons.TableSetSortingButton;
+import com.mindforger.shiftsolver.client.ui.comparators.ComparatorAllocationByFulltime;
 import com.mindforger.shiftsolver.client.ui.comparators.ComparatorAllocationByName;
+import com.mindforger.shiftsolver.client.ui.comparators.ComparatorAllocationByNights;
 import com.mindforger.shiftsolver.client.ui.comparators.ComparatorAllocationByRole;
+import com.mindforger.shiftsolver.client.ui.comparators.ComparatorAllocationByShifts;
+import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
-public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
+public class SolverEmployeesSummaryPanel extends FlexTable implements SortableTable, ShiftSolverConstants {
 
 	private RiaMessages i18n;
 	private RiaContext ctx;
-	private boolean showButtonsPanel;
+	private boolean noSolutionPanelMode;
 
 	private TableSortCriteria sortCriteria;
 	private boolean sortIsAscending;
@@ -34,11 +38,11 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 	private List<EmployeeAllocation> employeeAllocations;
 	private int failday;
 	
-	public SolverNoSolutionPanel(RiaContext ctx, boolean showButtonsPanel) {
+	public SolverEmployeesSummaryPanel(RiaContext ctx, boolean noSolutionPanelMode) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
 		this.sortCriteria=TableSortCriteria.BY_NAME;
-		this.showButtonsPanel=showButtonsPanel;
+		this.noSolutionPanelMode=noSolutionPanelMode;
 	}
 	
 	public void init() {
@@ -63,8 +67,13 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 			comparator=new ComparatorAllocationByName(sortIsAscending);
 			break;
 		case BY_FULLTIME:
-			// TODO ea to e
-			comparator=new ComparatorAllocationByName(sortIsAscending);
+			comparator=new ComparatorAllocationByFulltime(sortIsAscending);
+			break;
+		case BY_SHIFTS:
+			comparator=new ComparatorAllocationByShifts(sortIsAscending);
+			break;
+		case BY_NIGHTS:
+			comparator=new ComparatorAllocationByNights(sortIsAscending);
 			break;
 		case BY_ROLE:
 			comparator=new ComparatorAllocationByRole(sortIsAscending);
@@ -76,7 +85,7 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 		Collections.sort(employeeAllocations, comparator);
 		
 		removeAllRows();
-		if(showButtonsPanel) {
+		if(noSolutionPanelMode) {
 			setWidget(0,0,newButtonPanel(ctx));
 		}
 		getFlexCellFormatter().setColSpan(0, 0, 8);
@@ -97,15 +106,15 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 		});		
 		buttonPanel.add(backButton);
 
-		Button solveButton=new Button(i18n.solvePartially());
-		solveButton.setStyleName("mf-buttonLooser");
-		solveButton.setTitle("Solve what can be solved and skip the rest"); // TODO i18n
-		solveButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				// TODO
-			}
-		});		
-		buttonPanel.add(solveButton);
+//		Button solveButton=new Button(i18n.solvePartially());
+//		solveButton.setStyleName("mf-buttonLooser");
+//		solveButton.setTitle("Solve what can be solved and skip the rest"); // TODO i18n
+//		solveButton.addClickHandler(new ClickHandler() {
+//			public void onClick(ClickEvent event) {
+//				// TODO
+//			}
+//		});		
+//		buttonPanel.add(solveButton);
 		
 		return buttonPanel;
 	}
@@ -121,16 +130,18 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 	
 	private void addTableTitle() {		
 		int rows = getRowCount();
-		setWidget(rows, 0, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
-		// TODO i18n
-		setWidget(rows, 1, new TableSetSortingButton(i18n.shifts(),TableSortCriteria.BY_NAME, this, ctx));
-		setWidget(rows, 2, new TableSetSortingButton(i18n.nights(),TableSortCriteria.BY_NAME, this, ctx));
-		setWidget(rows, 3, new TableSetSortingButton(i18n.today(),TableSortCriteria.BY_NAME, this, ctx));
-		setWidget(rows, 4, new TableSetSortingButton("5 "+i18n.days(),TableSortCriteria.BY_NAME, this, ctx));
-		setWidget(rows, 5, new TableSetSortingButton("Y/N",TableSortCriteria.BY_NAME, this, ctx));
-		setWidget(rows, 6, new TableSetSortingButton(i18n.role(),TableSortCriteria.BY_ROLE, this, ctx));
-		setWidget(rows, 7, new TableSetSortingButton(i18n.fulltime(),TableSortCriteria.BY_FULLTIME, this, ctx));
-		setWidget(rows, 8, new TableSetSortingButton(i18n.dayListing(),TableSortCriteria.BY_NAME, this, ctx));
+		int c=0;
+		setWidget(rows, c++, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
+		setWidget(rows, c++, new TableSetSortingButton(i18n.shifts(),TableSortCriteria.BY_SHIFTS, this, ctx));
+		setWidget(rows, c++, new TableSetSortingButton(i18n.nights(),TableSortCriteria.BY_NIGHTS, this, ctx));
+		if(noSolutionPanelMode) {
+			setWidget(rows, c++, new TableSetSortingButton(i18n.today(),TableSortCriteria.BY_NAME, this, ctx));
+			setWidget(rows, c++, new TableSetSortingButton("5 "+i18n.days(),TableSortCriteria.BY_NAME, this, ctx));
+			setWidget(rows, c++, new TableSetSortingButton("Y/N",TableSortCriteria.BY_NAME, this, ctx));			
+		}
+		setWidget(rows, c++, new TableSetSortingButton(i18n.role(),TableSortCriteria.BY_ROLE, this, ctx));
+		setWidget(rows, c++, new TableSetSortingButton(i18n.fulltime(),TableSortCriteria.BY_FULLTIME, this, ctx));
+		setWidget(rows, c++, new TableSetSortingButton(i18n.dayListing(),TableSortCriteria.BY_NAME, this, ctx));
 	}
 		
 	public void addRow(EmployeeAllocation a, int failday) {
@@ -229,8 +240,30 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 		
 		String text="";
 		if(a.shiftsOnDays!=null && !a.shiftsOnDays.isEmpty()) {
-			for(Integer i:a.shiftsOnDays) {
-				text+=i+", ";
+			for(int i=0; i<a.shiftsOnDays.size(); i++) {
+				Integer d=a.shiftsOnDays.get(i);
+				text+=d;
+				switch(a.shiftTypesOnDays.get(i)) {
+				case SHIFT_AFTERNOON:
+					text+=i18n.afternoonShiftLetter();
+					break;
+				case SHIFT_NIGHT:
+					text+=i18n.nightShiftLetter();
+					break;
+				case SHIFT_MORNING:
+					text+=i18n.morningShiftLetter();
+					break;
+				case SHIFT_MORNING_6:
+					text+=i18n.morning6ShiftLetter();
+					break;
+				case SHIFT_MORNING_7:
+					text+=i18n.morning7ShiftLetter();
+					break;
+				case SHIFT_MORNING_8:
+					text+=i18n.morning8ShiftLetter();
+					break;
+				}
+				text+=" ";
 			}
 		}
 		HTML shiftsDaysHtml=new HTML(text);
@@ -255,15 +288,18 @@ public class SolverNoSolutionPanel extends FlexTable implements SortableTable {
 			fulltimeHtml.setStyleName("s2-mismatch");			
 		}
 		
-		setWidget(rows, 0, button);
-		setWidget(rows, 1, shiftsAllocationHtml);
-		setWidget(rows, 2, nightsAllocationHtml);
-		setWidget(rows, 3, todayHtml);
-		setWidget(rows, 4, last5DaysHtml);
-		setWidget(rows, 5, preferencesHtml);
-		setWidget(rows, 6, roleHtml);
-		setWidget(rows, 7, fulltimeHtml);
-		setWidget(rows, 8, shiftsDaysHtml);
+		int c=0;
+		setWidget(rows, c++, button);
+		setWidget(rows, c++, shiftsAllocationHtml);
+		setWidget(rows, c++, nightsAllocationHtml);
+		if(noSolutionPanelMode) {
+			setWidget(rows, c++, todayHtml);
+			setWidget(rows, c++, last5DaysHtml);
+			setWidget(rows, c++, preferencesHtml);
+		}
+		setWidget(rows, c++, roleHtml);
+		setWidget(rows, c++, fulltimeHtml);
+		setWidget(rows, c++, shiftsDaysHtml);
 	}
 
 	@Override

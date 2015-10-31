@@ -1,7 +1,6 @@
 package com.mindforger.shiftsolver.client;
 
 import com.google.gwt.i18n.client.Messages;
-import com.google.gwt.safehtml.shared.SafeHtml;
 
 public interface RiaMessages extends Messages {
 
@@ -101,4 +100,14 @@ public interface RiaMessages extends Messages {
 	String staffer();
 	String holidays();
 	String solvePartially();
+	String shiftPlan();
+	String saved();
+	String solutionFound();
+	String noSolutionExists();
+	String afternoonShiftLetter();
+	String nightShiftLetter();
+	String morningShiftLetter();
+	String morning6ShiftLetter();
+	String morning7ShiftLetter();
+	String morning8ShiftLetter();
 }

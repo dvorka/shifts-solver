@@ -26,7 +26,7 @@ public class EmployeeEditPanel extends FlexTable {
 	private Employee employee;
 
 	public EmployeeEditPanel(final RiaContext ctx) {
-		RiaMessages i18n = ctx.getI18n();
+		final RiaMessages i18n = ctx.getI18n();
 		
 		int numRows=0;
 		
@@ -39,7 +39,7 @@ public class EmployeeEditPanel extends FlexTable {
 		    		ctx.getStatusLine().showProgress(ctx.getI18n().savingEmployee());
 		    		riaToObject();
 		      		ctx.getRia().saveEmployee(employee);
-		      		ctx.getStatusLine().showInfo("Employee '"+employee.getFullName()+"' saved"); // TODO i18n
+		      		ctx.getStatusLine().showInfo(i18n.employee()+" '"+employee.getFullName()+"' "+i18n.saved()); // TODO i18n
 				}
 			}
 		});
