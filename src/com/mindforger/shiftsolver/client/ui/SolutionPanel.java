@@ -19,6 +19,7 @@ import com.mindforger.shiftsolver.client.solver.PublicHolidays;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.client.ui.buttons.ChangeAssignmentButton;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
+import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
@@ -26,7 +27,6 @@ import com.mindforger.shiftsolver.shared.model.Holder;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
-// TODO solution/employees/days - show shift type m/a/n/6
 public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 
 	private RiaMessages i18n;
@@ -308,63 +308,66 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		HTML html;
 		for(int c=0; c<monthDays; c++) {
 			if(solution.getDays().get(c).isEmployeeAllocatedToday(employee.getKey())) {
-				switch(solution.getDays().get(c).getShiftTypeForEmployee(employee.getKey())) {
-				case ShiftSolverConstants.SHIFT_MORNING:
-					html = new HTML("&nbsp;M");
-					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
-					// TODO i18n
-					html.setTitle("Morning shift");
-					table.setWidget(numRows, c+2, html);
-					break;
-				case ShiftSolverConstants.SHIFT_MORNING_6:
-					html = new HTML("&nbsp;6");
-					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
-					html.setTitle("Morning shift 6am");
-					table.setWidget(numRows, c+2, html);
-					break;
-				case ShiftSolverConstants.SHIFT_MORNING_7:
-					html = new HTML("&nbsp;7");
-					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
-					html.setTitle("Morning shift 7am");
-					table.setWidget(numRows, c+2, html);
-					break;
-				case ShiftSolverConstants.SHIFT_MORNING_8:
-					html = new HTML("&nbsp;8");
-					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_MORNING);
-					html.setTitle("Morning shift 8am");
-					table.setWidget(numRows, c+2, html);
-					break;
-				case ShiftSolverConstants.SHIFT_AFTERNOON:
-					html = new HTML("&nbsp;A");
-					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_AFTERNOON);
-					html.setTitle("Afternoon shift");
-					table.setWidget(numRows, c+2, html);
-					break;
-				case ShiftSolverConstants.SHIFT_NIGHT:
-					html = new HTML("&nbsp;N");
-					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_NIGHT);
-					html.setTitle("Night shift");
-					table.setWidget(numRows, c+2, html);
-					break;
-				}				
+				int se = solution.getDays().get(c).getShiftTypeForEmployee(employee.getKey());
+				String t="&nbsp;", title="", style="";				
+				
+				if((se&ShiftSolverConstants.SHIFT_MORNING)!=0) {
+					t+=i18n.morningShiftLetter();
+					style=ShiftSolverConstants.CSS_SHIFT_MORNING;
+					title="Morning shift"; // TODO i18n
+				}
+				if((se&ShiftSolverConstants.SHIFT_MORNING_6)!=0) {
+					t+=i18n.morning6ShiftLetter();
+					style=ShiftSolverConstants.CSS_SHIFT_MORNING;
+					title="Morning shift 6am"; // TODO i18n
+				}
+				if((se&ShiftSolverConstants.SHIFT_MORNING_7)!=0) {
+					t+=i18n.morning7ShiftLetter();
+					style=ShiftSolverConstants.CSS_SHIFT_MORNING;
+					title="Morning shift 7am"; // TODO i18n
+				}
+				if((se&ShiftSolverConstants.SHIFT_MORNING_8)!=0) {
+					t+=i18n.morning8ShiftLetter();
+					style=ShiftSolverConstants.CSS_SHIFT_MORNING;
+					title="Morning shift 8am"; // TODO i18n
+				}
+				if((se&ShiftSolverConstants.SHIFT_AFTERNOON)!=0) {
+					t+=i18n.afternoonShiftLetter();
+					style=ShiftSolverConstants.CSS_SHIFT_AFTERNOON;
+					title="Afternoon shift"; // TODO i18n
+				}
+				if((se&ShiftSolverConstants.SHIFT_NIGHT)!=0) {
+					t+=i18n.nightShiftLetter();
+					style=ShiftSolverConstants.CSS_SHIFT_NIGHT;
+					title="Night shift"; // TODO i18n
+				}
+			
+				html = new HTML(t);
+				html.setStyleName(style);
+				html.setTitle(title);
+				table.setWidget(numRows, c+2, html);			
 			} else {
-				// TODO determine whether employee is NA, holidays, ... and render if needed
+				html = new HTML("&nbsp;");
+
+				DayPreference dp;
+				EmployeePreferences ep = preferences.getEmployeeToPreferences().get(employee.getKey());
+				if(ep!=null && ep.getPreferencesForDay(c)!=null) {
+					dp=ep.getPreferencesForDay(c);
+					if(dp.isHoliDay()) {
+						html.setStyleName(ShiftSolverConstants.CSS_SHIFT_VACATIONS);
+						html.setTitle("Vacations");
+					} else {
+						if(dp.isNoDay()) {
+							html.setStyleName(ShiftSolverConstants.CSS_SHIFT_NA);
+							html.setTitle("Not available by preferences");
+						} else {
+							html.setStyleName(ShiftSolverConstants.CSS_SHIFT_FREE);							
+						}
+					}
+				} else {
+					html.setStyleName(ShiftSolverConstants.CSS_SHIFT_FREE);					
+				}
 				
-//				html = new HTML("N");
-//				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_NA);
-//				html.setTitle("N/A");
-//				table.setWidget(numRows, c+2, html);
-//				break;
-//				
-//				html = new HTML("V");
-//				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_VACATIONS);
-//				html.setTitle("Vacations");
-//				table.setWidget(numRows, c+2, html);
-//				break;
-				
-				html = new HTML(" "); // F
-				html.setStyleName(ShiftSolverConstants.CSS_SHIFT_FREE);
-				html.setTitle("Free day");
 				table.setWidget(numRows, c+2, html);				
 			}			
 		}		

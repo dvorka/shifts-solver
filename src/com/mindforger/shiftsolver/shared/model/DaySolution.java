@@ -97,38 +97,38 @@ public class DaySolution implements Serializable  {
 	}
 	
 	public int getShiftTypeForEmployee(String employeeKey) {
-		int shift;
+		int result=0, shift;
 		
 		if(nightShift!=null) {
 			if((shift=nightShift.isEmployeeAllocated(employeeKey))>0) {
-				return shift;
+				result=shift|result;
 			}
 		}
 		
 		if(isWorkday) {
 			if(workdayMorningShift!=null) {
 				if((shift=workdayMorningShift.isEmployeeAllocated(employeeKey))>0) {
-					return shift;
+					result=shift|result;
 				}
 			}
 			if(workdayAfternoonShift!=null) {
 				if((shift=workdayAfternoonShift.isEmployeeAllocated(employeeKey))>0) {
-					return shift;
+					result=shift|result;
 				}
 			}
 		} else {
 			if(weekendMorningShift!=null) {
 				if((shift=weekendMorningShift.isEmployeeAllocated(employeeKey))>0) {
-					return shift;
+					result=shift|result;
 				}
 			}
 			if(weekendAfternoonShift!=null) {
 				if((shift=weekendAfternoonShift.isEmployeeAllocated(employeeKey))>0) {
-					return shift;
+					result=shift|result;
 				}
 			}
 		}
-		return ShiftSolverConstants.NO_SHIFT;
+		return result;
 	}
 
 	public void setWorkdayMorningShift(WorkdayMorningShift workdayMorningShift) {
