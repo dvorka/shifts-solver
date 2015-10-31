@@ -110,4 +110,6 @@ public interface RiaMessages extends Messages {
 	String morning6ShiftLetter();
 	String morning7ShiftLetter();
 	String morning8ShiftLetter();
+	String newEmptySolutionCreated();
+	String periodPreferencesSaved();
 }

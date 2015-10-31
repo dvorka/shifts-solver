@@ -32,7 +32,7 @@ import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
-public class PeriodPreferencesPanel extends FlexTable {
+public class PreferencesPanel extends FlexTable {
 
 	private static final int YEAR=2015;
 	
@@ -59,7 +59,7 @@ public class PeriodPreferencesPanel extends FlexTable {
 	private static final int CHECK_AFTERNOON=5;
 	private static final int CHECK_NIGHT=6;
 	
-	public PeriodPreferencesPanel(final RiaContext ctx) {
+	public PreferencesPanel(final RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
 		this.publicHolidays=new PublicHolidays();
@@ -86,7 +86,7 @@ public class PeriodPreferencesPanel extends FlexTable {
 		    		ctx.getStatusLine().showProgress(ctx.getI18n().savingPeriodPreferences());
 		    		riaToObject();
 		      		ctx.getRia().savePeriodPreferences(preferences);
-		      		ctx.getStatusLine().showInfo("Period preferences saved");
+		      		ctx.getStatusLine().showInfo(i18n.periodPreferencesSaved());
 				}
 			}
 		});		
@@ -117,7 +117,7 @@ public class PeriodPreferencesPanel extends FlexTable {
 				if(preferences!=null) {
 					ctx.getMenu().createNewSolution(preferences);					
 				} else {
-					ctx.getStatusLine().showError("Save preferences first to create a solution!");
+					ctx.getStatusLine().showError("Save preferences first to create a solution!"); // TODO i18n
 				}
 			}
 		});		
@@ -128,9 +128,9 @@ public class PeriodPreferencesPanel extends FlexTable {
 		deleteButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if(preferences!=null) {
-		    		ctx.getStatusLine().showProgress("Deleting period preferences...");
+		    		ctx.getStatusLine().showProgress("Deleting period preferences..."); // TODO i18n
 		      		ctx.getRia().deletePeriodPreferences(preferences);
-		      		ctx.getStatusLine().showInfo("Period preferences deleted");
+		      		ctx.getStatusLine().showInfo("Period preferences deleted"); // TODO i18n
 				}
 			}
 		});		
@@ -562,7 +562,7 @@ public class PeriodPreferencesPanel extends FlexTable {
 						preferences);
 				ctx.getRia().showSolverNoSolutionPanel();
 			} catch(RuntimeException e) {
-				ctx.getStatusLine().showError("Solver failed: "+e.getMessage());
+				ctx.getStatusLine().showError("Solver failed: "+e.getMessage()); // TODO i18n
 				GWT.log("Solver failed:", e);
 				ctx.getRia().showPeriodPreferencesEditPanel();
 			}
@@ -583,7 +583,7 @@ public class PeriodPreferencesPanel extends FlexTable {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				ctx.getStatusLine().showError("Unable to determine month's properties!");
+				ctx.getStatusLine().showError("Unable to determine month's properties!"); // TODO i18n
 			}
 		});
 	}	

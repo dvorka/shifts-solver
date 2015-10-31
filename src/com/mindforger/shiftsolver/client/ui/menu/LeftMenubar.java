@@ -254,7 +254,6 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 				ria.handleServiceError(caught);
 			}
 			public void onSuccess(PeriodSolution result) {
-				GWT.log("RIA - new solution succesfuly created! "+result);
 				List<EmployeeAllocation> allocations=new ArrayList<EmployeeAllocation>();
 				for(Employee e:ctx.getState().getEmployees()) {
 					EmployeeAllocation a=new EmployeeAllocation(e, periodPreferences);
@@ -264,7 +263,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 				setPeriodSolutionsCount(ctx.getState().getPeriodSolutions().length);
 				ctx.getSolutionViewPanel().refresh(result, allocations);
 				ria.showSolutionViewPanel();
-				ctx.getStatusLine().showInfo("New period solution created");
+				ctx.getStatusLine().showInfo(i18n.newEmptySolutionCreated());
 			}
 		});
 	}

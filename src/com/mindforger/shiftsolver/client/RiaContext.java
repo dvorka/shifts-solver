@@ -9,7 +9,7 @@ import com.mindforger.shiftsolver.client.ui.EmployeeEditPanel;
 import com.mindforger.shiftsolver.client.ui.EmployeesTable;
 import com.mindforger.shiftsolver.client.ui.HomePanel;
 import com.mindforger.shiftsolver.client.ui.PageTitlePanel;
-import com.mindforger.shiftsolver.client.ui.PeriodPreferencesPanel;
+import com.mindforger.shiftsolver.client.ui.PreferencesPanel;
 import com.mindforger.shiftsolver.client.ui.PeriodPreferencesTable;
 import com.mindforger.shiftsolver.client.ui.SolutionsTable;
 import com.mindforger.shiftsolver.client.ui.SolutionPanel;
@@ -58,7 +58,7 @@ public class RiaContext implements ShiftSolverConstants {
 	private EmployeesTable employeesTable;
 	private EmployeeEditPanel employeeEditPanel;
 	private PeriodPreferencesTable periodPreferencesTable;
-	private PeriodPreferencesPanel periodPreferencesEditPanel;
+	private PreferencesPanel periodPreferencesEditPanel;
 	private SolutionsTable periodSolutionsTable;
 	private SolutionPanel periodSolutionViewPanel;
 	private SolverProgressPanel solverProgressPanel;
@@ -89,7 +89,7 @@ public class RiaContext implements ShiftSolverConstants {
 		employeesTable=new EmployeesTable(this);
 		employeeEditPanel=new EmployeeEditPanel(this);
 		periodPreferencesTable=new PeriodPreferencesTable(this);		
-		periodPreferencesEditPanel=new PeriodPreferencesPanel(this);
+		periodPreferencesEditPanel=new PreferencesPanel(this);
 		periodSolutionsTable=new SolutionsTable(this);
 		periodSolutionViewPanel=new SolutionPanel(this);
 		solverProgressPanel=new SolverProgressPanel(this);
@@ -140,7 +140,7 @@ public class RiaContext implements ShiftSolverConstants {
 		return periodPreferencesTable;
 	}
 	
-	public PeriodPreferencesPanel getPeriodPreferencesEditPanel() {
+	public PreferencesPanel getPeriodPreferencesEditPanel() {
 		return periodPreferencesEditPanel;
 	}
 	

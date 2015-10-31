@@ -375,6 +375,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 
 				@Override
 				public void onSuccess(PeriodSolution result) {
+					solution.setKey(result.getKey());
 					solution.setModified(result.getModified());
 					solution.setModifiedPretty(result.getModifiedPretty());					
 					PeriodSolution[] array = ctx.getState().getPeriodSolutions();
@@ -392,11 +393,13 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 						}
 					}
 					ctx.getSolutionsTable().refresh(ctx.getState().getPeriodSolutions());
-		      		ctx.getMenu().setPeriodPreferencesCount(ctx.getState().getPeriodPreferencesArray().length);
+					ctx.getMenu().setPeriodSolutionsCount(ctx.getState().getPeriodSolutions().length);
+					showSolutionsTable();
 				}
 			});
+		} else {
+			showSolutionsTable();
 		}
-		showPeriodPreferencesTable();
 	}
 
 	public void deletePeriodSolution(final PeriodSolution solution) {
