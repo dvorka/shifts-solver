@@ -25,6 +25,8 @@ Solution management:
 
 [![Solution Employees Management](http://mindforger.com/project/s2/s2allocation.png "Solution Management")](http://mindforger.com/project/s2/s2allocation.png)
 
+[![Solution Edit Management](http://mindforger.com/project/s2/s2solutionEdit.png "Solution Management")](http://mindforger.com/project/s2/s2solutionEdit.png)
+
 
 
 ## Functional Specification
