@@ -19,4 +19,8 @@ public class ShiftSolverLogger {
 		//GWT.log(message);
 		if(out!=null) out.println(message);
 	}
+
+	public static boolean isJUnitMode() {
+		return out!=null;
+	}
 }

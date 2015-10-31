@@ -28,10 +28,36 @@ public abstract class AbstractShiftSolverTest {
 		 * editors
 		 */
 		
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Alice");
+		e.setFamilyname("K");
+		e.setEditor(true);
+		e.setFulltime(true);
+		e.setFemale(true);
+		team.addEmployee(e);
+
 		igor=e=new Employee();
 		e.setKey(""+key++);
 		e.setFirstname("Igor");
 		e.setFamilyname("M");
+		e.setEditor(true);
+		e.setFulltime(true);
+		team.addEmployee(e);
+
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Lenka");
+		e.setFamilyname("K");
+		e.setEditor(true);
+		e.setFulltime(true);
+		e.setFemale(true);
+		team.addEmployee(e);
+				
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Martin");
+		e.setFamilyname("B");
 		e.setEditor(true);
 		e.setFulltime(true);
 		team.addEmployee(e);
@@ -43,35 +69,9 @@ public abstract class AbstractShiftSolverTest {
 		e.setEditor(true);
 		e.setFulltime(true);
 		team.addEmployee(e);
-
-		e=new Employee();
-		e.setKey(""+key++);
-		e.setFirstname("Alice");
-		e.setFamilyname("K");
-		e.setEditor(true);
-		e.setFulltime(true);
-		e.setFemale(true);
-		team.addEmployee(e);
-
-		e=new Employee();
-		e.setKey(""+key++);
-		e.setFirstname("Martin");
-		e.setFamilyname("B");
-		e.setEditor(true);
-		e.setFulltime(true);
-		team.addEmployee(e);
-		
-		e=new Employee();
-		e.setKey(""+key++);
-		e.setFirstname("Lenka");
-		e.setFamilyname("K");
-		e.setEditor(true);
-		e.setFulltime(true);
-		e.setFemale(true);
-		team.addEmployee(e);
 		
 		/*
-		 * sportaci
+		 * mortaci
 		 */
 
 		e=new Employee();
@@ -91,28 +91,16 @@ public abstract class AbstractShiftSolverTest {
 		e.setFulltime(true);
 		e.setFemale(true);
 		team.addEmployee(e);
+
+		/*
+		 * sportaci
+		 */
 		
 		e=new Employee();
 		e.setKey(""+key++);
 		e.setFirstname("David");
 		e.setFamilyname("B");
 		e.setMortak(true);
-		e.setFulltime(true);
-		team.addEmployee(e);
-
-		e=new Employee();
-		e.setKey(""+key++);
-		e.setFirstname("Vojta");
-		e.setFamilyname("M");
-		e.setSportak(true);
-		e.setFulltime(true);
-		team.addEmployee(e);
-		
-		e=new Employee();
-		e.setKey(""+key++);
-		e.setFirstname("Standa");
-		e.setFamilyname("Z");
-		e.setSportak(true);
 		e.setFulltime(false);
 		team.addEmployee(e);
 
@@ -123,7 +111,23 @@ public abstract class AbstractShiftSolverTest {
 		e.setSportak(true);
 		e.setFulltime(false);
 		team.addEmployee(e);
+
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Standa");
+		e.setFamilyname("Z");
+		e.setSportak(true);
+		e.setFulltime(false);
+		team.addEmployee(e);
 		
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Vojta");
+		e.setFamilyname("M");
+		e.setSportak(true);
+		e.setFulltime(true);
+		team.addEmployee(e);
+				
 		e=new Employee();
 		e.setKey(""+key++);
 		e.setFirstname("Newcomer1");
@@ -132,13 +136,13 @@ public abstract class AbstractShiftSolverTest {
 		e.setFulltime(false);
 		team.addEmployee(e);
 
-//		e=new Employee();
-//		e.setKey(""+key++);
-//		e.setFirstname("Newcomer2");
-//		e.setFamilyname("X");
-//		e.setSportak(true);
-//		e.setFulltime(false);
-//		team.addEmployee(e);
+		e=new Employee();
+		e.setKey(""+key++);
+		e.setFirstname("Newcomer2");
+		e.setFamilyname("X");
+		e.setSportak(true);
+		e.setFulltime(false);
+		team.addEmployee(e);
 		
 		/*
 		 * fulltime
@@ -207,15 +211,7 @@ public abstract class AbstractShiftSolverTest {
 		/*
 		 * part time
 		 */
-		
-		e=new Employee();
-		e.setKey(""+key++);
-		e.setFirstname("David");
-		e.setFamilyname("B");
-		e.setFulltime(false);
-		e.setFemale(false);
-		team.addEmployee(e);
-		
+				
 		e=new Employee();
 		e.setKey(""+key++);
 		e.setFirstname("Matej");

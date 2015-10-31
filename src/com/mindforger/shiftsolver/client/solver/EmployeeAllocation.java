@@ -37,7 +37,9 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 		this.shifts=0;
 		this.nights=0;
 		this.shiftsOnDays=new ArrayList<Integer>();
-		this.shiftTypesOnDays=new ArrayList<Integer>();
+		this.shiftTypesOnDays=new ArrayList<Integer>();		
+		this.enforceAfternoonTo8am=true;
+		this.enforceNightToAfternoon=true;
 		
 		shiftsToGet=calculateShiftToGet(employee, preferences);
 		
@@ -130,34 +132,38 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 		
 		if(shiftsOnDays.size()>0) {
 			int yesterday=day-1;
-			if(shiftsOnDays.get(shiftsOnDays.size()-1)==yesterday) {
-				if(!enforceNightToAfternoon
-					 ||						
-				   (shiftTypesOnDays.get(shiftTypesOnDays.size()-1) == ShiftSolverConstants.SHIFT_NIGHT
-					  &&
-				   (shiftType == ShiftSolverConstants.SHIFT_AFTERNOON || shiftType == ShiftSolverConstants.SHIFT_NIGHT))) 
-				{					
-					if(enforceAfternoonTo8am
-					     ||
-					   (shiftTypesOnDays.get(shiftTypesOnDays.size()-1) == ShiftSolverConstants.SHIFT_AFTERNOON
-							&&
-					   (editorWeekendContinuity ||
-					    shiftType == ShiftSolverConstants.SHIFT_MORNING ||
-					    shiftType == ShiftSolverConstants.SHIFT_MORNING_8 || 
-					    shiftType == ShiftSolverConstants.SHIFT_AFTERNOON || 
-					    shiftType == ShiftSolverConstants.SHIFT_NIGHT))) 
-					{					
+			int lastDayOnDuty=shiftsOnDays.get(shiftsOnDays.size()-1);
+			int lastDayType=shiftTypesOnDays.get(shiftTypesOnDays.size()-1);
+			if(lastDayOnDuty==yesterday) {				
+				if(enforceNightToAfternoon) {
+					if(lastDayType == ShiftSolverConstants.SHIFT_NIGHT) {
+						if(shiftType == ShiftSolverConstants.SHIFT_AFTERNOON || shiftType == ShiftSolverConstants.SHIFT_NIGHT) {
+							// OK
+						} else {
+							return false;
+						}
+					}
+				}
+				if(enforceAfternoonTo8am) {
+					if(lastDayType == ShiftSolverConstants.SHIFT_AFTERNOON) {
+						if(shiftType == ShiftSolverConstants.SHIFT_MORNING ||
+						   shiftType == ShiftSolverConstants.SHIFT_MORNING_8 || 
+						   shiftType == ShiftSolverConstants.SHIFT_AFTERNOON || 
+						   shiftType == ShiftSolverConstants.SHIFT_NIGHT) {
 						// OK
-					} else {
-						return false;
-					}					
-				} else {
-					return false;
+						} else {
+							if(editorWeekendContinuity) {
+								// OK
+							} else {
+								return false;							
+							}
+						}
+					}
 				}
 			}
 			
 			// RULE: at most 1 shift/day
-			if(shiftsOnDays.get(shiftsOnDays.size()-1)!=day || editorWeekendContinuity) {
+			if(lastDayOnDuty!=day || editorWeekendContinuity) {
 				// RULE: at most 5 consecutive days at work (last 4 days connected to today)
 				if(hadShiftsLast5Days(day)) {
 					return false;
@@ -167,12 +173,22 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 				return false;
 			}
 		} else {
-			// TODO was is probably BUG shiftsOnDays.add(day);
-			// TODO was is probably BUG shiftTypesOnDays.add(shiftType);
 			return hasCapacity(capacityNeeded);
 		}
 	}
 
+	public boolean hadShiftYesterday(int day) {
+		int count=0;
+		if(shiftsOnDays.size()>0) {
+			for(Integer i:shiftsOnDays) {
+				if(day-1==i) {
+					count++;
+				}
+			}
+		}		
+		return count>0;		
+	}
+	
 	public boolean hadShiftToday(int day) {
 		int count=0;
 		if(shiftsOnDays.size()>0) {
@@ -272,28 +288,30 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 	}
 	
 	public static void printEmployeeAllocations(int day, List<EmployeeAllocation> allocations) {
-		ShiftSolverLogger.debug("     Employee allocations ("+allocations.size()+"):");
-		for(EmployeeAllocation a:allocations) {
-			String fullShifts=a.shifts<a.shiftsToGet?"<":(a.shifts==a.shiftsToGet?"!":"X");
-			String fullNights=a.nights<2?"<":(a.nights==2?"!":"X");
-			ShiftSolverLogger.debug(
-					"       "+
-					fullShifts+fullNights+
-					" "+
-					(fullShifts.equals("!")?"!!!":
-						(a.hadShiftsLast5Days(day)?"123":
-							(a.hadShiftToday(day)?"ttt":"...")))+
-					" "+
-					(a.employee.isEditor()?"editor    ":
-						(a.employee.isSportak()?"sportak   ":
-							(a.employee.isMortak()?"am-sportak":"staffer   ")))+
-					" "+
-					(a.employee.isFulltime()?"FULL":"PART")+
-					" "+
-					a.employee.getFullName()+" "+
-						"jobs: "+a.shifts+"/"+a.shiftsToGet+" ("+(a.shiftsToGet-a.shifts)+") "+
-						"nights: "+a.nights+"/"+(a.employee.isFulltime()?"2":"X")+" ("+(2-a.nights)+")"
-					);
-		}		
+		if(ShiftSolverLogger.isJUnitMode()) {
+			ShiftSolverLogger.debug("     Employee allocations ("+allocations.size()+"):");
+			for(EmployeeAllocation a:allocations) {
+				String fullShifts=a.shifts<a.shiftsToGet?"<":(a.shifts==a.shiftsToGet?"!":"X");
+				String fullNights=a.nights<2?"<":(a.nights==2?"!":"X");
+				ShiftSolverLogger.debug(
+						"       "+
+						fullShifts+fullNights+
+						" "+
+						(fullShifts.equals("!")?"ful":
+							(a.hadShiftsLast5Days(day)?"5dy":
+								(a.hadShiftToday(day)?"tdy":"...")))+
+						" "+
+						(a.employee.isEditor()?"editor    ":
+							(a.employee.isSportak()?"sportak   ":
+								(a.employee.isMortak()?"am-sportak":"staffer   ")))+
+						" "+
+						(a.employee.isFulltime()?"FULL":"PART")+
+						" "+
+						a.employee.getFullName()+" "+
+							"jobs: "+a.shifts+"/"+a.shiftsToGet+" ("+(a.shiftsToGet-a.shifts)+") "+
+							"nights: "+a.nights+"/"+(a.employee.isFulltime()?"2":"X")+" ("+(2-a.nights)+")"
+						);
+			}			
+		}
 	}
 }

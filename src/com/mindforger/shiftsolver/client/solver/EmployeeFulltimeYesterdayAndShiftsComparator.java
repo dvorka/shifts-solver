@@ -5,12 +5,14 @@ import java.util.Map;
 
 import com.mindforger.shiftsolver.shared.model.Employee;
 
-public class EmployeeShiftsComparator implements Comparator<Employee> {
+public class EmployeeFulltimeYesterdayAndShiftsComparator implements Comparator<Employee> {
 
 	private Map<String, EmployeeAllocation> employeeAllocations;
+	private int today;
 
-	public EmployeeShiftsComparator( Map<String, EmployeeAllocation> employeeAllocations) {
+	public EmployeeFulltimeYesterdayAndShiftsComparator(Map<String, EmployeeAllocation> employeeAllocations, int today) {
 		this.employeeAllocations=employeeAllocations;
+		this.today=today;
 	}
 
 	@Override
@@ -18,7 +20,7 @@ public class EmployeeShiftsComparator implements Comparator<Employee> {
 		// TODO debug this: full > parts (every group sorted by shifts)
 		if(o1.isFulltime()) {
 			if(o2.isFulltime()) {
-				return compareByShifts(o1, o2);				
+				return compareByHadShiftYesterday(o1, o2);				
 			} else {
 				return -1;
 			}
@@ -26,11 +28,29 @@ public class EmployeeShiftsComparator implements Comparator<Employee> {
 			if(o2.isFulltime()) {
 				return 1;
 			} else {
-				return compareByShifts(o1, o2);				
+				return compareByHadShiftYesterday(o1, o2);				
 			}			
 		}
 	}
 
+	private int compareByHadShiftYesterday(Employee o1, Employee o2) {
+		boolean o1y = employeeAllocations.get(o1.getKey()).hadShiftYesterday(today);
+		boolean o2y = employeeAllocations.get(o2.getKey()).hadShiftYesterday(today);
+		if(o1y) {
+			if(o2y) {
+				return compareByShifts(o1, o2);
+			} else {
+				return 1;
+			}			
+		} else {
+			if(o2y) {
+				return -1;
+			} else {
+				return compareByShifts(o1, o2);
+			}
+		}
+	}
+	
 	private int compareByShifts(Employee o1, Employee o2) {
 		if(employeeAllocations.get(o1.getKey()).shifts>employeeAllocations.get(o2.getKey()).shifts) {
 			return 1;

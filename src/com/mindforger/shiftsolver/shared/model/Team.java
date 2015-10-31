@@ -30,6 +30,12 @@ public class Team implements Serializable {
 	public void addEmployee(Employee employee) {
 		employees.put(employee.getFullName(), employee);
 		employeesList.add(employee);
+		if(employee.isEditor()) {
+			editors.put(employee.getKey(),employee);
+		}
+		if(employee.isSportak()) {
+			sportaci.put(employee.getKey(),employee);				
+		}
 	}
 
 	public void addEmployees(Collection<Employee> employees) {
