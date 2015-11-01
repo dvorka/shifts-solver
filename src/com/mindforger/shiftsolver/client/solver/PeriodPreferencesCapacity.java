@@ -7,10 +7,7 @@ import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
 public class PeriodPreferencesCapacity {
-	
-	// TODO check capacity button
-	// TODO add check to solver > exit on fail w/ exception
-	
+		
 	int neededEditorShifts;
 	int neededDroneShifts;
 	int neededMorningSportakShifts;

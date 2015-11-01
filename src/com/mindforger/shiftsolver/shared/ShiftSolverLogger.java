@@ -2,7 +2,9 @@ package com.mindforger.shiftsolver.shared;
 
 import java.io.PrintStream;
 
-public class ShiftSolverLogger {
+import com.google.gwt.core.client.GWT;
+
+public class ShiftSolverLogger implements ShiftSolverConstants {
 
 	private static PrintStream out;
 	
@@ -16,7 +18,9 @@ public class ShiftSolverLogger {
 	}
 	
 	public static void debug(String message) {
-		//GWT.log(message);
+		if(DEBUG) {
+			GWT.log(message);			
+		}
 		if(out!=null) out.println(message);
 	}
 

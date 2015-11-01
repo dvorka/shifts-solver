@@ -46,7 +46,7 @@ public class ShiftSolverTest extends AbstractShiftSolverTest {
 				solution = solver.solve(
 						Arrays.asList(state.getEmployees()),
 						preferences, 
-						1);
+						false);
 
 				showSolution(preferences, solution, state.getEmployees());				
 			} catch(Exception e) {
@@ -63,7 +63,7 @@ public class ShiftSolverTest extends AbstractShiftSolverTest {
 		PeriodSolution solution = solver.solve(
 				Arrays.asList(state.getEmployees()),
 				preferences, 
-				1);
+				false);
 
 		showSolution(preferences, solution, state.getEmployees());
 	}

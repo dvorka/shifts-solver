@@ -2,7 +2,6 @@ package com.mindforger.shiftsolver.shared.model;
 
 import java.io.Serializable;
 
-import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.model.shifts.NightShift;
 import com.mindforger.shiftsolver.shared.model.shifts.WeekendAfternoonShift;
 import com.mindforger.shiftsolver.shared.model.shifts.WeekendMorningShift;

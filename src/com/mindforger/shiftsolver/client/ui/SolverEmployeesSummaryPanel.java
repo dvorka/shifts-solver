@@ -97,7 +97,7 @@ public class SolverEmployeesSummaryPanel extends FlexTable implements SortableTa
 		
 		Button backButton=new Button(i18n.backToPreferences());
 		backButton.setStyleName("mf-buttonLooser");
-		backButton.setTitle("Return back to period preferences"); // TODO i18n
+		backButton.setTitle(i18n.backToPreferences());
 		backButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				ctx.getStatusLine().clear();
@@ -106,15 +106,15 @@ public class SolverEmployeesSummaryPanel extends FlexTable implements SortableTa
 		});		
 		buttonPanel.add(backButton);
 
-//		Button solveButton=new Button(i18n.solvePartially());
-//		solveButton.setStyleName("mf-buttonLooser");
-//		solveButton.setTitle("Solve what can be solved and skip the rest"); // TODO i18n
-//		solveButton.addClickHandler(new ClickHandler() {
-//			public void onClick(ClickEvent event) {
-//				// TODO
-//			}
-//		});		
-//		buttonPanel.add(solveButton);
+		Button solvePartiallyButton=new Button(i18n.solvePartially());
+		solvePartiallyButton.setStyleName("mf-buttonLooser");
+		solvePartiallyButton.setTitle(i18n.solveWhatCanBeSolvedAndSkipTheRest());
+		solvePartiallyButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				ctx.getPreferencesPanel().handleSolve(ctx, false, true);
+			}
+		});		
+		buttonPanel.add(solvePartiallyButton);
 		
 		return buttonPanel;
 	}

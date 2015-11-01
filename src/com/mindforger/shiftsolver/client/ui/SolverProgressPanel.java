@@ -4,11 +4,11 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
 import com.mindforger.shiftsolver.client.RiaContext;
+import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 
-public class SolverProgressPanel extends FlexTable implements SolverProgressPanels {
+public class SolverProgressPanel extends FlexTable implements SolverProgressPanels, ShiftSolverConstants {
 	
 	private TextBox currentSolutionPercentProgressTextBox;
-	private TextBox solutionsCount;
 	private TextBox bestSolutionScore;
 	
 	public SolverProgressPanel(final RiaContext ctx) {						
@@ -19,17 +19,12 @@ public class SolverProgressPanel extends FlexTable implements SolverProgressPane
 		currentSolutionPercentProgressTextBox = new TextBox();
 		setWidget(0, 1, currentSolutionPercentProgressTextBox);
 		
-		html = new HTML("Solution count");
-		setWidget(1, 0, html);
-		solutionsCount = new TextBox();
-		setWidget(1, 1, solutionsCount);
-
 		html = new HTML("Best solution score");
-		setWidget(2, 0, html);
+		setWidget(1, 0, html);
 		bestSolutionScore = new TextBox();
-		setWidget(2, 1, bestSolutionScore);
+		setWidget(1, 1, bestSolutionScore);
 		
-		refresh("0", "", "", "", "0", "0", "0");
+		refresh("0", "", "", "", "0", "0");
 	}
 	
 	public void refresh(
@@ -38,9 +33,11 @@ public class SolverProgressPanel extends FlexTable implements SolverProgressPane
 			String failedOnShiftType,
 			String failedOnRole,
 			String steps, 
-			String count, 
-			String score) {
-		objectToRia(progress, failedOnDay, failedOnRole, failedOnShiftType, steps, count, score);
+			String score) 
+	{
+		if(DEBUG) {
+			objectToRia(progress, failedOnDay, failedOnRole, failedOnShiftType, steps, score);			
+		}
 	}
 
 	private void objectToRia(
@@ -49,14 +46,10 @@ public class SolverProgressPanel extends FlexTable implements SolverProgressPane
 			String failedOnShiftType,
 			String failedOnRole,
 			String steps, 
-			String count, 
 			String score) {
 		if(progress!=null) {
 		    currentSolutionPercentProgressTextBox.setText(progress+"%");			
 		}
-	    if(count!=null) {
-		    solutionsCount.setText(count);	    	
-	    }
 	    if(progress!=null) {
 		    bestSolutionScore.setText(score);	    	
 	    }

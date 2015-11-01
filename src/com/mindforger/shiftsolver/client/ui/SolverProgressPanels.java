@@ -7,6 +7,5 @@ public interface SolverProgressPanels {
 			String failedOnShiftType,
 			String failedOnRole,
 			String steps, 
-			String solutionsCount, 
 			String bestSolutionScore);
 }

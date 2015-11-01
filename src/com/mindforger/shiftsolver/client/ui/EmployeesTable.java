@@ -32,7 +32,6 @@ public class EmployeesTable extends FlexTable implements SortableTable {
 	}
 	
 	public void init() {
-		// TODO style rename
 		addStyleName("mf-growsTable");
 		sortCriteria=TableSortCriteria.BY_TIMESTAMP;
 		sortIsAscending=true;

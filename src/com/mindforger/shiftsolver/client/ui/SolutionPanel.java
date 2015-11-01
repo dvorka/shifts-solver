@@ -316,32 +316,32 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 				if((se&ShiftSolverConstants.SHIFT_MORNING)!=0) {
 					t+=i18n.morningShiftLetter();
 					style=ShiftSolverConstants.CSS_SHIFT_MORNING;
-					title="Morning shift"; // TODO i18n
+					title=i18n.morningShift();
 				}
 				if((se&ShiftSolverConstants.SHIFT_MORNING_6)!=0) {
 					t+=i18n.morning6ShiftLetter();
 					style=ShiftSolverConstants.CSS_SHIFT_MORNING;
-					title="Morning shift 6am"; // TODO i18n
+					title=i18n.morningShift()+" 6am";
 				}
 				if((se&ShiftSolverConstants.SHIFT_MORNING_7)!=0) {
 					t+=i18n.morning7ShiftLetter();
 					style=ShiftSolverConstants.CSS_SHIFT_MORNING;
-					title="Morning shift 7am"; // TODO i18n
+					title=i18n.morningShift()+" 7am";
 				}
 				if((se&ShiftSolverConstants.SHIFT_MORNING_8)!=0) {
 					t+=i18n.morning8ShiftLetter();
 					style=ShiftSolverConstants.CSS_SHIFT_MORNING;
-					title="Morning shift 8am"; // TODO i18n
+					title=i18n.morningShift()+" 8am";
 				}
 				if((se&ShiftSolverConstants.SHIFT_AFTERNOON)!=0) {
 					t+=i18n.afternoonShiftLetter();
 					style=ShiftSolverConstants.CSS_SHIFT_AFTERNOON;
-					title="Afternoon shift"; // TODO i18n
+					title=i18n.afternoonShift();
 				}
 				if((se&ShiftSolverConstants.SHIFT_NIGHT)!=0) {
 					t+=i18n.nightShiftLetter();
 					style=ShiftSolverConstants.CSS_SHIFT_NIGHT;
-					title="Night shift"; // TODO i18n
+					title=i18n.nightShift();
 				}
 			
 				html = new HTML(t);

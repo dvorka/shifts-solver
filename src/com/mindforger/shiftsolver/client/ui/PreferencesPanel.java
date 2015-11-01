@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -98,20 +97,32 @@ public class PreferencesPanel extends FlexTable {
 		solveButton.setStyleName("mf-button");
 		solveButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				handleSolve(ctx, false);
+				handleSolve(ctx, false, false);
 			}
 		});		
 		buttonPanel.add(solveButton);
 
+		Button solvePartiallyButton=new Button(i18n.solvePartially());
+		solvePartiallyButton.setTitle(i18n.solveWhatCanBeSolvedAndSkipTheRest());
+		solvePartiallyButton.setStyleName("mf-buttonLooser");
+		solvePartiallyButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				handleSolve(ctx, false, true);
+			}
+		});		
+		buttonPanel.add(solvePartiallyButton);
+		
+		/*
 		Button shuffleAndSolveButton=new Button(i18n.shuffleAndSolve());
 		shuffleAndSolveButton.setStyleName("mf-buttonLooser");
 		shuffleAndSolveButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				handleSolve(ctx, true);
+				handleSolve(ctx, true, false);
 			}
 		});		
 		buttonPanel.add(shuffleAndSolveButton);
-
+		*/
+		
 		Button newSolutionButton=new Button(i18n.newEmptySolution());
 		newSolutionButton.setStyleName("mf-buttonLooser");
 		newSolutionButton.addClickHandler(new ClickHandler() {
@@ -119,7 +130,7 @@ public class PreferencesPanel extends FlexTable {
 				if(preferences!=null) {
 					ctx.getMenu().createNewSolution(preferences);					
 				} else {
-					ctx.getStatusLine().showError("Save preferences first to create a solution!"); // TODO i18n
+					ctx.getStatusLine().showError(i18n.savePrefsFirstToCreateSolution());
 				}
 			}
 		});		
@@ -130,9 +141,9 @@ public class PreferencesPanel extends FlexTable {
 		deleteButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if(preferences!=null) {
-		    		ctx.getStatusLine().showProgress("Deleting period preferences..."); // TODO i18n
+		    		ctx.getStatusLine().showProgress(i18n.deletingPreferences());
 		      		ctx.getRia().deletePeriodPreferences(preferences);
-		      		ctx.getStatusLine().showInfo("Period preferences deleted"); // TODO i18n
+		      		ctx.getStatusLine().showInfo(i18n.periodPreferencesDeleted());
 				}
 			}
 		});		
@@ -186,7 +197,7 @@ public class PreferencesPanel extends FlexTable {
 		flowPanel.add(monthListBox);
 
 		lastMonthEditorListBox = new ListBox(false);
-		lastMonthEditorListBox.setTitle("Last month editor"); // TODO i18n
+		lastMonthEditorListBox.setTitle(i18n.lastMonthEditor());
 		lastMonthEditorListBox.addChangeHandler(new ChangeHandler() {			
 			@Override
 			public void onChange(ChangeEvent event) {
@@ -253,9 +264,7 @@ public class PreferencesPanel extends FlexTable {
 		FlexTable employeePrefsTable=new FlexTable();
 		
 		for (int i = 1; i<=monthDays; i++) {
-			// TODO append Mon...Sun to the number; weekend to have different color
 			HTML html = new HTML(""+i+Utils.getDayLetter(i, preferences.getStartWeekDay(), ctx.getI18n()));
-			//html.addStyleName("mf-progressHtml");
 			employeePrefsTable.setWidget(0, i, html);				
 			if(Utils.isWeekend(i, preferences.getStartWeekDay())
 					|| publicHolidays.isHolidays(
@@ -267,7 +276,6 @@ public class PreferencesPanel extends FlexTable {
 			}
 		}
 
-		// TODO consider encoding this as bits in int/long
 		employeePrefsTable.setWidget(CHECK_DAY, 0, new HTML(i18n.day()));
 		employeePrefsTable.setWidget(CHECK_MORNING_6, 0, new HTML(i18n.morning()+"&nbsp;6am"));
 		employeePrefsTable.setWidget(CHECK_MORNING_7, 0, new HTML(i18n.morning()+"&nbsp;7am"));
@@ -532,7 +540,7 @@ public class PreferencesPanel extends FlexTable {
 		}
 	}
 
-	private void handleSolve(final RiaContext ctx, final boolean shuffle) {
+	public void handleSolve(final RiaContext ctx, final boolean shuffle, final boolean partialSolution) {
 		if(preferences!=null) {
 			ctx.getStatusLine().showProgress(ctx.getI18n().solvingShifts());
 			PeriodSolution solution;
@@ -541,7 +549,7 @@ public class PreferencesPanel extends FlexTable {
 				if(shuffle) {
 					Utils.shuffleArray(employees);						
 				}
-				solution = ctx.getSolver().solve(Arrays.asList(employees), preferences, 0);							
+				solution = ctx.getSolver().solve(Arrays.asList(employees), preferences, partialSolution);							
 				if(solution!=null) {
 					ctx.getStatusLine().showInfo(i18n.solutionFound());
 					ctx.getSolutionPanel().refresh(
@@ -564,8 +572,7 @@ public class PreferencesPanel extends FlexTable {
 						preferences);
 				ctx.getRia().showSolverNoSolutionPanel();
 			} catch(RuntimeException e) {
-				ctx.getStatusLine().showError("Solver failed: "+e.getMessage()); // TODO i18n
-				GWT.log("Solver failed:", e);
+				ctx.getStatusLine().showError(i18n.solverFailed()+": "+e.getMessage());
 				ctx.getRia().showPeriodPreferencesEditPanel();
 			}
 		}
@@ -585,7 +592,7 @@ public class PreferencesPanel extends FlexTable {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				ctx.getStatusLine().showError("Unable to determine month's properties!"); // TODO i18n
+				ctx.getStatusLine().showError(i18n.unableToDetermineMonthProperties());
 			}
 		});
 	}

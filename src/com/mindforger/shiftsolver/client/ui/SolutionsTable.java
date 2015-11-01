@@ -27,7 +27,6 @@ public class SolutionsTable extends FlexTable implements SortableTable {
 	}
 	
 	public void init() {
-		// TODO style rename
 		addStyleName("mf-growsTable");
 		sortCriteria=TableSortCriteria.BY_YEAR_AND_MONTH;
 		sortIsAscending=true;

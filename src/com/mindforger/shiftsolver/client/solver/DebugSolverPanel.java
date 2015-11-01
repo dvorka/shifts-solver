@@ -20,7 +20,6 @@ public class DebugSolverPanel implements SolverProgressPanels {
 			String failedOnShiftType,
 			String failedOnRole,
 			String steps, 
-			String count, 
 			String score) 
 	{		
 		if(!lastProgress.equals(progress)) {

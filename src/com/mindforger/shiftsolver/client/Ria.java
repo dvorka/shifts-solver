@@ -189,13 +189,13 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 
 	public void showSolverProgressPanel() {
 		hideAllContainers();
-		ctx.getPageTitlePanel().setHTML("Solver Progress"); // TODO i18n
+		ctx.getPageTitlePanel().setHTML(i18n.solverProgress());
 		RootPanel.get(CONTAINER_SOLVER_PROGRESS).setVisible(true);
 	}
 
 	public void showSolverNoSolutionPanel() {
 		hideAllContainers();
-		ctx.getPageTitlePanel().setHTML("No Solution"); // TODO i18n
+		ctx.getPageTitlePanel().setHTML(i18n.noSolution());
 		RootPanel.get(CONTAINER_SOLVER_NO_SOLUTION).setVisible(true);
 	}
 

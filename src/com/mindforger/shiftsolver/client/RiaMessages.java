@@ -114,4 +114,20 @@ public interface RiaMessages extends Messages {
 	String periodPreferencesSaved();
 	String print();
 	String assignEmployee();
+	String deleted();
+	String deletingPreferences();
+	String freeHolidaysBusyWant();
+	String validationResult();
+	String canEmployeeBeAssignedToThisDay();
+	String periodPreferencesDeleted();
+	String unableToDetermineMonthProperties();
+	String solverFailed();
+	String lastMonthEditor();
+	String solveWhatCanBeSolvedAndSkipTheRest();
+	String solverProgress();
+	String savePrefsFirstToCreateSolution();
+	String noSolution();
+	String morningShift();
+	String afternoonShift();
+	String nightShift();
 }

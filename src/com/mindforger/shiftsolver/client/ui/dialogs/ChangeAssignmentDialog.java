@@ -53,11 +53,11 @@ public class ChangeAssignmentDialog extends DialogBox {
 		HTML html;
 		table.setWidget(0, 0, new HTML(i18n.employee()));
 		html=new HTML();
-		html.setTitle("Free/Holidays/Busy/Want"); // TODO i18n
+		html.setTitle(i18n.freeHolidaysBusyWant());
 		table.setWidget(0, 1, new HTML(" "));
 		html=new HTML();
-		html.setTitle("Can employee be assigned for this day?"); // TODO i18n
-		table.setWidget(0, 2, new HTML("Validation Result")); // TODO i18n
+		html.setTitle(i18n.canEmployeeBeAssignedToThisDay());
+		table.setWidget(0, 2, new HTML(i18n.validationResult()));
 
 		radios = new ArrayList<RadioButton>();
 		int r=1;
