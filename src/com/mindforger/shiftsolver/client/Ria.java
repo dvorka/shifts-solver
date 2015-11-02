@@ -7,7 +7,6 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
 import com.mindforger.shiftsolver.client.solver.ShiftSolver;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
@@ -121,11 +120,7 @@ public class Ria implements EntryPoint, ShiftSolverConstants {
 				}
 			}
 		}
-		List<EmployeeAllocation> allocations=EmployeeAllocation.calculateEmployeeAllocations(
-				ctx.getState().getPeriodPreferences(solution.getPeriodPreferencesKey()), 
-				solution,
-				employees);
-		ctx.getSolutionPanel().refresh(solution, allocations);
+		ctx.getSolutionPanel().refresh(solution);
 		showSolutionViewPanel();
 	}
 	

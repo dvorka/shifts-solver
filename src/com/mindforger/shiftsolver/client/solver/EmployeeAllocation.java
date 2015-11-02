@@ -12,6 +12,7 @@ import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
+import com.mindforger.shiftsolver.shared.model.Holder;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
@@ -246,37 +247,107 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 		for(Employee e:employees) {
 			if(e!=null) eToA.put(e.getKey(), new EmployeeAllocation(e, preferences));
 		}
-		eToA.put(ShiftSolver.FERDA_KEY, new EmployeeAllocation(ShiftSolver.FERDA, preferences));
+		eToA.put(ShiftSolver.FERDA_KEY, new EmployeeAllocation(ShiftSolver.FERDA, preferences));				
 		
-		for(int d=1; d<=preferences.getMonthDays(); d++) {
-			DaySolution ds = solution.getSolutionForDay(d);
-			if(ds!=null) {
+		for(int d=1; d<=preferences.getMonthDays(); d++) {			
+			DaySolution ds = solution.getSolutionForDay(d);			
+			if(ds!=null) {				
 				if(ds.isWorkday()) {
+					// if workday & employee on holidays > add 1 to allocation
+					for(Employee e:employees) {
+						if(e!=null && preferences.getEmployeeToPreferences().get(e.getKey())!=null) {
+							DayPreference dpp = preferences.getEmployeeToPreferences().get(e.getKey()).getPreferencesForDay(d);
+							if(dpp!=null && dpp.isHoliDay()) {
+								eToA.get(e.getKey()).shifts++;
+							}
+						}
+					}						
+						
+					if(eToA.get(ds.getWorkdayMorningShift().editor.get())==null) {
+						eToA.get(ds.getWorkdayMorningShift().editor=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWorkdayMorningShift().editor.get()).assign(d, SHIFT_MORNING);
+					if(eToA.get(ds.getWorkdayMorningShift().staffer6am.get())==null) {
+						eToA.get(ds.getWorkdayMorningShift().staffer6am=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWorkdayMorningShift().staffer6am.get()).assign(d, SHIFT_MORNING);
+					if(eToA.get(ds.getWorkdayMorningShift().staffer7am.get())==null) {
+						eToA.get(ds.getWorkdayMorningShift().staffer7am=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWorkdayMorningShift().staffer7am.get()).assign(d, SHIFT_MORNING);
+					if(eToA.get(ds.getWorkdayMorningShift().staffer8am1.get())==null) {
+						eToA.get(ds.getWorkdayMorningShift().staffer8am1=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWorkdayMorningShift().staffer8am1.get()).assign(d, SHIFT_MORNING);
+					if(eToA.get(ds.getWorkdayMorningShift().staffer8am2.get())==null) {
+						eToA.get(ds.getWorkdayMorningShift().staffer8am2=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWorkdayMorningShift().staffer8am2.get()).assign(d, SHIFT_MORNING);
+					if(eToA.get(ds.getWorkdayMorningShift().sportak.get())==null) {
+						eToA.get(ds.getWorkdayMorningShift().sportak=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWorkdayMorningShift().sportak.get()).assign(d, SHIFT_MORNING);
 					
+					if(eToA.get(ds.getWorkdayAfternoonShift().editor.get())==null) {
+						eToA.get(ds.getWorkdayAfternoonShift().editor=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWorkdayAfternoonShift().editor.get()).assign(d, SHIFT_AFTERNOON);
+					if(eToA.get(ds.getWorkdayAfternoonShift().staffers[0].get())==null) {
+						eToA.get(ds.getWorkdayAfternoonShift().staffers[0]=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWorkdayAfternoonShift().staffers[0].get()).assign(d, SHIFT_AFTERNOON);
+					if(eToA.get(ds.getWorkdayAfternoonShift().staffers[1].get())==null) {
+						eToA.get(ds.getWorkdayAfternoonShift().staffers[1]=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWorkdayAfternoonShift().staffers[1].get()).assign(d, SHIFT_AFTERNOON);
+					if(eToA.get(ds.getWorkdayAfternoonShift().staffers[2].get())==null) {
+						eToA.get(ds.getWorkdayAfternoonShift().staffers[2]=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWorkdayAfternoonShift().staffers[2].get()).assign(d, SHIFT_AFTERNOON);
+					if(eToA.get(ds.getWorkdayAfternoonShift().staffers[3].get())==null) {
+						eToA.get(ds.getWorkdayAfternoonShift().staffers[3]=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWorkdayAfternoonShift().staffers[3].get()).assign(d, SHIFT_AFTERNOON);
+					if(eToA.get(ds.getWorkdayAfternoonShift().sportak.get())==null) {
+						eToA.get(ds.getWorkdayAfternoonShift().sportak=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWorkdayAfternoonShift().sportak.get()).assign(d, SHIFT_AFTERNOON);
 					
+					if(eToA.get(ds.getNightShift().staffer.get())==null) {
+						eToA.get(ds.getNightShift().staffer=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getNightShift().staffer.get()).assign(d, SHIFT_NIGHT);
 					
 				} else {
+					if(eToA.get(ds.getWeekendMorningShift().editor.get())==null) {
+						eToA.get(ds.getWeekendMorningShift().editor=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWeekendMorningShift().editor.get()).assign(d, SHIFT_MORNING);
+					if(eToA.get(ds.getWeekendMorningShift().staffer6am.get())==null) {
+						eToA.get(ds.getWeekendMorningShift().staffer6am=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWeekendMorningShift().staffer6am.get()).assign(d, SHIFT_MORNING);
+					if(eToA.get(ds.getWeekendMorningShift().sportak.get())==null) {
+						eToA.get(ds.getWeekendMorningShift().sportak=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWeekendMorningShift().sportak.get()).assign(d, SHIFT_MORNING);
 
+					if(eToA.get(ds.getWeekendAfternoonShift().editor.get())==null) {
+						eToA.get(ds.getWeekendAfternoonShift().editor=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWeekendAfternoonShift().editor.get()).assign(d, SHIFT_AFTERNOON);
+					if(eToA.get(ds.getWeekendAfternoonShift().staffer.get())==null) {
+						eToA.get(ds.getWeekendAfternoonShift().staffer=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWeekendAfternoonShift().staffer.get()).assign(d, SHIFT_AFTERNOON);
+					if(eToA.get(ds.getWeekendAfternoonShift().sportak.get())==null) {
+						eToA.get(ds.getWeekendAfternoonShift().sportak=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getWeekendAfternoonShift().sportak.get()).assign(d, SHIFT_AFTERNOON);
 
+					if(eToA.get(ds.getNightShift().staffer.get())==null) {
+						eToA.get(ds.getNightShift().staffer=new Holder<String>(ShiftSolver.FERDA_KEY));
+					}
 					eToA.get(ds.getNightShift().staffer.get()).assign(d, SHIFT_NIGHT);
 				}
 			}

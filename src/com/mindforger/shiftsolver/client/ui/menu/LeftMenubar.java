@@ -261,7 +261,7 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 				}
 				ctx.getState().addPeriodSolution(result);
 				setPeriodSolutionsCount(ctx.getState().getPeriodSolutions().length);
-				ctx.getSolutionPanel().refresh(result, allocations);
+				ctx.getSolutionPanel().refresh(result);
 				ria.showSolutionViewPanel();
 				ctx.getStatusLine().showInfo(i18n.newEmptySolutionCreated());
 			}

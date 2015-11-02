@@ -130,4 +130,7 @@ public interface RiaMessages extends Messages {
 	String morningShift();
 	String afternoonShift();
 	String nightShift();
+	String editorFriSun();
+	String capacity();
+	String want();
 }

@@ -1475,7 +1475,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			PeriodSolution s,
 			Map<String,EmployeeAllocation> a) 
 	{
-		EmployeeAvailability result=new EmployeeAvailability();
+		EmployeeAvailability result=new EmployeeAvailability(ctx);
 				
 		// this is simplified e.g. mortaks ... not treated > false OK candidates
 		switch(needRole) {

@@ -19,7 +19,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.Utils;
-import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
 import com.mindforger.shiftsolver.client.solver.PublicHolidays;
 import com.mindforger.shiftsolver.client.solver.ShiftSolverException;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
@@ -552,9 +551,7 @@ public class PreferencesPanel extends FlexTable {
 				solution = ctx.getSolver().solve(Arrays.asList(employees), preferences, partialSolution);							
 				if(solution!=null) {
 					ctx.getStatusLine().showInfo(i18n.solutionFound());
-					ctx.getSolutionPanel().refresh(
-							solution, 
-							new ArrayList<EmployeeAllocation>(ctx.getSolver().getEmployeeAllocations().values()));
+					ctx.getSolutionPanel().refresh(solution);
 					ctx.getRia().showSolutionViewPanel();  			
 				} else {
 					ctx.getStatusLine().showError(i18n.noSolutionExists());

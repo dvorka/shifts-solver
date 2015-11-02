@@ -1,5 +1,8 @@
 package com.mindforger.shiftsolver.client.solver;
 
+import com.mindforger.shiftsolver.client.RiaContext;
+import com.mindforger.shiftsolver.client.RiaMessages;
+
 public class EmployeeAvailability {
 	
 	private boolean roleMatch;
@@ -10,7 +13,10 @@ public class EmployeeAvailability {
 	private boolean notAllocated5Days;
 	private boolean warnEditorToContinue;
 	
-	public EmployeeAvailability() {		
+	private RiaMessages i18n;
+	
+	public EmployeeAvailability(RiaContext ctx) {
+		this.i18n=ctx.getI18n();
 	}
 	
 	public boolean isAvailable() {
@@ -76,13 +82,13 @@ public class EmployeeAvailability {
 	@Override
 	public String toString() {
 		String result="";
-		if(!roleMatch) result+="!role";
-		if(!notWant) result+=" !want";
-		if(!shiftCapacity) result+=" !capacity";
+		if(!roleMatch) result+="!"+i18n.role();
+		if(!notWant) result+=" !"+i18n.want();
+		if(!shiftCapacity) result+=" !"+i18n.capacity();
 		// TODO night
-		if(!notAllocatedToday) result+=" today";
-		if(!notAllocated5Days) result+=" 5days";
-		if(warnEditorToContinue) result+=" editor-fri-sun";
+		if(!notAllocatedToday) result+=" "+i18n.today();
+		if(!notAllocated5Days) result+=" 5"+i18n.days();
+		if(warnEditorToContinue) result+=" "+i18n.editorFriSun();
 		
 		return result; 
 	}

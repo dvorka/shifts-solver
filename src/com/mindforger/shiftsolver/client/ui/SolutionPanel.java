@@ -1,6 +1,7 @@
 package com.mindforger.shiftsolver.client.ui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -546,7 +547,7 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		changeAssignmentButtons.add(button);
 	}
 
-	public void refresh(PeriodSolution solution, List<EmployeeAllocation> allocations) {
+	public void refresh(PeriodSolution solution) {
 		if(solution==null) {
 			setVisible(false);
 			return;
@@ -555,18 +556,22 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		}
 
 		this.solution=solution;
-		this.allocations=allocations;
+		this.preferences = ctx.getState().getPeriodPreferences(solution.getPeriodPreferencesKey());
+		// recalculation fixes integrity on employee delete - breaks solution(s) integrity
+		this.allocations=EmployeeAllocation.calculateEmployeeAllocations(
+				preferences, 
+				solution, 
+				Arrays.asList(ctx.getState().getEmployees()));		
 		e2a=new HashMap<String, EmployeeAllocation>();
 		employees=new ArrayList<Employee>();
 		for(EmployeeAllocation ea:allocations) {
 			e2a.put(ea.employee.getKey(), ea);
-			employees.add(ea.employee);		
+			employees.add(ea.employee);
 		}
-		this.preferences = ctx.getState().getPeriodPreferences(solution.getPeriodPreferencesKey());
 		
 		objectToRia();
 	}
-	
+
 	public void setSortingCriteria(TableSortCriteria criteria, boolean sortIsAscending) {
 		this.sortCriteria=criteria;
 		this.sortIsAscending=sortIsAscending;
