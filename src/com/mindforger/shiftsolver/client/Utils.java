@@ -52,8 +52,8 @@ public class Utils {
 	public static boolean isWorkday(int day, int dayOfWeek, int numberOfDaysInMonth) {
 		int dow=dayOfWeek-1;
 		for(int i=0; i<numberOfDaysInMonth; i++) {
-			if(dow!=0 && dow!=6) {
-				if(day==i) {
+			if(day==i) {
+				if(dow!=0 && dow!=6) {
 					return true;
 				} else {
 					return false;

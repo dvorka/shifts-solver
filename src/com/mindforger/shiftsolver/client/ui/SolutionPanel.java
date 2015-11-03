@@ -29,6 +29,7 @@ import com.mindforger.shiftsolver.shared.model.Job;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
+// TODO jobs spatne na dlouhanu - bez volna > jobs not updated
 public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 
 	private RiaMessages i18n;
@@ -558,7 +559,7 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		this.solution=solution;
 		this.preferences = ctx.getState().getPeriodPreferences(solution.getPeriodPreferencesKey());
 		// recalculation fixes integrity on employee delete - breaks solution(s) integrity
-		this.allocations=EmployeeAllocation.calculateEmployeeAllocations(
+		this.allocations=EmployeeAllocation.calculateEmployeeAllocationsAndFixJobs(
 				preferences, 
 				solution, 
 				Arrays.asList(ctx.getState().getEmployees()));		
@@ -609,7 +610,7 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 	public void onSolutionModification() {
 		// TODO consider dirty flag to recalculate on change, otherwise just make visible
 		
-		allocations=EmployeeAllocation.calculateEmployeeAllocations(preferences, solution, employees);
+		allocations=EmployeeAllocation.calculateEmployeeAllocationsAndFixJobs(preferences, solution, employees);
 		e2a.clear();
 		for(EmployeeAllocation ea:allocations) {
 			e2a.put(ea.employee.getKey(), ea);

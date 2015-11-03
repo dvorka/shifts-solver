@@ -48,6 +48,7 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 			EmployeePreferences employeePreferences = preferences.getEmployeeToPreferences().get(employee.getKey());
 			if(employeePreferences!=null) {
 				for(DayPreference dayPreference:employeePreferences.getPreferences()) {
+					// if workday & employee on holidays > add 1 to allocation
 					if(dayPreference.isHoliDay()) {
 						if(Utils.isWorkday(
 								dayPreference.getDay(), 
@@ -238,7 +239,8 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 		return shiftsToGet>0 && shiftsToGet>=(shifts+capacityNeeded);
 	}
 
-	public static List<EmployeeAllocation> calculateEmployeeAllocations(
+	// TODO jobs fixing
+	public static List<EmployeeAllocation> calculateEmployeeAllocationsAndFixJobs(
 			PeriodPreferences preferences,
 			PeriodSolution solution,
 			List<Employee> employees) 
@@ -252,17 +254,7 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 		for(int d=1; d<=preferences.getMonthDays(); d++) {			
 			DaySolution ds = solution.getSolutionForDay(d);			
 			if(ds!=null) {				
-				if(ds.isWorkday()) {
-					// if workday & employee on holidays > add 1 to allocation
-					for(Employee e:employees) {
-						if(e!=null && preferences.getEmployeeToPreferences().get(e.getKey())!=null) {
-							DayPreference dpp = preferences.getEmployeeToPreferences().get(e.getKey()).getPreferencesForDay(d);
-							if(dpp!=null && dpp.isHoliDay()) {
-								eToA.get(e.getKey()).shifts++;
-							}
-						}
-					}						
-						
+				if(ds.isWorkday()) {						
 					if(eToA.get(ds.getWorkdayMorningShift().editor.get())==null) {
 						eToA.get(ds.getWorkdayMorningShift().editor=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
@@ -354,6 +346,8 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 		}
 		
 		eToA.remove(ShiftSolver.FERDA_KEY);
+		
+		// TODO update jobs on solution
 		
 		return new ArrayList<EmployeeAllocation>(eToA.values());
 	}

@@ -134,6 +134,7 @@ public class SolverEmployeesSummaryPanel extends FlexTable implements SortableTa
 		setWidget(rows, c++, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
 		setWidget(rows, c++, new TableSetSortingButton(i18n.shifts(),TableSortCriteria.BY_SHIFTS, this, ctx));
 		setWidget(rows, c++, new TableSetSortingButton(i18n.nights(),TableSortCriteria.BY_NIGHTS, this, ctx));
+		// TODO add column w/ morning/afternoon shifts
 		if(noSolutionPanelMode) {
 			setWidget(rows, c++, new TableSetSortingButton(i18n.today(),TableSortCriteria.BY_NAME, this, ctx));
 			setWidget(rows, c++, new TableSetSortingButton("5 "+i18n.days(),TableSortCriteria.BY_NAME, this, ctx));
@@ -235,8 +236,6 @@ public class SolverEmployeesSummaryPanel extends FlexTable implements SortableTa
 		if(isFull) {
 			button.addStyleName("s2-busy");
 		}
-		
-		// TODO shift types list
 		
 		String text="";
 		if(a.shiftsOnDays!=null && !a.shiftsOnDays.isEmpty()) {

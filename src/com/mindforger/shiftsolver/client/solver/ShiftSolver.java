@@ -61,6 +61,8 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 	private RiaContext ctx;
 	private RiaMessages i18n;
 	
+	private SolutionPostprocessor postprocessor;
+	
 	private PeriodPreferences preferences;
 	private List<Employee> employees;
 	private Map<String,EmployeeAllocation> e2a;
@@ -85,6 +87,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 	private PublicHolidays publicHolidays;
 	
 	public ShiftSolver() {
+		this.postprocessor=new SolutionPostprocessor();
 		this.solverProgressPanel=new DebugSolverPanel();
 		this.publicHolidays=new PublicHolidays();
 		this.enforceAfternoonTo8am=true;
@@ -103,7 +106,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
   		team.addEmployees(employees);
 		PeriodSolution result = solve(team, periodPreferences);
 		this.partialSolution=partialSolution;
-		return result;
+		return postprocessor.improve(result);
 	}	
 
 	public Map<String, EmployeeAllocation> getEmployeeAllocations() {
@@ -137,8 +140,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		lastMonthEditor = null;
 		for(int i=0; i<employees.size(); i++) {
 			Employee e = employees.get(i);
-			EmployeeAllocation employeeAllocation 
-				= new EmployeeAllocation(e, periodPreferences);
+			EmployeeAllocation employeeAllocation = new EmployeeAllocation(e, periodPreferences);
 			e2a.put(e.getKey(), employeeAllocation);
 			if(preferences.getLastMonthEditor()!=null && !preferences.getLastMonthEditor().isEmpty()) {
 				if(e.getKey().equals(preferences.getLastMonthEditor())) {
@@ -147,8 +149,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			}
 		}
 		if(partialSolution) {
-			EmployeeAllocation employeeAllocation 
-				= new EmployeeAllocation(FERDA, periodPreferences);
+			EmployeeAllocation employeeAllocation = new EmployeeAllocation(FERDA, periodPreferences);
 			e2a.put(FERDA.getKey(), employeeAllocation);
 		}		
 		
