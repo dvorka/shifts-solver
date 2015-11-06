@@ -1,4 +1,4 @@
-package com.mindforger.shiftsolver.solver;
+package com.mindforger.shiftsolver.solver.commons;
 
 import java.util.ArrayList;
 import java.util.List;

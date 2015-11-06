@@ -2667,11 +2667,17 @@ html>body .gwt-MenuBarPopup {
 
 .s2-fulltimeNotFull {
 	color: #FF0000;
-	font-weight: bold;	
+	font-weight: bold;
+	text-align: center;	
 }
 
 .s2-partimeNotFull {
 	color: #FF6600;
+	text-align: center;	
+}
+
+.s2-jobsFull {
+	text-align: center;	
 }
 
 .s2-male {

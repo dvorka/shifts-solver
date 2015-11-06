@@ -16,9 +16,8 @@ import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
-import com.mindforger.shiftsolver.client.solver.PublicHolidays;
-import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.client.ui.buttons.ChangeAssignmentButton;
+import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.DaySolution;
@@ -29,7 +28,6 @@ import com.mindforger.shiftsolver.shared.model.Job;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
-// TODO jobs spatne na dlouhanu - bez volna > jobs not updated
 public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 
 	private RiaMessages i18n;
@@ -38,7 +36,6 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 	private TableSortCriteria sortCriteria;
 	private boolean sortIsAscending;
 
-	private PublicHolidays publicHolidays;
 	public PeriodPreferences preferences;
 	public PeriodSolution solution;
 	public List<EmployeeAllocation> allocations;
@@ -59,7 +56,6 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 	public SolutionPanel(final RiaContext ctx) {
 		this.ctx=ctx;
 		this.i18n=ctx.getI18n();
-		this.publicHolidays=new PublicHolidays();
 		this.changeAssignmentButtons=new ArrayList<ChangeAssignmentButton>();
 		
 		buttonPanel = newButtonPanel(ctx);
@@ -292,17 +288,17 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 			} else {
 				jobHtml.addStyleName("s2-partimeNotFull");								
 			}
+		} else {
+			jobHtml.addStyleName("s2-jobsFull");											
 		}
 		table.setWidget(numRows, 1, jobHtml); 
 				
 		for (int i = 0; i<monthDays; i++) {
 			Button b = new Button(""+(i+1)+Utils.getDayLetter(i+1, preferences.getStartWeekDay(), i18n));
 			b.setStyleName("s2-tableHeadColumnButton");
-			if(Utils.isWeekend(i+1, preferences.getStartWeekDay())
-					|| publicHolidays.isHolidays(
-							preferences.getYear(), 
-							preferences.getMonth(), 
-							i)) 
+			if(Utils.isWeekend(i+1, preferences.getStartWeekDay()) 
+				 ||
+			   Utils.isPublicHolidays(preferences.getYear(), preferences.getMonth(), i)) 
 			{
 				b.addStyleName("s2-weekendDay");
 			}
@@ -310,9 +306,10 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 		}
 						
 		HTML html;
-		for(int c=0; c<monthDays; c++) {
-			if(solution.getDays().get(c).isEmployeeAllocatedToday(employee.getKey())) {
-				int se = solution.getDays().get(c).getShiftTypeForEmployee(employee.getKey());
+		for(int c=0, d=1; c<monthDays; c++, d++) {
+			DaySolution daySolution = solution.getDays().get(d-1);
+			if(daySolution.isEmployeeAllocatedToday(employee.getKey())) {
+				int se = daySolution.getShiftTypeForEmployee(employee.getKey());
 				String t="&nbsp;", title="", style="";				
 				
 				if((se&ShiftSolverConstants.SHIFT_MORNING)!=0) {
@@ -336,7 +333,7 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 					title=i18n.morningShift()+" 8am";
 				}
 				if((se&ShiftSolverConstants.SHIFT_AFTERNOON)!=0) {
-					t+=i18n.afternoonShiftLetter();
+					t+=(t.length()>6?"+":"")+i18n.afternoonShiftLetter();
 					style=ShiftSolverConstants.CSS_SHIFT_AFTERNOON;
 					title=i18n.afternoonShift();
 				}
@@ -355,8 +352,8 @@ public class SolutionPanel extends FlexTable implements ShiftSolverConstants {
 
 				DayPreference dp;
 				EmployeePreferences ep = preferences.getEmployeeToPreferences().get(employee.getKey());
-				if(ep!=null && ep.getPreferencesForDay(c)!=null) {
-					dp=ep.getPreferencesForDay(c);
+				if(ep!=null && ep.getPreferencesForDay(d)!=null) {
+					dp=ep.getPreferencesForDay(d);
 					if(dp.isHoliDay()) {
 						html.setStyleName(ShiftSolverConstants.CSS_SHIFT_VACATIONS);
 						html.setTitle("Vacations");

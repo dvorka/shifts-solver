@@ -2,8 +2,10 @@ package com.mindforger.shiftsolver.client.solver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
@@ -13,6 +15,7 @@ import com.mindforger.shiftsolver.shared.model.DaySolution;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
 import com.mindforger.shiftsolver.shared.model.Holder;
+import com.mindforger.shiftsolver.shared.model.Job;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
 
@@ -47,14 +50,13 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 		if(preferences.getEmployeeToPreferences()!=null) {
 			EmployeePreferences employeePreferences = preferences.getEmployeeToPreferences().get(employee.getKey());
 			if(employeePreferences!=null) {
-				for(DayPreference dayPreference:employeePreferences.getPreferences()) {
+				for(DayPreference dayPreference:employeePreferences.getPreferences()) {					
 					// if workday & employee on holidays > add 1 to allocation
 					if(dayPreference.isHoliDay()) {
-						if(Utils.isWorkday(
-								dayPreference.getDay(), 
-								preferences.getStartWeekDay(), 
-								preferences.getMonthDays())) {
-							shifts++;
+						if(Utils.isWorkday(dayPreference.getDay(), preferences.getStartWeekDay())) {
+							if(!Utils.isPublicHolidays(dayPreference.getYear(), dayPreference.getMonth(), dayPreference.getDay())) {
+								shifts++;								
+							}
 						}
 					}
 				}
@@ -239,7 +241,6 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 		return shiftsToGet>0 && shiftsToGet>=(shifts+capacityNeeded);
 	}
 
-	// TODO jobs fixing
 	public static List<EmployeeAllocation> calculateEmployeeAllocationsAndFixJobs(
 			PeriodPreferences preferences,
 			PeriodSolution solution,
@@ -259,22 +260,27 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 						eToA.get(ds.getWorkdayMorningShift().editor=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
 					eToA.get(ds.getWorkdayMorningShift().editor.get()).assign(d, SHIFT_MORNING);
+					
 					if(eToA.get(ds.getWorkdayMorningShift().staffer6am.get())==null) {
 						eToA.get(ds.getWorkdayMorningShift().staffer6am=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
 					eToA.get(ds.getWorkdayMorningShift().staffer6am.get()).assign(d, SHIFT_MORNING);
+					
 					if(eToA.get(ds.getWorkdayMorningShift().staffer7am.get())==null) {
 						eToA.get(ds.getWorkdayMorningShift().staffer7am=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
 					eToA.get(ds.getWorkdayMorningShift().staffer7am.get()).assign(d, SHIFT_MORNING);
+					
 					if(eToA.get(ds.getWorkdayMorningShift().staffer8am1.get())==null) {
 						eToA.get(ds.getWorkdayMorningShift().staffer8am1=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
 					eToA.get(ds.getWorkdayMorningShift().staffer8am1.get()).assign(d, SHIFT_MORNING);
+					
 					if(eToA.get(ds.getWorkdayMorningShift().staffer8am2.get())==null) {
 						eToA.get(ds.getWorkdayMorningShift().staffer8am2=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
 					eToA.get(ds.getWorkdayMorningShift().staffer8am2.get()).assign(d, SHIFT_MORNING);
+					
 					if(eToA.get(ds.getWorkdayMorningShift().sportak.get())==null) {
 						eToA.get(ds.getWorkdayMorningShift().sportak=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
@@ -284,22 +290,27 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 						eToA.get(ds.getWorkdayAfternoonShift().editor=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
 					eToA.get(ds.getWorkdayAfternoonShift().editor.get()).assign(d, SHIFT_AFTERNOON);
+					
 					if(eToA.get(ds.getWorkdayAfternoonShift().staffers[0].get())==null) {
 						eToA.get(ds.getWorkdayAfternoonShift().staffers[0]=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
 					eToA.get(ds.getWorkdayAfternoonShift().staffers[0].get()).assign(d, SHIFT_AFTERNOON);
+					
 					if(eToA.get(ds.getWorkdayAfternoonShift().staffers[1].get())==null) {
 						eToA.get(ds.getWorkdayAfternoonShift().staffers[1]=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
 					eToA.get(ds.getWorkdayAfternoonShift().staffers[1].get()).assign(d, SHIFT_AFTERNOON);
+					
 					if(eToA.get(ds.getWorkdayAfternoonShift().staffers[2].get())==null) {
 						eToA.get(ds.getWorkdayAfternoonShift().staffers[2]=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
 					eToA.get(ds.getWorkdayAfternoonShift().staffers[2].get()).assign(d, SHIFT_AFTERNOON);
+					
 					if(eToA.get(ds.getWorkdayAfternoonShift().staffers[3].get())==null) {
 						eToA.get(ds.getWorkdayAfternoonShift().staffers[3]=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
 					eToA.get(ds.getWorkdayAfternoonShift().staffers[3].get()).assign(d, SHIFT_AFTERNOON);
+					
 					if(eToA.get(ds.getWorkdayAfternoonShift().sportak.get())==null) {
 						eToA.get(ds.getWorkdayAfternoonShift().sportak=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
@@ -315,10 +326,12 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 						eToA.get(ds.getWeekendMorningShift().editor=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
 					eToA.get(ds.getWeekendMorningShift().editor.get()).assign(d, SHIFT_MORNING);
+					
 					if(eToA.get(ds.getWeekendMorningShift().staffer6am.get())==null) {
 						eToA.get(ds.getWeekendMorningShift().staffer6am=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
 					eToA.get(ds.getWeekendMorningShift().staffer6am.get()).assign(d, SHIFT_MORNING);
+					
 					if(eToA.get(ds.getWeekendMorningShift().sportak.get())==null) {
 						eToA.get(ds.getWeekendMorningShift().sportak=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
@@ -328,10 +341,12 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 						eToA.get(ds.getWeekendAfternoonShift().editor=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
 					eToA.get(ds.getWeekendAfternoonShift().editor.get()).assign(d, SHIFT_AFTERNOON);
+					
 					if(eToA.get(ds.getWeekendAfternoonShift().staffer.get())==null) {
 						eToA.get(ds.getWeekendAfternoonShift().staffer=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
 					eToA.get(ds.getWeekendAfternoonShift().staffer.get()).assign(d, SHIFT_AFTERNOON);
+					
 					if(eToA.get(ds.getWeekendAfternoonShift().sportak.get())==null) {
 						eToA.get(ds.getWeekendAfternoonShift().sportak=new Holder<String>(ShiftSolver.FERDA_KEY));
 					}
@@ -347,9 +362,18 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 		
 		eToA.remove(ShiftSolver.FERDA_KEY);
 		
-		// TODO update jobs on solution
+		Map<String,Job> e2j;
+		if((e2j=solution.getEmployeeJobs())==null) {
+			e2j=new HashMap<String,Job>();
+			solution.setEmployeeJobs(e2j);
+		} else {
+			e2j.clear();
+		}
+		for(String key:eToA.keySet()) {
+			e2j.put(key, new Job(eToA.get(key).shifts, eToA.get(key).shiftsToGet));
+		}
 		
-		return new ArrayList<EmployeeAllocation>(eToA.values());
+		return new ArrayList<EmployeeAllocation>(eToA.values());		
 	}
 	
 	public static void printEmployeeAllocations(int day, List<EmployeeAllocation> allocations) {

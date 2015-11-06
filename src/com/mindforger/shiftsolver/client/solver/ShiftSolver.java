@@ -84,12 +84,9 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 
 	private SolverProgressPanels solverProgressPanel;
 
-	private PublicHolidays publicHolidays;
-	
 	public ShiftSolver() {
 		this.postprocessor=new SolutionPostprocessor();
 		this.solverProgressPanel=new DebugSolverPanel();
-		this.publicHolidays=new PublicHolidays();
 		this.enforceAfternoonTo8am=true;
 		this.enforceNightToAfternoon=true;
 		this.partialSolution=false;
@@ -104,8 +101,8 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 	public PeriodSolution solve(List<Employee> employees, PeriodPreferences periodPreferences, boolean partialSolution) {
   		Team team=new Team();
   		team.addEmployees(employees);
-		PeriodSolution result = solve(team, periodPreferences);
 		this.partialSolution=partialSolution;
+		PeriodSolution result = solve(team, periodPreferences);
 		return postprocessor.improve(result);
 	}	
 
@@ -211,7 +208,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		showProgress(preferences.getMonthDays(), d-1);
 		
 		boolean holidays=false;
-		if(publicHolidays.isHolidays(preferences.getYear(), preferences.getMonth(), d)) {
+		if(Utils.isPublicHolidays(preferences.getYear(), preferences.getMonth(), d)) {
 			holidays=true;
 		}
 		
@@ -1571,10 +1568,9 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		}
 		s.setEmployeeJobs(jobs);
 		
-		PublicHolidays publicHolidays=new PublicHolidays();
 		boolean holidays=false;		
 		for(int d=1; d<=periodPreferences.getMonthDays(); d++) {
-			if(publicHolidays.isHolidays(periodPreferences.getYear(), periodPreferences.getMonth(), d)) {
+			if(Utils.isPublicHolidays(periodPreferences.getYear(), periodPreferences.getMonth(), d)) {
 				holidays=true;
 			} else {
 				holidays=false;
@@ -1727,7 +1723,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 			if(e.isEditor() && Utils.isWeekend(day, p.getStartWeekDay())) {
 				// OK
 			} else {
-				if(e.isEditor() && publicHolidays.isHolidays(preferences.getYear(), preferences.getMonth(), day)) {
+				if(e.isEditor() && Utils.isPublicHolidays(preferences.getYear(), preferences.getMonth(), day)) {
 					// OK
 				} else {
 					return false;

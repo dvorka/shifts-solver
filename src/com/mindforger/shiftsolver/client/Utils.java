@@ -2,9 +2,15 @@ package com.mindforger.shiftsolver.client;
 
 import java.util.Random;
 
+import com.mindforger.shiftsolver.client.solver.PublicHolidays;
 import com.mindforger.shiftsolver.shared.model.Employee;
 
 public class Utils {
+	
+	private static final PublicHolidays publicHolidays;
+	static {
+		publicHolidays=new PublicHolidays();
+	}
 
 	public static boolean isWeekend(int day, int startWeekDay) {
 		int sundayBeginningDayNumber=(day-1+startWeekDay-1)%7;
@@ -14,7 +20,15 @@ public class Utils {
 			return false;
 		}
 	}
-			
+	
+	public static boolean isWorkday(int day, int startWeekDay) {
+		return !isWeekend(day, startWeekDay);
+	}	
+	
+	public static boolean isPublicHolidays(int year, int month, int day) {
+		return publicHolidays.isHolidays(year, month, day);		
+	}
+	
 	public static int getWeekdayNumber(int day, int startWeekDay) {
 		return (day-1+startWeekDay-1)%7;
 	}
@@ -47,21 +61,5 @@ public class Utils {
 			array[index] = array[i];
 			array[i] = a;
 		}
-	}
-	
-	public static boolean isWorkday(int day, int dayOfWeek, int numberOfDaysInMonth) {
-		int dow=dayOfWeek-1;
-		for(int i=0; i<numberOfDaysInMonth; i++) {
-			if(day==i) {
-				if(dow!=0 && dow!=6) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-			dow++;
-			dow=dow%7;
-		}
-		return false;
 	}	
 }

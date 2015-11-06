@@ -14,6 +14,7 @@ import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 import com.mindforger.shiftsolver.shared.model.PeriodSolution;
+import com.mindforger.shiftsolver.solver.commons.AbstractShiftSolverTest;
 
 public class ShiftSolverTest extends AbstractShiftSolverTest {
 

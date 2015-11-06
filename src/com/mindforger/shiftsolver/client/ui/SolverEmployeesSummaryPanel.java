@@ -107,7 +107,7 @@ public class SolverEmployeesSummaryPanel extends FlexTable implements SortableTa
 		buttonPanel.add(backButton);
 
 		Button solvePartiallyButton=new Button(i18n.solvePartially());
-		solvePartiallyButton.setStyleName("mf-buttonLooser");
+		solvePartiallyButton.setStyleName("mf-button");
 		solvePartiallyButton.setTitle(i18n.solveWhatCanBeSolvedAndSkipTheRest());
 		solvePartiallyButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {

@@ -3,6 +3,7 @@ package com.mindforger.shiftsolver.client.solver;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
 import com.mindforger.shiftsolver.shared.model.PeriodPreferences;
 
@@ -22,11 +23,10 @@ public class PeriodPreferencesCapacity {
 	}
 	
 	public void calculate(PeriodPreferences preferences, Collection<EmployeeAllocation> allocations) {
-		
 		neededEditorShifts=neededDroneShifts=neededSportakShifts=0;		
-		int dow=preferences.getStartWeekDay()-1;
-		for(int i=0; i<preferences.getMonthDays(); i++) {
-			if(dow!=0 && dow!=6) {
+		
+		for(int day=1; day<=preferences.getMonthDays(); day++) {
+			if(Utils.isWorkday(day, preferences.getStartWeekDay())) {
 				neededEditorShifts+=2;
 				neededDroneShifts+=8;
 				neededMorningSportakShifts+=1;
@@ -36,8 +36,6 @@ public class PeriodPreferencesCapacity {
 				neededDroneShifts+=3;
 				neededSportakShifts+=2;				
 			}
-			dow++;
-			dow=dow%7;
 		}
 		
 		haveEditorShifts=haveDroneShifts=haveSportakShifts=0;
