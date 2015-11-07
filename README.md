@@ -92,7 +92,7 @@ Rules:
       * *MUST:* particular editor to serve Friday afternoon + Saturday morning
         and afternoon + Sunday morning and afternoon shifts
       * *MUST:* editor continuity counts for 1 + 3 (Friday + weekend) = 4 shifts
-        in job **(TODO)**
+        in job (note that it would be 5 otherwise) **(TODO)**
       * *SHOULD:* editor to have same staffer and sportak in continuity **(TODO)**
    * *MUST:* employee cannot have more than one shift in a day
    * *MUST:* there must be at least 8 hours between two shifts served by the

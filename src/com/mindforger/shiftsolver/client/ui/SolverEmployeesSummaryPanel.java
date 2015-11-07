@@ -142,7 +142,7 @@ public class SolverEmployeesSummaryPanel extends FlexTable implements SortableTa
 		}
 		setWidget(rows, c++, new TableSetSortingButton(i18n.role(),TableSortCriteria.BY_ROLE, this, ctx));
 		setWidget(rows, c++, new TableSetSortingButton(i18n.fulltime(),TableSortCriteria.BY_FULLTIME, this, ctx));
-		setWidget(rows, c++, new TableSetSortingButton(i18n.dayListing(),TableSortCriteria.BY_NAME, this, ctx));
+		setWidget(rows, c++, new TableSetSortingButton(i18n.dayListing(),TableSortCriteria.BY_SHIFTS, this, ctx));
 	}
 		
 	public void addRow(EmployeeAllocation a, int failday) {

@@ -6,7 +6,7 @@ public class PublicHolidays {
 	  Czech Republic:	
 		1. 1.	Den obnovy samostatného českého státu
 		1. 1.	Nový rok
-		6. 4.	Velikonoční pondělí
+		6. 4.	Velikonoční pondělí > patek od 2016
 		1. 5.	Svátek práce
 		8. 5.	Den vítězství
 		5. 7.	Den slovanských věrozvěstů Cyrila a Metoděje
@@ -28,10 +28,27 @@ public class PublicHolidays {
 				return true;
 			}
 		} else {
+			// easter is moving holidays
+			if(month==3) {
+				if(year==2016 && day==28) {
+					return true;					
+				}
+			}
 			if(month==4) {
-				// TODO this is moving holidays
-				if(day==6) {
+				if(year==2017 && day==17) {
 					return true;
+				} else {
+					if(year==2018 && day==2) {
+						return true;
+					} else {				
+						if(year==2019 && day==22) {
+							return true;
+						} else {
+							if(year==2020 && day==13) {
+								return true;
+							}	
+						}
+					}
 				}
 			} else {
 				if(month==5) {
