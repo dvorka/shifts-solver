@@ -133,4 +133,5 @@ public interface RiaMessages extends Messages {
 	String editorFriSun();
 	String capacity();
 	String want();
+	String morningsAndAfternoons();
 }

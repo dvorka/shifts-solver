@@ -133,6 +133,7 @@ public class SolverEmployeesSummaryPanel extends FlexTable implements SortableTa
 		int c=0;
 		setWidget(rows, c++, new TableSetSortingButton(i18n.name(),TableSortCriteria.BY_NAME, this, ctx));
 		setWidget(rows, c++, new TableSetSortingButton(i18n.shifts(),TableSortCriteria.BY_SHIFTS, this, ctx));
+		setWidget(rows, c++, new TableSetSortingButton(i18n.morningsAndAfternoons(),TableSortCriteria.BY_SHIFTS, this, ctx));
 		setWidget(rows, c++, new TableSetSortingButton(i18n.nights(),TableSortCriteria.BY_NIGHTS, this, ctx));
 		// TODO add column w/ morning/afternoon shifts
 		if(noSolutionPanelMode) {
@@ -238,6 +239,7 @@ public class SolverEmployeesSummaryPanel extends FlexTable implements SortableTa
 		}
 		
 		String text="";
+		int mornings=0, afternoons=0;
 		if(a.shiftsOnDays!=null && !a.shiftsOnDays.isEmpty()) {
 			for(int i=0; i<a.shiftsOnDays.size(); i++) {
 				Integer d=a.shiftsOnDays.get(i);
@@ -245,27 +247,33 @@ public class SolverEmployeesSummaryPanel extends FlexTable implements SortableTa
 				switch(a.shiftTypesOnDays.get(i)) {
 				case SHIFT_AFTERNOON:
 					text+=i18n.afternoonShiftLetter();
+					afternoons++;
 					break;
 				case SHIFT_NIGHT:
 					text+=i18n.nightShiftLetter();
 					break;
 				case SHIFT_MORNING:
 					text+=i18n.morningShiftLetter();
+					mornings++;
 					break;
 				case SHIFT_MORNING_6:
 					text+=i18n.morning6ShiftLetter();
+					mornings++;
 					break;
 				case SHIFT_MORNING_7:
 					text+=i18n.morning7ShiftLetter();
+					mornings++;
 					break;
 				case SHIFT_MORNING_8:
 					text+=i18n.morning8ShiftLetter();
+					mornings++;
 					break;
 				}
 				text+=" ";
 			}
 		}
 		HTML shiftsDaysHtml=new HTML(text);
+		HTML morningsAndAfternoonsHtml=new HTML(mornings+"/"+afternoons);
 						
 		HTML roleHtml=new HTML(i18n.staffer());
 		if(a.employee.isEditor()) {
@@ -290,6 +298,7 @@ public class SolverEmployeesSummaryPanel extends FlexTable implements SortableTa
 		int c=0;
 		setWidget(rows, c++, button);
 		setWidget(rows, c++, shiftsAllocationHtml);
+		setWidget(rows, c++, morningsAndAfternoonsHtml);		
 		setWidget(rows, c++, nightsAllocationHtml);
 		if(noSolutionPanelMode) {
 			setWidget(rows, c++, todayHtml);
