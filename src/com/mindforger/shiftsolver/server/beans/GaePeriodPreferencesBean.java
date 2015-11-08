@@ -46,6 +46,10 @@ public class GaePeriodPreferencesBean implements Serializable, GaeBean {
 	@Persistent(mappedBy="periodPreferences")
 	@Element(dependent = "true")
 	List<GaeEmployeeDayPreferenceBean> dayPreferences;
+
+	@Persistent(mappedBy="periodPreferences")
+	@Element(dependent = "true")
+	List<GaeJobBean> employeeShifts;
 	
 	public GaePeriodPreferencesBean() {		
 	}
@@ -132,15 +136,27 @@ public class GaePeriodPreferencesBean implements Serializable, GaeBean {
 		year=e.getYear();
 		lastMonthEditor=e.getLastMonthEditor();
 		
+		if(employeeShifts!=null) {
+			employeeShifts.clear();
+		} else {
+			employeeShifts=new ArrayList<GaeJobBean>();			
+		}
 		if(dayPreferences!=null) {
 			dayPreferences.clear();
 		} else {
-			dayPreferences=new ArrayList<GaeEmployeeDayPreferenceBean>();			
+			dayPreferences=new ArrayList<GaeEmployeeDayPreferenceBean>();
 		}
+		GaeJobBean gaeJobBean;
 		for(String employeeKey:e.getEmployeeToPreferences().keySet()) {
 			EmployeePreferences employeePreferences = e.getEmployeeToPreferences().get(employeeKey);
 			if(employeePreferences!=null) {
 				if(employeePreferences.getPreferences()!=null) {
+					gaeJobBean = new GaeJobBean();
+					gaeJobBean.setEmployeeKey(employeeKey);
+					gaeJobBean.setShiftsLimit(employeePreferences.getShiftsLimit());
+					gaeJobBean.setPeriodPreferences(this);
+					employeeShifts.add(gaeJobBean);
+					
 					for(DayPreference dp:employeePreferences.getPreferences()) {
 						GaeEmployeeDayPreferenceBean dpb = new GaeEmployeeDayPreferenceBean();
 						dpb.fromPojo(dp);
@@ -163,18 +179,27 @@ public class GaePeriodPreferencesBean implements Serializable, GaeBean {
 		periodPreferences.setStartWeekDay(startWeekDay);
 		periodPreferences.setYear(year);
 		periodPreferences.setLastMonthEditor(lastMonthEditor);
+	
+		Map<String, EmployeePreferences> ek2ep = new HashMap<String,EmployeePreferences>();
+		periodPreferences.setEmployeeToPreferences(ek2ep);
+		if(employeeShifts!=null) {
+			EmployeePreferences employeePreferences;
+			for(GaeJobBean j:employeeShifts) {
+				employeePreferences = new EmployeePreferences();
+				employeePreferences.setShiftsLimit(j.getShiftsLimit());
+				ek2ep.put(j.getEmployeeKey(), employeePreferences);
+			}
+		}
 		
 		if(dayPreferences!=null && !dayPreferences.isEmpty()) {
-			Map<String, EmployeePreferences> map = new HashMap<String,EmployeePreferences>();
-			periodPreferences.setEmployeeToPreferences(map);
+			EmployeePreferences employeePreferences;
 			for(GaeEmployeeDayPreferenceBean dp:dayPreferences) {
-				String employeeKey = dp.getEmployeeKey();
-				EmployeePreferences employeePreferences;
-				if((employeePreferences=map.get(employeeKey))==null) {
-					employeePreferences = new EmployeePreferences();
-					map.put(employeeKey, employeePreferences);
-				}
 				DayPreference dayPreference = dp.toPojo();
+				if((employeePreferences=ek2ep.get(dp.getEmployeeKey()))==null) {
+					employeePreferences = new EmployeePreferences();
+					// no shift limit
+					ek2ep.put(dp.getEmployeeKey(), employeePreferences);
+				}
 				employeePreferences.addPreference(dayPreference);
 			}
 		}

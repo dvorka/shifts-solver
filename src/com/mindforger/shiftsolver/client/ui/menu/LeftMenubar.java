@@ -234,7 +234,9 @@ public class LeftMenubar extends FlexTable implements ShiftSolverConstants {
 				Employee[] employees = ctx.getState().getEmployees();
 				Map<String,EmployeePreferences> prefs=new HashMap<String,EmployeePreferences>();
 				for(Employee e:employees) {
-					prefs.put(e.getKey(), new EmployeePreferences());
+					prefs.put(
+							e.getKey(), 
+							new EmployeePreferences(EmployeeAllocation.calculateShiftToGet(e, result)));
 				}
 				result.setEmployeeToPreferences(prefs);
 				

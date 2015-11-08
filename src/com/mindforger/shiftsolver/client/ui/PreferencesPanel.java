@@ -19,11 +19,13 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.Utils;
+import com.mindforger.shiftsolver.client.solver.EmployeeAllocation;
 import com.mindforger.shiftsolver.client.solver.PublicHolidays;
 import com.mindforger.shiftsolver.client.solver.ShiftSolverException;
 import com.mindforger.shiftsolver.client.ui.buttons.EmployeesTableToEmployeeButton;
 import com.mindforger.shiftsolver.client.ui.buttons.YesNoDontcareButton;
 import com.mindforger.shiftsolver.client.ui.buttons.YesNoDontcareDofcaButton;
+import com.mindforger.shiftsolver.client.ui.text.ShiftsLimitTextBox;
 import com.mindforger.shiftsolver.shared.model.DayPreference;
 import com.mindforger.shiftsolver.shared.model.Employee;
 import com.mindforger.shiftsolver.shared.model.EmployeePreferences;
@@ -45,6 +47,7 @@ public class PreferencesPanel extends FlexTable {
 	private ListBox lastMonthEditorListBox;
 	private FlexTable preferencesTable;
 	private Map<String,List<YesNoDontcareButton>> preferenceButtons;
+	private Map<String,ShiftsLimitTextBox> shiftLimitTextBoxes;
 	
 	public PeriodPreferences preferences;
 
@@ -64,6 +67,7 @@ public class PreferencesPanel extends FlexTable {
 		this.i18n=ctx.getI18n();
 		this.publicHolidays=new PublicHolidays();
 		this.preferenceButtons=new HashMap<String,List<YesNoDontcareButton>>();
+		this.shiftLimitTextBoxes=new HashMap<String,ShiftsLimitTextBox>();
 		
 		buttonPanel = newButtonPanel(ctx);
 		setWidget(0, 0, buttonPanel);
@@ -223,6 +227,7 @@ public class PreferencesPanel extends FlexTable {
 
 		table.removeAllRows();
 		preferenceButtons.clear();
+		shiftLimitTextBoxes.clear();
 
 		// TODO change these to button
 		HTML html = new HTML("&nbsp;"+i18n.employee()+"&nbsp;");
@@ -252,13 +257,20 @@ public class PreferencesPanel extends FlexTable {
 			EmployeePreferences employeePreferences, 
 			int monthDays) 
 	{
-		int numRows = table.getRowCount();		
+		int numRows = table.getRowCount();
+		
+		FlexTable employeeAndJobsTable=new FlexTable();		
+		employeeAndJobsTable.setStyleName("s2-preferencesEmployeeAndJobsTable");
 		EmployeesTableToEmployeeButton button = new EmployeesTableToEmployeeButton(
 				employee.getKey(),
 				employee.getFullName(),
 				"mf-growsTableGoalButton", 
 				ctx);
-		table.setWidget(numRows, 0, button);
+		employeeAndJobsTable.setWidget(0, 0, button);		
+		ShiftsLimitTextBox jobsTextBox=new ShiftsLimitTextBox(ctx, employeePreferences);
+		shiftLimitTextBoxes.put(employee.getKey(),jobsTextBox);
+		employeeAndJobsTable.setWidget(1, 0, jobsTextBox);
+		table.setWidget(numRows, 0, employeeAndJobsTable);
 		
 		FlexTable employeePrefsTable=new FlexTable();
 		
@@ -435,6 +447,7 @@ public class PreferencesPanel extends FlexTable {
 		}
 		for(Employee e:ctx.getState().getEmployees()) {
 			EmployeePreferences ep=new EmployeePreferences();
+			ep.setShiftsLimit(shiftLimitTextBoxes.get(e.getKey()).getShiftLimit());
 			List<DayPreference> dps=new ArrayList<DayPreference>();
 			ep.setPreferences(dps);
 			
@@ -585,6 +598,12 @@ public class PreferencesPanel extends FlexTable {
 				preferences.setMonthDays(result.getMonthDays());
 				preferences.setStartWeekDay(result.getStartWeekDay());
 				preferences.setMonthWorkDays(result.getMonthWorkDays());
+				for(String ek:result.getEmployeeToPreferences().keySet()) {
+					result.getEmployeeToPreferences()
+						.get(ek)
+							.setShiftsLimit(
+									EmployeeAllocation.calculateShiftToGet(ctx.getState().getEmployee(ek),result));
+				}
 				refresh(preferences);
 			}
 			@Override

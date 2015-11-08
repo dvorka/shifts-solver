@@ -2,10 +2,8 @@ package com.mindforger.shiftsolver.client.solver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.mindforger.shiftsolver.client.Utils;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
@@ -45,7 +43,13 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 		this.enforceAfternoonTo8am=true;
 		this.enforceNightToAfternoon=true;
 		
-		shiftsToGet=calculateShiftToGet(employee, preferences);
+		if(preferences.getEmployeeToPreferences()!=null && 
+				preferences.getEmployeeToPreferences().get(employee.getKey())!=null) 
+		{
+			shiftsToGet=preferences.getEmployeeToPreferences().get(employee.getKey()).getShiftsLimit();
+		} else {
+			shiftsToGet=calculateShiftToGet(employee, preferences);			
+		}
 		
 		if(preferences.getEmployeeToPreferences()!=null) {
 			EmployeePreferences employeePreferences = preferences.getEmployeeToPreferences().get(employee.getKey());

@@ -9,24 +9,28 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
+import com.mindforger.shiftsolver.server.ServerUtils;
+import com.mindforger.shiftsolver.shared.model.Job;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class GaeJobBean implements Serializable, GaeBean {
-	private static final long serialVersionUID = 1733290552721580460L;
-
+public class GaeAllocationBean implements Serializable, GaeBean {
+	private static final long serialVersionUID = 404791535199143808L;
+	
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)	
 	private Key key;
 
 	@Persistent
-	private GaePeriodPreferencesBean periodPreferences;
+	private GaePeriodSolutionBean periodSolution;
 	
 	@Persistent
 	String employeeKey;
 	@Persistent
 	int shiftsLimit;
+	@Persistent
+	int shifts;
 	
-	public GaeJobBean() {		
+	public GaeAllocationBean() {		
 	}
 
 	public Key getKey() {
@@ -37,12 +41,28 @@ public class GaeJobBean implements Serializable, GaeBean {
 		this.key = key;
 	}
 
+	public GaePeriodSolutionBean getPeriodSolution() {
+		return periodSolution;
+	}
+
+	public void setPeriodSolution(GaePeriodSolutionBean periodSolution) {
+		this.periodSolution = periodSolution;
+	}
+
 	public int getShiftsLimit() {
 		return shiftsLimit;
 	}
 
 	public void setShiftsLimit(int shiftsLimit) {
 		this.shiftsLimit = shiftsLimit;
+	}
+
+	public int getShifts() {
+		return shifts;
+	}
+
+	public void setShifts(int shifts) {
+		this.shifts = shifts;
 	}
 
 	public void setEmployeeKey(String k) {
@@ -53,11 +73,17 @@ public class GaeJobBean implements Serializable, GaeBean {
 		return employeeKey;
 	}
 
-	public GaePeriodPreferencesBean getPeriodPreferences() {
-		return periodPreferences;
+	public void fromPojo(Job job) {
+		key=ServerUtils.stringToKey(job.key);
+		shifts=job.shifts;
+		shiftsLimit=job.shiftsLimit;
 	}
-
-	public void setPeriodPreferences(GaePeriodPreferencesBean periodPreferences) {
-		this.periodPreferences = periodPreferences;
+	
+	public Job toPojo() {
+		Job j=new Job();
+		j.key=ServerUtils.keyToString(key);
+		j.shifts=shifts;
+		j.shiftsLimit=shiftsLimit;
+		return j;
 	}
 }

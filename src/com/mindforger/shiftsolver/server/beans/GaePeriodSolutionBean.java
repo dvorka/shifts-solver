@@ -38,7 +38,7 @@ public class GaePeriodSolutionBean implements Serializable, GaeBean {
 	
 	@Persistent(mappedBy="periodSolution")
 	@Element(dependent = "true")
-	List<GaeJobBean> jobs;
+	List<GaeAllocationBean> jobs;
 
 	@Persistent(mappedBy="periodSolution")
 	@Element(dependent = "true")
@@ -79,11 +79,11 @@ public class GaePeriodSolutionBean implements Serializable, GaeBean {
 		this.month = month;
 	}
 
-	public List<GaeJobBean> getJobs() {
+	public List<GaeAllocationBean> getJobs() {
 		return jobs;
 	}
 
-	public void setJobs(List<GaeJobBean> jobs) {
+	public void setJobs(List<GaeAllocationBean> jobs) {
 		this.jobs = jobs;
 	}
 
@@ -109,10 +109,10 @@ public class GaePeriodSolutionBean implements Serializable, GaeBean {
 		year=s.getYear();
 		month=s.getMonth();
 		periodPreferencesKey=s.getPeriodPreferencesKey();
-		jobs=new ArrayList<GaeJobBean>();
+		jobs=new ArrayList<GaeAllocationBean>();
 		if(s.getEmployeeJobs()!=null) {
 			for(String k:s.getEmployeeJobs().keySet()) {
-				GaeJobBean gaeJobBean = new GaeJobBean();
+				GaeAllocationBean gaeJobBean = new GaeAllocationBean();
 				gaeJobBean.setPeriodSolution(this);
 				gaeJobBean.setEmployeeKey(k);
 				gaeJobBean.fromPojo(s.getEmployeeJobs().get(k));
@@ -143,7 +143,7 @@ public class GaePeriodSolutionBean implements Serializable, GaeBean {
 		
 		Map<String,Job> employeeJobs=new HashMap<String, Job>();
 		if(jobs!=null) {
-			for(GaeJobBean j:jobs) {
+			for(GaeAllocationBean j:jobs) {
 				Job pojo = j.toPojo();
 				employeeJobs.put(j.getEmployeeKey(), pojo);
 			}

@@ -2915,4 +2915,14 @@ a.signOutButton:hover {
 	text-decoration: none;
 }
 
+.s2-preferencesEmployeeAndJobsTable td {
+	width: 100%;
+	border: 0px solid #FFF;
+	text-align: center;
+}
+.s2-preferencesJobsTextBox {
+	border: 1px solid #CCC;
+	width: 21px;
+}
+
 /** EOF **/
