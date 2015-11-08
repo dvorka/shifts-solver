@@ -7,4 +7,6 @@ public interface ShiftSolverConfigurer {
 	boolean isEnforceNightToAfternoon();
 	void setEnforceNightToAfternoon(boolean enforceNightToAfternoon);
 	void setIterationsLimit(long limit);
+	Boolean isEnforceMorningAfternoonBalancing();
+	void setEnforceMorningAfternoonBalancing(Boolean enforceMorningAfternoonBalancing);
 }

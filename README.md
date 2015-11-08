@@ -84,7 +84,7 @@ Rules:
    * *MUST:* any employee role may serve on Monday to Saturday nights
    * *MUST:* part time employee to serve on Friday night
    * *MUST:* part time employee to serve on Saturday night
-   * *MUST:* fulltime employee to serve on Sunday night **(TODO)**
+   * *MUST:* fulltime employee to serve on Sunday night
    * *SHOULD:* editor to serve on Sunday night **(TODO)**
    * *MUST:* employee birthday is marked as NO preference
    * *MUST:* national holidays are solved in the same way as Sunday **(PARTIAL)**
@@ -111,7 +111,7 @@ Rules:
       * *MUST:* 2 night shifts in month at most
       * *MUST:* if employee has holidays on workday, then it adds 1 to her/his
         job shifts
-      * *SHOULD:* morning and afternoon shifts to be balanced 50%/50% **(TODO)**
+      * *SHOULD:* morning and afternoon shifts to be balanced 50%/50%
    * Part time employee jobs:
       * *MUST:* max job shifts = fulltime job shifts / 2
 
@@ -138,12 +138,7 @@ The implementation plan:
          * backtracking to be used only in situations when you cannot allocate wisely
          * allocate user and ensure it wont fail (failure is last option causing backtrack)
            e.g. make sure editor has 5 shifts capacity when assigned on Friday afternoon
-      * weekend: show editor A+M in table & eliminate same day shifts check
       * incorporate POSITIVE preferences in solver (do 2 cycles of employees
         and remember it in solution: want employees for day and THEN don't
         care employees)
-      * national holidays panel, CRUD and solver logic
-
-   * authentication and authorization
-
 ---

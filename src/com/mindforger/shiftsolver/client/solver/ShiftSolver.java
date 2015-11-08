@@ -11,6 +11,7 @@ import com.mindforger.shiftsolver.client.RiaContext;
 import com.mindforger.shiftsolver.client.RiaMessages;
 import com.mindforger.shiftsolver.client.RiaState;
 import com.mindforger.shiftsolver.client.Utils;
+import com.mindforger.shiftsolver.client.solver.comparators.EmployeeFulltimeYesterdayAndShiftsComparator;
 import com.mindforger.shiftsolver.client.ui.SolverProgressPanels;
 import com.mindforger.shiftsolver.shared.ShiftSolverConstants;
 import com.mindforger.shiftsolver.shared.ShiftSolverLogger;
@@ -71,6 +72,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 	private boolean partialSolution;	
 	private boolean enforceAfternoonTo8am;
 	private boolean enforceNightToAfternoon;
+	private boolean enforceMorningAfternoonBalancing;
 	
 	private long steps;
 	private int depth;
@@ -89,6 +91,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		this.solverProgressPanel=new DebugSolverPanel();
 		this.enforceAfternoonTo8am=true;
 		this.enforceNightToAfternoon=true;
+		this.enforceMorningAfternoonBalancing=true;
 		this.partialSolution=false;
 	}
 	
@@ -181,9 +184,15 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		}
 	}
 
-	private List<Employee> sortEmployeesByShifts(int day) {
+	private List<Employee> sortEmployeesByShifts(int day, int shiftType) {
 		List<Employee> result=new ArrayList<Employee>(employees);
-		Collections.sort(result, new EmployeeFulltimeYesterdayAndShiftsComparator(e2a, day));
+		Collections.sort(
+				result, 
+				new EmployeeFulltimeYesterdayAndShiftsComparator(
+						e2a, 
+						day, 
+						enforceMorningAfternoonBalancing, 
+						shiftType));
 		//		ShiftSolverLogger.debug("- SORTED -F-Y-S-N------------------ ");
 		//		for(Employee e:result) {
 		//			ShiftSolverLogger.debug(
@@ -374,7 +383,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_STAFFER;
 		Employee lastAssignee=null;
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_MORNING_6);
 		while((lastAssignee=findStafferForWeekendMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "STAFFER", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_6);					
@@ -406,7 +415,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_SPORTAK;
 		Employee lastAssignee=null;
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_MORNING);
 		while((lastAssignee=findSportakForWeekendMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "SPORTAK", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING);			
@@ -469,7 +478,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_STAFFER;
 		Employee lastAssignee=null;
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_AFTERNOON);
 		while((lastAssignee=findStafferForWeekendAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "STAFFER", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
@@ -501,7 +510,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_SPORTAK;
 		Employee lastAssignee=null;
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_AFTERNOON);
 		while((lastAssignee=findSportakForWeekendAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "SPORTAK", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
@@ -534,7 +543,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_STAFFER;
 		Candidate lastAssignee=new Candidate();
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_NIGHT);
 		while((lastAssignee=findStafferForWeekendNight(employees, daySolution, lastAssignee, isHolidays))!=null) {
 			debugDown(d, "NIGHT", "STAFFER", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_NIGHT);					
@@ -567,7 +576,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_EDITOR;
 		Employee lastAssignee=null;
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_MORNING);
 		while((lastAssignee=findEditorForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "EDITOR", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING);					
@@ -599,7 +608,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_STAFFER;
 		Candidate lastAssignee=new Candidate();
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_MORNING_6);
 		while((lastAssignee=findStafferForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "STAFFER6AM", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_6);					
@@ -631,7 +640,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_STAFFER;
 		Candidate lastAssignee=new Candidate();
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_MORNING_7);
 		while((lastAssignee=findStafferForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "STAFFER7AM", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_7);					
@@ -663,7 +672,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_STAFFER;
 		Candidate lastAssignee=new Candidate();
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_MORNING_8);
 		while((lastAssignee=findStafferForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "STAFFER8AM1", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_8);					
@@ -695,7 +704,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_STAFFER;
 		Candidate lastAssignee=new Candidate();
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_MORNING_8);
 		while((lastAssignee=findStafferForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "STAFFER8AM2", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING_8);					
@@ -727,7 +736,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_SPORTAK;
 		Employee lastAssignee=null;
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_MORNING);
 		while((lastAssignee=findSportakForWorkdayMorning(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "MORNING", "SPORTAK", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_MORNING);			
@@ -760,7 +769,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_EDITOR;
 		Employee lastAssignee=null;
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_AFTERNOON);
 		while((lastAssignee=findEditorForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "EDITOR", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
@@ -792,7 +801,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_STAFFER;
 		Candidate lastAssignee=new Candidate();
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_AFTERNOON);
 		while((lastAssignee=findStafferForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "STAFFER1", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
@@ -824,7 +833,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_STAFFER;
 		Candidate lastAssignee=new Candidate();
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_AFTERNOON);
 		while((lastAssignee=findStafferForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "STAFFER2", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);			
@@ -856,7 +865,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_STAFFER;
 		Candidate lastAssignee=new Candidate();
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_AFTERNOON);
 		while((lastAssignee=findStafferForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "STAFFER3", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
@@ -888,7 +897,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_STAFFER;
 		Candidate lastAssignee=new Candidate();
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_AFTERNOON);
 		while((lastAssignee=findStafferForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "STAFFER4", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
@@ -920,7 +929,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_SPORTAK;
 		Employee lastAssignee=null;
 		int c=0;
-		List<Employee> employees=sortEmployeesByShifts(d);
+		List<Employee> employees=sortEmployeesByShifts(d, SHIFT_AFTERNOON);
 		while((lastAssignee=findSportakForWorkdayAfternoon(employees, daySolution, lastAssignee))!=null) {
 			debugDown(d, "AFTERNOON", "SPORTAK", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_AFTERNOON);					
@@ -953,7 +962,7 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		int thisLevelRole=ROLE_STAFFER;
 		Candidate lastAssignee=new Candidate();
 		int c=0;
-		List<Employee> es=sortEmployeesByShifts(d);
+		List<Employee> es=sortEmployeesByShifts(d, SHIFT_NIGHT);
 		while((lastAssignee=findStafferForWorkdayNight(es, daySolution, lastAssignee))!=null) {
 			debugDown(d, "NIGHT", "STAFFER", c++);
 			e2a.get(lastAssignee.getKey()).assign(d, SHIFT_NIGHT);					
@@ -1736,5 +1745,15 @@ public class ShiftSolver implements ShiftSolverConstants, ShiftSolverConfigurer 
 		// TODO editor continuity to be checked (day and go backward)
 		
 		return true;
+	}
+
+	@Override
+	public Boolean isEnforceMorningAfternoonBalancing() {
+		return enforceMorningAfternoonBalancing;
+	}
+
+	@Override
+	public void setEnforceMorningAfternoonBalancing(Boolean enforceMorningAfternoonBalancing) {
+		this.enforceMorningAfternoonBalancing=enforceMorningAfternoonBalancing;
 	}
 }

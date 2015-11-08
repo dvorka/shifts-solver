@@ -23,6 +23,8 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 	
 	public int shiftsToGet;
 	public int shifts;
+	public int mornings;
+	public int afternoons;
 
 	public List<Integer> shiftsOnDays;
 	public List<Integer> shiftTypesOnDays;
@@ -83,6 +85,8 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 		clone.employee=employee;
 		clone.shiftsToGet=shiftsToGet;
 		clone.shifts=shifts;
+		clone.mornings=mornings;
+		clone.afternoons=afternoons;
 		clone.enforceAfternoonTo8am=enforceAfternoonTo8am;
 		clone.enforceNightToAfternoon=enforceNightToAfternoon;
 		clone.shiftsOnDays=new ArrayList<Integer>(shiftsOnDays);
@@ -106,12 +110,18 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 	
 	public void assign(int day, int shiftType) {
 		// TODO this should go away: checks must be made earlier, here I set, check to be optional
-		if(shiftType==ShiftSolverConstants.SHIFT_NIGHT) {
+		if(shiftType==SHIFT_NIGHT) {
 			if(employee.isFulltime() && nights>=2) {
 				nights++;				
 				// throw new RuntimeException("Attempt to assign fulltime employee "+employee.getFullName()+" more than 2 night shifts (has "+nights+")");
 			} else {
 				nights++;				
+			}
+		} else {
+			if(shiftType==SHIFT_AFTERNOON) {
+				afternoons++;
+			} else {
+				mornings++;
 			}
 		}
 		
@@ -124,8 +134,14 @@ public class EmployeeAllocation implements ShiftSolverConstants {
 		shiftsOnDays.remove(shiftsOnDays.size()-1);
 		shiftTypesOnDays.remove(shiftTypesOnDays.size()-1);
 		shifts--;
-		if(shiftType==ShiftSolverConstants.SHIFT_NIGHT) {
+		if(shiftType==SHIFT_NIGHT) {
 			nights--;			
+		} else {
+			if(shiftType==SHIFT_AFTERNOON) {
+				afternoons--;
+			} else {
+				mornings--;
+			}			
 		}
 	}
 

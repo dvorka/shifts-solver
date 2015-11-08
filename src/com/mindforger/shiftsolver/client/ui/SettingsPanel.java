@@ -19,6 +19,7 @@ public class SettingsPanel extends VerticalPanel implements ShiftSolverConstants
 	private RiaContext ctx;
 	
 	private TextBox iterationsLimit;
+	private CheckBox morningAfternoonBalancing;
 	private CheckBox afternoonToMorningGap;
 	private CheckBox nightToAfternoonGap;
 	
@@ -31,6 +32,7 @@ public class SettingsPanel extends VerticalPanel implements ShiftSolverConstants
 	
 	public void refresh(ShiftSolver solver) {
 		iterationsLimit.setText(""+ctx.getSolver().stepsLimit);
+		morningAfternoonBalancing.setValue(solver.isEnforceMorningAfternoonBalancing());
 		afternoonToMorningGap.setValue(solver.isEnforceAfternoonTo8am());
 		nightToAfternoonGap.setValue(solver.isEnforceNightToAfternoon());		
 	}
@@ -57,6 +59,18 @@ public class SettingsPanel extends VerticalPanel implements ShiftSolverConstants
 		});
 		settingsTable.setWidget(rows++, 1, iterationsLimit);
 
+		html = new HTML("Enforce morning/afternoon balance:");
+		settingsTable.setWidget(rows, 0, html);
+		morningAfternoonBalancing = new CheckBox();
+		morningAfternoonBalancing.setValue(solver.isEnforceMorningAfternoonBalancing());
+		morningAfternoonBalancing.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				solver.setEnforceMorningAfternoonBalancing(morningAfternoonBalancing.getValue());
+			}
+		});
+		settingsTable.setWidget(rows++, 1, morningAfternoonBalancing);
+		
 		html = new HTML("Enforce afternoon to 8AM morning gap:");
 		settingsTable.setWidget(rows, 0, html);
 		afternoonToMorningGap = new CheckBox();
