@@ -7,25 +7,25 @@ shifts-based operation using *heuristical backtracking*.
 # Overview
 Home:
 
-[![Home](http://mindforger.com/project/s2/s2home.png "Home")](http://mindforger.com/project/s2/s2home.png)
+[![Home](http://me.mindforger.com/project/s2/s2home.png "Home")](http://mindforger.com/project/s2/s2home.png)
 
 Employees management:
 
-[![Employees Management](http://mindforger.com/project/s2/s2employees.png "Employees Management")](http://mindforger.com/project/s2/s2employees.png)
+[![Employees Management](http://me.mindforger.com/project/s2/s2employees.png "Employees Management")](http://mindforger.com/project/s2/s2employees.png)
 
 Month preferences management:
 
-[![Month Preferences Management](http://mindforger.com/project/s2/s2preferences.png "Month Preferences Management")](http://mindforger.com/project/s2/s2preferences.png)
+[![Month Preferences Management](http://me.mindforger.com/project/s2/s2preferences.png "Month Preferences Management")](http://mindforger.com/project/s2/s2preferences.png)
 
 Solution management:
 
-[![Solution Management](http://mindforger.com/project/s2/s2solution.png "Solution Management")](http://mindforger.com/project/s2/s2solution.png)
+[![Solution Management](http://me.mindforger.com/project/s2/s2solution.png "Solution Management")](http://mindforger.com/project/s2/s2solution.png)
 
-[![Solution Dlouhan Management](http://mindforger.com/project/s2/s2dlouhan.png "Solution Management")](http://mindforger.com/project/s2/s2dlouhan.png)
+[![Solution Dlouhan Management](http://me.mindforger.com/project/s2/s2dlouhan.png "Solution Management")](http://mindforger.com/project/s2/s2dlouhan.png)
 
-[![Solution Employees Management](http://mindforger.com/project/s2/s2allocation.png "Solution Management")](http://mindforger.com/project/s2/s2allocation.png)
+[![Solution Employees Management](http://me.mindforger.com/project/s2/s2allocation.png "Solution Management")](http://mindforger.com/project/s2/s2allocation.png)
 
-[![Solution Edit Management](http://mindforger.com/project/s2/s2solutionEdit.png "Solution Management")](http://mindforger.com/project/s2/s2solutionEdit.png)
+[![Solution Edit Management](http://me.mindforger.com/project/s2/s2solutionEdit.png "Solution Management")](http://mindforger.com/project/s2/s2solutionEdit.png)
 
 
 
