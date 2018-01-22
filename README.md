@@ -2,6 +2,9 @@
 Finds a solution to fitting employees with preferences in a schedule for
 shifts-based operation using *heuristical backtracking*.
 
+**Shifts Solver** is a [Google AppEngine](https://cloud.google.com/appengine) application. To try **Shifts Solver** install AppEngine SDK and/or an AppEngine IDE which allows you to run **Shifts Solver** localy or to upload it to Google infrastructure (you may use *free* AppEngine tier to run it).
+I implemented **Shift Solver** using [Eclipse IDE for Java](https://cloud.google.com/eclipse/docs/) with AppEngine plug-in. Simply follow [how-tos](https://cloud.google.com/eclipse/docs/) to set up the development environment and then use Eclipse [project](./.project) that can be found in my Git repository to import **Shifts Solver** project to Eclipse. 
+Alternatively you may use [your favorite tool/IDE](https://cloud.google.com/tools/docs/) to build and deploy the project.
 
 
 # Overview
