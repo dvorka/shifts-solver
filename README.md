@@ -10,25 +10,25 @@ Alternatively you may use [your favorite tool/IDE](https://cloud.google.com/tool
 # Overview
 Home:
 
-[![Home](http://me.mindforger.com/project/s2/s2home.png "Home")](http://mindforger.com/project/s2/s2home.png)
+<kbd>[![Home](http://me.mindforger.com/project/s2/s2home.png "Home")](http://mindforger.com/project/s2/s2home.png)</kbd>
 
 Employees management:
 
-[![Employees Management](http://me.mindforger.com/project/s2/s2employees.png "Employees Management")](http://mindforger.com/project/s2/s2employees.png)
+<kbd>[![Employees Management](http://me.mindforger.com/project/s2/s2employees.png "Employees Management")](http://mindforger.com/project/s2/s2employees.png)</kbd>
 
 Month preferences management:
 
-[![Month Preferences Management](http://me.mindforger.com/project/s2/s2preferences.png "Month Preferences Management")](http://mindforger.com/project/s2/s2preferences.png)
+<kbd>[![Month Preferences Management](http://me.mindforger.com/project/s2/s2preferences.png "Month Preferences Management")](http://mindforger.com/project/s2/s2preferences.png)</kbd>
 
 Solution management:
 
-[![Solution Management](http://me.mindforger.com/project/s2/s2solution.png "Solution Management")](http://mindforger.com/project/s2/s2solution.png)
+<kbd>[![Solution Management](http://me.mindforger.com/project/s2/s2solution.png "Solution Management")](http://mindforger.com/project/s2/s2solution.png)</kbd>
 
-[![Solution Dlouhan Management](http://me.mindforger.com/project/s2/s2dlouhan.png "Solution Management")](http://mindforger.com/project/s2/s2dlouhan.png)
+<kbd>[![Solution Dlouhan Management](http://me.mindforger.com/project/s2/s2dlouhan.png "Solution Management")](http://mindforger.com/project/s2/s2dlouhan.png)</kbd>
 
-[![Solution Employees Management](http://me.mindforger.com/project/s2/s2allocation.png "Solution Management")](http://mindforger.com/project/s2/s2allocation.png)
+<kbd>[![Solution Employees Management](http://me.mindforger.com/project/s2/s2allocation.png "Solution Management")](http://mindforger.com/project/s2/s2allocation.png)</kbd>
 
-[![Solution Edit Management](http://me.mindforger.com/project/s2/s2solutionEdit.png "Solution Management")](http://mindforger.com/project/s2/s2solutionEdit.png)
+<kbd>[![Solution Edit Management](http://me.mindforger.com/project/s2/s2solutionEdit.png "Solution Management")](http://mindforger.com/project/s2/s2solutionEdit.png)</kbd>
 
 
 
